@@ -274,7 +274,7 @@
                             @foreach (var ts in Model.Servicos.Where(o => o.Ativo))
                             {
                                 <label class="item-check">
-                                    <app-checkbox name="produtoVariacaoIds" value="@ts.Id" class="prof-servico-check"></app-checkbox>
+                                    <app-checkbox name="produtoVariacaoIds" value="@ts.Id" label="" class="prof-servico-check"></app-checkbox>
                                     <span class="cor-dot" style="--cor-servico: @ts.CorHexadecimal"></span>
                                     <span class="item-check-label">@ts.Descricao</span>
                                 </label>
