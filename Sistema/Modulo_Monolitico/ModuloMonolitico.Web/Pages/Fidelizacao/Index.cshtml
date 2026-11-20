@@ -1,0 +1,72 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fidelizacao.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Área do Cliente";
+    Layout = "~/Pages/Shared/Layouts/_AreaClienteLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Fidelizacao/css/areacliente-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina cabecalho-pagina--centro">
+    <h1 class="titulo-pagina">Área do Cliente</h1>
+    <p class="subtitulo-pagina">Acompanhe seus benefícios, histórico e agendamentos.</p>
+</div>
+
+<p class="rotulo-secao">Benefícios</p>
+<div class="modulos-grid modulos-grid--beneficios">
+    <a href="@ModuloRotas.Fidelizacao.LerQRCode" class="modulo-card modulo-card--scan">
+        <div class="modulo-icon">
+            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <div>
+            <div class="modulo-nome">Escanear Benefício Agora</div>
+            <div class="modulo-desc">Abra a câmera, leia o QR Code da loja e acumule pontos ou cashback instantaneamente.</div>
+        </div>
+        <div class="modulo-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            Abrir Câmera
+        </div>
+    </a>
+
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = ModuloRotas.Fidelizacao.MeusCartoes,
+        nome = "Meus Cartões Fidelidade",
+        descricao = "Acompanhe seus selos acumulados e veja quantos faltam para o prêmio.",
+        textoLink = "Ver Meus Cartões",
+        corHexadecimal = "#f59e0b", corRgb = "245, 158, 11",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#f59e0b\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"5\" width=\"20\" height=\"14\" rx=\"2\" ry=\"2\"/><line x1=\"2\" y1=\"10\" x2=\"22\" y2=\"10\"/></svg>"
+    })
+
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = ModuloRotas.Fidelizacao.MeuCashback,
+        nome = "Meu Cashback",
+        descricao = "Confira seu saldo acumulado em cada loja parceira para usar em novas compras.",
+        textoLink = "Ver Saldo",
+        corHexadecimal = "#10b981", corRgb = "16, 185, 129",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#10b981\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"12\" y1=\"1\" x2=\"12\" y2=\"23\"/><path d=\"M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6\"/></svg>"
+    })
+</div>
+
+<p class="rotulo-secao">Histórico</p>
+<div class="modulos-grid">
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = ModuloRotas.Agendamentos.MeusAgendamentos,
+        nome = "Meus Agendamentos",
+        descricao = "Visualize seus próximos serviços marcados e faça novos agendamentos online.",
+        textoLink = "Ver Agendamentos",
+        corHexadecimal = "#6366f1", corRgb = "99, 102, 241",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#6366f1\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\" ry=\"2\"/><line x1=\"16\" y1=\"2\" x2=\"16\" y2=\"6\"/><line x1=\"8\" y1=\"2\" x2=\"8\" y2=\"6\"/><line x1=\"3\" y1=\"10\" x2=\"21\" y2=\"10\"/></svg>"
+    })
+
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = "#",
+        nome = "Minhas Compras",
+        descricao = "Acesse o histórico de serviços e compras realizadas.",
+        textoLink = "Em breve",
+        corHexadecimal = "#94a3b8", corRgb = "148, 163, 184",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/></svg>",
+        emBreve = true
+    })
+</div>

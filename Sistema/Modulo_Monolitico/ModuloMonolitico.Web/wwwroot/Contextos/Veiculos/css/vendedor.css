@@ -1,0 +1,89 @@
+/* perfil.css — Página de perfil do vendedor */
+
+.veic-vendedor {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.veic-vendedor-header {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 28px;
+}
+
+.vendedor-perfil-topo {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.vendedor-perfil-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(139, 92, 246, 0.3);
+    flex-shrink: 0;
+}
+
+.vendedor-perfil-nome {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+    margin: 0 0 6px;
+}
+
+.vendedor-perfil-descricao {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.55);
+    margin: 0 0 12px;
+    line-height: 1.6;
+}
+
+.vendedor-perfil-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.link-contato {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.65);
+    transition: all 0.15s;
+}
+
+.link-contato:hover {
+    border-color: rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.9);
+}
+
+.link-contato--whatsapp {
+    background: rgba(37, 211, 102, 0.1);
+    border-color: rgba(37, 211, 102, 0.2);
+    color: #25d366;
+}
+
+.link-contato--instagram {
+    background: rgba(228, 64, 95, 0.1);
+    border-color: rgba(228, 64, 95, 0.2);
+    color: #e4405f;
+}
+
+.veic-vendedor-anuncios h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.75);
+    margin: 0 0 18px;
+}

@@ -1,0 +1,61 @@
+@page
+@model ModuloMonolitico.Web.Pages.Contatos.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Módulo CRM";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Shared/css/grade-atalhos.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            CRM
+        </div>
+        <h1 class="titulo-pagina">Gestão de Relacionamento</h1>
+        <p class="subtitulo-pagina">Ligações, contatos, equipe comercial, marketing e campanhas.</p>
+    </div>
+</div>
+
+<p class="section-label">Acesso Rápido</p>
+
+@if (!Model.Atalhos.Any())
+{
+    <div class="grade-estado-vazio">
+        <svg class="grade-icone-vazio" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+        <h3 class="grade-titulo-vazio">Nenhum Atalho Configurado</h3>
+        <p class="grade-descricao-vazio">
+            Você ainda não possui atalhos no dashboard. Vá em <strong>Grupos de Usuários</strong> e configure quais telas devem aparecer aqui para o seu cargo.
+        </p>
+        @if (Model.UsuarioEhMaster)
+        {
+            <a href="@ModuloRotas.Autenticacao.Grupos" class="grade-acao-vazio">Configurar Grupos de Usuários</a>
+        }
+    </div>
+}
+else
+{
+    <div class="modulos-grid grade-atalhos-grid">
+        @foreach (var atalho in Model.Atalhos)
+        {
+            var hex = atalho.CorHexadecimal.TrimStart('#');
+            var r = Convert.ToInt32(hex.Substring(0, 2), 16);
+            var g = Convert.ToInt32(hex.Substring(2, 2), 16);
+            var a = Convert.ToInt32(hex.Substring(4, 2), 16);
+            var rgb = $"{r}, {g}, {a}";
+
+            @await Component.InvokeAsync("ModuloCard", new {
+                url = atalho.Url,
+                nome = atalho.Titulo,
+                descricao = atalho.Descricao,
+                textoLink = "Acessar",
+                corHexadecimal = atalho.CorHexadecimal,
+                corRgb = rgb,
+                svgIcone = atalho.SvgIcone
+            })
+        }
+    </div>
+}

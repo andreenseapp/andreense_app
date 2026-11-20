@@ -1,0 +1,44 @@
+.sol-main { padding: 2rem 1.5rem; max-width: 600px; margin: 0 auto; width: 100%; }
+
+.sol-header { margin-bottom: 2rem; }
+.sol-titulo { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--clr-text); margin-bottom: 0.2rem; }
+.sol-subtitle { color: var(--clr-text-muted); font-size: 0.9375rem; }
+
+.sol-card {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg); padding: 2rem;
+    box-shadow: var(--glass-shadow);
+}
+
+.sol-campo-grupo { margin-bottom: 1.5rem; }
+.sol-label { display: block; font-weight: 600; font-size: 0.875rem; color: var(--clr-text); margin-bottom: 0.5rem; }
+.sol-input, .sol-select, .sol-textarea {
+    width: 100%; padding: 0.6rem 0.8rem;
+    background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm); color: var(--clr-text);
+    font-family: var(--font-body); font-size: 0.9375rem;
+    transition: all var(--transition-fast);
+}
+.sol-input:focus, .sol-select:focus, .sol-textarea:focus { border-color: var(--clr-primary); outline: none; }
+.sol-select { cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill="%239aa0a6" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); background-repeat: no-repeat; background-position-x: 98%; background-position-y: 50%; }
+.sol-textarea { resize: vertical; min-height: 100px; }
+
+.sol-ajuda { font-size: 0.8rem; color: var(--clr-text-muted); margin-top: 0.35rem; display: block; }
+.sol-erro { font-size: 0.8125rem; color: var(--clr-danger); margin-top: 0.35rem; display: block; }
+
+.sol-alert-err { background: rgba(242,139,130,0.1); border: 1px solid rgba(242,139,130,0.2); color: var(--clr-danger); padding: 0.8rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.9rem; }
+
+.sol-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; }
+.sol-botao-cancelar {
+    padding: 0.6rem 1.25rem; border-radius: var(--radius-sm); font-weight: 600;
+    color: var(--clr-text); background: transparent; border: 1px solid var(--glass-border);
+    text-decoration: none; transition: all var(--transition-fast);
+}
+.sol-botao-cancelar:hover { background: rgba(255,255,255,0.05); }
+.sol-botao-enviar {
+    padding: 0.6rem 1.25rem; border-radius: var(--radius-sm); font-weight: 600;
+    color: var(--clr-bg-dark); background: var(--clr-primary); border: none;
+    cursor: pointer; transition: all var(--transition-fast); display: flex; align-items: center; gap: 0.5rem;
+}
+.sol-botao-enviar:hover { filter: brightness(1.1); transform: translateY(-1px); }
+

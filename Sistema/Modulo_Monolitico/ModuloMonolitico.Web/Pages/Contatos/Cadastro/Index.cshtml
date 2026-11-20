@@ -1,0 +1,255 @@
+@page
+@model ModuloMonolitico.Web.Pages.Contatos.Cadastro.IndexModel
+@{
+    var papelLabel = Model.Papel switch
+    {
+        "cliente" => "Clientes",
+        "fornecedor" => "Fornecedores",
+        "funcionario" => "Funcionários",
+        "transportador" => "Transportadoras",
+        "lead" => "Leads",
+        "prospect" => "Prospects",
+        _ => "Contatos"
+    };
+
+    ViewData[ViewDataKeys.Title] = $"Meus {papelLabel}";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+
+    var urlNovo = string.IsNullOrEmpty(Model.Papel)
+        ? ModuloRotas.Contatos.Cadastro_Novo
+        : $"{ModuloRotas.Contatos.Cadastro_Novo}?Papel={Model.Papel}";
+
+    var filtrosAtivos = !string.IsNullOrEmpty(Model.Filtros.Busca)
+        || !string.IsNullOrEmpty(Model.Filtros.Tipo)
+        || Model.Filtros.Desde.HasValue;
+
+    string UrlPagina(int pagina)
+    {
+        var qs = new List<string> { $"PaginaAtual={pagina}" };
+        if (!string.IsNullOrEmpty(Model.Papel))
+            qs.Add($"Papel={Uri.EscapeDataString(Model.Papel)}");
+        if (!string.IsNullOrEmpty(Model.Filtros.Busca))
+            qs.Add($"Filtros.Busca={Uri.EscapeDataString(Model.Filtros.Busca)}");
+        if (!string.IsNullOrEmpty(Model.Filtros.Tipo))
+            qs.Add($"Filtros.Tipo={Uri.EscapeDataString(Model.Filtros.Tipo)}");
+        if (Model.Filtros.Desde.HasValue)
+            qs.Add($"Filtros.Desde={Model.Filtros.Desde.Value:yyyy-MM-dd}");
+        if (!string.IsNullOrEmpty(Model.OrdenarPor))
+            qs.Add($"OrdenarPor={Uri.EscapeDataString(Model.OrdenarPor)}");
+        if (!string.IsNullOrEmpty(Model.OrdenarDirecao))
+            qs.Add($"OrdenarDirecao={Uri.EscapeDataString(Model.OrdenarDirecao)}");
+        return "?" + string.Join("&", qs);
+    }
+
+    string UrlComPapel(string baseUrl, Guid id)
+        => string.IsNullOrEmpty(Model.Papel) ? $"{baseUrl}?id={id}" : $"{baseUrl}?id={id}&Papel={Model.Papel}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Contatos/css/cadastro-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            CRM
+        </div>
+        <h1 class="titulo-pagina">Meus @papelLabel</h1>
+        <p class="subtitulo-pagina">Visualize e gerencie todos os cadastros de @papelLabel.ToLower().</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@urlNovo" class="botao botao-primario botao-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo @papelLabel.TrimEnd('s')
+        </a>
+    </div>
+</div>
+
+<form method="get" id="formularioFiltros" class="painel-filtro">
+    @if (!string.IsNullOrEmpty(Model.Papel))
+    {
+        <app-input type="hidden" name="Papel" value="@Model.Papel" />
+    }
+
+    <app-input asp-for="Filtros.Busca"
+               label="Buscar Contato"
+               type="text"
+               placeholder="Nome, documento, email, telefone..."
+               class="grupo-filtro grupo-filtro--wide mb-0" />
+
+    <app-select asp-for="Filtros.Tipo"
+                label="Tipo"
+                class="grupo-filtro mb-0"
+                data-envio-automatico="true">
+        <option value="">Todos os Tipos</option>
+        <option value="fisica">Pessoa Física</option>
+        <option value="juridica">Pessoa Jurídica</option>
+    </app-select>
+
+    <app-input asp-for="Filtros.Desde"
+               label="Desde"
+               type="date"
+               class="grupo-filtro mb-0"
+               data-envio-automatico="true" />
+
+    <div class="acoes-filtro">
+        @if (filtrosAtivos)
+        {
+            var urlLimpar = string.IsNullOrEmpty(Model.Papel)
+                ? ModuloRotas.Contatos.Cadastro
+                : $"{ModuloRotas.Contatos.Cadastro}?Papel={Model.Papel}";
+            <a href="@urlLimpar" class="botao-filtro-icone" title="Limpar filtros">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </a>
+        }
+        <app-button type="submit" variant="primary" class="botao-filtro">Filtrar</app-button>
+        <a href="@ModuloRotas.Contatos.Cadastro_Relatorio" class="botao-exportar">Exportar CSV</a>
+    </div>
+</form>
+
+@if (!Model.Itens.Any())
+{
+    <div class="estado-vazio">
+        <p class="estado-vazio-texto">
+            @(filtrosAtivos
+                ? "Nenhum contato encontrado para os filtros selecionados."
+                : "Nenhum contato cadastrado para esta conta.")
+        </p>
+        <a href="@urlNovo" class="botao botao-primario botao-estado-vazio">Cadastrar agora</a>
+    </div>
+}
+else
+{
+    <div class="list-toolbar">
+        <div class="list-toolbar-count">
+            Total de <strong>@Model.TotalItens</strong> contatos encontrados.
+        </div>
+        <app-button type="button" variant="secondary" class="botao-modo-selecao" id="botaoAlternarSelecao" data-selecao-toggle>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="9 11 12 14 22 4"></polyline></svg>
+            Selecionar
+        </app-button>
+    </div>
+
+    <form method="post" id="formularioSelecaoLote" class="form-selecao-lote">
+        @Html.AntiForgeryToken()
+        <div class="table-container">
+            <table class="app-table" data-selecao-tabela data-seletor-colunas="true" id="tabelaContatos">
+                <thead>
+                    <tr>
+                        <th class="col-selecao" data-coluna-fixa>
+                            <app-checkbox id="caixaSelecionarTodos" class="app-checkbox" data-selecao-mestre></app-checkbox>
+                        </th>
+                        <th class="ordenavel" data-ordenar="nome">
+                            Contato / Nome @Html.Raw(Model.RenderizarIconeOrdenacao("nome"))
+                        </th>
+                        <th class="ordenavel" data-ordenar="tipo">
+                            Tipo @Html.Raw(Model.RenderizarIconeOrdenacao("tipo"))
+                        </th>
+                        <th class="ordenavel" data-ordenar="documento">
+                            Documento @Html.Raw(Model.RenderizarIconeOrdenacao("documento"))
+                        </th>
+                        <th>Dados de Contato</th>
+                        <th class="col-acoes" data-coluna-fixa>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var contato in Model.Itens)
+                    {
+                        var isFisica = contato.TipoPessoa == "fisica";
+                        var nomeParaIniciais = isFisica ? contato.NomeCompleto : contato.RazaoSocial;
+                        var inicial = string.IsNullOrWhiteSpace(nomeParaIniciais)
+                            ? (isFisica ? "F" : "J")
+                            : nomeParaIniciais[..1].ToUpperInvariant();
+                        var nomeExibicao = isFisica ? contato.NomeCompleto : contato.RazaoSocial;
+                        var docExibicao = isFisica ? contato.Cpf : contato.Cnpj;
+
+                        <tr>
+                            <td class="col-selecao">
+                                <app-checkbox name="IdsSelecionados" value="@contato.Id" class="app-checkbox caixa-registro" data-selecao-item></app-checkbox>
+                            </td>
+                            <td>
+                                <div class="celula-contato">
+                                    <div class="avatar-contato avatar-contato--sm @(isFisica ? "avatar-fisica" : "avatar-juridica")">@inicial</div>
+                                    <div>
+                                        <a href="@UrlComPapel(ModuloRotas.Contatos.Cadastro_Detalhes, contato.Id)" class="link-contato">@nomeExibicao</a>
+                                        @if (!isFisica && !string.IsNullOrEmpty(contato.NomeFantasia))
+                                        {
+                                            <div class="fantasia-contato">@contato.NomeFantasia</div>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="etiqueta-tipo-contato">@(isFisica ? "Física" : "Jurídica")</span>
+                            </td>
+                            <td>
+                                <span class="doc-contato">@docExibicao</span>
+                            </td>
+                            <td>
+                                <div class="meta-contato">
+                                    @if (!string.IsNullOrEmpty(contato.Email))
+                                    {
+                                        <div class="item-meta-contato">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                            @contato.Email
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(contato.Telefone))
+                                    {
+                                        <div class="item-meta-contato">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                            @contato.Telefone
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div class="acoes-celula">
+                                    <a href="@UrlComPapel(ModuloRotas.Contatos.Cadastro_Detalhes, contato.Id)" class="btn-acao">Visualizar</a>
+                                    <a href="@UrlComPapel(ModuloRotas.Contatos.Cadastro_Editar, contato.Id)" class="btn-acao">Editar</a>
+                                    <form method="post" asp-page-handler="DeletarSeguro" asp-route-id="@contato.Id" class="form-acao-inline">
+                                        @Html.AntiForgeryToken()
+                                        <app-button type="submit"
+                                                variant="danger"
+                                                class="btn-acao btn-acao--danger"
+                                                data-confirmacao="Excluir @nomeExibicao? Esta ação não pode ser desfeita."
+                                                data-confirmacao-tipo="perigo"
+                                                data-confirmacao-titulo="Excluir Contato">
+                                            Excluir
+                                        </app-button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    @if (Model.TotalPaginas > 1)
+    {
+        <div class="log-paginacao">
+            <span>Página @Model.PaginaAtual de @Model.TotalPaginas — @Model.TotalItens contatos</span>
+            <div class="paginacao-nav">
+                <a href="@UrlPagina(Model.PaginaAtual - 1)"
+                   class="paginacao-btn @(Model.PaginaAtual == 1 ? "desabilitado" : "")">← Anterior</a>
+                <a href="@UrlPagina(Model.PaginaAtual + 1)"
+                   class="paginacao-btn @(Model.PaginaAtual == Model.TotalPaginas ? "desabilitado" : "")">Próxima →</a>
+            </div>
+        </div>
+    }
+}
+
+<partial name="~/Pages/Shared/Partials/_FloatingBulkActions.cshtml" model='new ModuloMonolitico.Web.Pages.Shared.FloatingBulkActionsViewModel {
+    FormId = "formSelecaoLote",
+    Handler = "DeletarSeguroEmLote",
+    MensagemConfirmacao = "Deseja realmente excluir todos os contatos selecionados? Esta ação não poderá ser desfeita."
+}' />
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/ordenar-lista.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Contatos/js/cadastro-index.js" asp-append-version="true"></script>
+}

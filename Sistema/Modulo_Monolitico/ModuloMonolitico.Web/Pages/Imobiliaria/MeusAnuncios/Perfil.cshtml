@@ -1,0 +1,102 @@
+@page
+@using ModuloMonolitico.Dominio.Configuracoes
+@using ModuloMonolitico.Web.Core
+@model ModuloMonolitico.Web.Pages.Imobiliaria.MeusAnuncios.PerfilModel
+@{
+    Layout = "~/Pages/Shared/Layouts/_ImobiliariaLayout.cshtml";
+    ViewData[ViewDataKeys.Title] = MensagensSistema.Imobiliaria.TituloPerfilAnunciante;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/perfil.css" asp-append-version="true" />
+}
+
+<partial name="Partials/_LinkVoltar" model='new LinkVoltarModelo { Url = ModuloRotas.Imobiliaria.MeusAnuncios, TextoDestino = MensagensSistema.Imobiliaria.VoltarMeusImoveis }' />
+
+<div class="cabecalho-pagina">
+    <div class="cabecalho-pagina-esquerda">
+        <div class="page-badge">Imóveis</div>
+        <h1 class="titulo-pagina">@MensagensSistema.Imobiliaria.TituloPerfilAnunciante</h1>
+        <p class="subtitulo-pagina">@MensagensSistema.Imobiliaria.SubtituloPerfilAnunciante</p>
+    </div>
+</div>
+
+<div class="perfil-container">
+    <form method="post" class="cartao-formulario" id="form-perfil-anunciante">
+        @Html.AntiForgeryToken()
+
+        <h2 class="titulo-secao-formulario">@MensagensSistema.Imobiliaria.SecaoPaginaPublica</h2>
+
+        <div class="grade-formulario">
+            <app-input asp-for="Perfil.NomeExibicao"
+                       type="text"
+                       label="@MensagensSistema.Imobiliaria.LabelNomeExibicao"
+                       placeholder="@MensagensSistema.Imobiliaria.PlaceholderNomeExibicao"
+                       required="required"
+                       maxlength="200"
+                       class="campo-formulario-full mb-0" />
+
+            <app-input asp-for="Perfil.Creci"
+                       type="text"
+                       label="@MensagensSistema.Imobiliaria.LabelCreci"
+                       placeholder="@MensagensSistema.Imobiliaria.PlaceholderCreci"
+                       maxlength="50"
+                       class="mb-0" />
+
+            <app-textarea asp-for="Perfil.Descricao"
+                          label="@MensagensSistema.Imobiliaria.LabelDescricaoPerfil"
+                          rows="4"
+                          placeholder="@MensagensSistema.Imobiliaria.PlaceholderDescricaoPerfil"
+                          maxlength="1000"
+                          class="campo-formulario-full mb-0" />
+        </div>
+
+        <div class="perfil-logo-bloco">
+            <div class="perfil-logo-previa" id="perfil-logo-previa" aria-hidden="true">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="perfil-logo-campos">
+                <app-input asp-for="Perfil.UrlFotoLogo"
+                           type="url"
+                           label="@MensagensSistema.Imobiliaria.LabelUrlFotoLogo"
+                           placeholder="@MensagensSistema.Imobiliaria.PlaceholderUrlFotoLogo"
+                           ajuda="@MensagensSistema.Imobiliaria.AjudaUrlFotoLogo"
+                           class="mb-0" />
+            </div>
+        </div>
+
+        <h2 class="titulo-secao-formulario">@MensagensSistema.Imobiliaria.SecaoContatosRedes</h2>
+
+        <div class="grade-formulario grade-formulario--tres">
+            <app-input asp-for="Perfil.Whatsapp"
+                       type="tel"
+                       label="@MensagensSistema.Imobiliaria.LabelWhatsapp"
+                       placeholder="@MensagensSistema.Imobiliaria.PlaceholderWhatsapp"
+                       maxlength="15"
+                       data-mascara="telefone"
+                       class="mb-0" />
+
+            <app-input asp-for="Perfil.Instagram"
+                       type="text"
+                       label="@MensagensSistema.Imobiliaria.LabelInstagram"
+                       placeholder="@MensagensSistema.Imobiliaria.PlaceholderInstagram"
+                       maxlength="100"
+                       class="mb-0" />
+
+            <app-input asp-for="Perfil.UrlSite"
+                       type="url"
+                       label="@MensagensSistema.Imobiliaria.LabelSite"
+                       placeholder="@MensagensSistema.Imobiliaria.PlaceholderSite"
+                       class="mb-0" />
+        </div>
+
+        <div class="acoes-formulario">
+            <a href="@ModuloRotas.Imobiliaria.MeusAnuncios" class="botao-cancelar">@MensagensSistema.Geral.Cancelar</a>
+            <app-save-button type="submit">@MensagensSistema.Imobiliaria.BotaoSalvarPerfil</app-save-button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Imobiliaria/js/perfil.js" asp-append-version="true"></script>
+}

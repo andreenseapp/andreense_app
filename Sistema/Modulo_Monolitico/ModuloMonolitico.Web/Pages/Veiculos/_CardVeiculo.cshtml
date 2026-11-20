@@ -1,0 +1,59 @@
+@using ModuloMonolitico.Dominio.Veiculos.DTOs
+@model AnuncioVeiculoResumoDto
+
+<div class="veic-card" data-id="@Model.AnuncioVeiculoId" data-destaque="@Model.EhDestaque.ToString().ToLower()">
+    <a href="@ModuloRotas.Veiculos.Detalhes?id=@Model.AnuncioVeiculoId" class="veic-card-link">
+        <div class="veic-card-foto">
+            @if (!string.IsNullOrEmpty(Model.FotoCapa))
+            {
+                <img src="@Model.FotoCapa" alt="@Model.Titulo" loading="lazy" class="veic-card-img" />
+            }
+            else
+            {
+                <div class="veic-card-sem-foto">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3m-4 13H19a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 002 2z"/></svg>
+                </div>
+            }
+            @if (Model.EhDestaque)
+            {
+                <span class="veic-badge veic-badge--destaque">⭐ Destaque</span>
+            }
+            @if (Model.AceitaTroca)
+            {
+                <span class="veic-badge veic-badge--troca">🔄 Aceita troca</span>
+            }
+        </div>
+        <div class="veic-card-corpo">
+            <div class="veic-card-marcas">
+                <span class="veic-card-marca">@Model.Marca</span>
+                <span class="veic-card-modelo">@Model.Modelo</span>
+                @if (!string.IsNullOrEmpty(Model.Versao))
+                {
+                    <span class="veic-card-versao">@Model.Versao</span>
+                }
+            </div>
+            <div class="veic-card-titulo">@Model.Titulo</div>
+            <div class="veic-card-specs">
+                <span class="veic-spec"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 6v6l4 2"/></svg> @Model.AnoModelo</span>
+                <span class="veic-spec"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18"/><path d="M8 12l4-8 4 8"/></svg> @($"{Model.Quilometragem:N0}") km</span>
+                <span class="veic-spec">@Model.Combustivel</span>
+                <span class="veic-spec">@Model.Cambio</span>
+            </div>
+            <div class="veic-card-preco-row">
+                <span class="veic-card-preco">@($"R$ {Model.Preco:N0}")</span>
+            </div>
+        </div>
+    </a>
+    <div class="veic-card-footer">
+        <span class="veic-card-vendedor">@Model.NomeVendedor</span>
+        <div class="veic-card-acoes">
+            <button type="button" class="btn-favoritar" data-id="@Model.AnuncioVeiculoId" aria-label="Favoritar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+            @if (Model.EhDestaque)
+            {
+                <button type="button" class="btn-destaque btn-destaque--ativo" data-id="@Model.AnuncioVeiculoId" aria-label="Remover destaque">⭐</button>
+            }
+        </div>
+    </div>
+</div>

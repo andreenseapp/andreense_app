@@ -1,0 +1,111 @@
+/* Gestão — Configurações Index */
+
+.configuracoes-header {
+    margin-bottom: 2rem;
+}
+
+.secao-configuracoes {
+    margin-bottom: 2.5rem;
+}
+
+.titulo-secao-configuracoes {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 1rem;
+}
+
+.grade-configuracoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+}
+
+.cartao-configuracoes {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1.25rem;
+    text-decoration: none;
+    transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s;
+}
+
+.cartao-configuracoes:hover {
+    transform: translateY(-2px);
+    border-color: var(--clr-primary, var(--clr-primary));
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.cartao-configuracoes-desabilitado {
+    opacity: 0.72;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.icone-configuracoes {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.icone-configuracoes-primario {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--clr-primary, var(--clr-primary));
+}
+
+.icone-configuracoes-suave {
+    background: rgba(100, 116, 139, 0.1);
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.icone-configuracoes-sucesso {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--clr-status-concluido);
+}
+
+.icone-configuracoes-aviso {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--clr-warning);
+}
+
+.info-configuracoes {
+    flex: 1;
+    min-width: 0;
+}
+
+.rotulo-configuracoes {
+    display: block;
+    font-weight: 700;
+    color: var(--clr-text, var(--clr-text-heading));
+    font-size: 1.05rem;
+    margin-bottom: 0.25rem;
+}
+
+.desc-configuracoes {
+    font-size: 0.85rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    line-height: 1.45;
+    margin: 0;
+}
+
+.em-breve-configuracoes {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    background: var(--clr-bg, var(--clr-surface-alt));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 4px;
+    padding: 0.2rem 0.45rem;
+}

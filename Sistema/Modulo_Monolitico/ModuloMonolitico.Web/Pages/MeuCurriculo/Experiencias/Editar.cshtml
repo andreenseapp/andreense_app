@@ -1,0 +1,46 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.Experiencias.EditarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Editar Experiência";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Experiencias" class="link-voltar-secao">← Experiências</a>
+        <h1 class="titulo-pagina">Editar Experiência</h1>
+    </div>
+</div>
+
+<form method="post" class="form-curriculo">
+    <app-input type="hidden" asp-for="ExperienciaId" />
+    <app-input type="hidden" asp-for="CurriculoId" />
+    <div class="form-grid-duplo">
+        <app-input asp-for="Cargo" label="Cargo / Função *" placeholder="Ex: Analista de Dados" />
+        <app-input asp-for="Empresa" label="Empresa *" placeholder="Nome da empresa" />
+        <app-input asp-for="Cidade" label="Cidade" placeholder="Ex: São Paulo, SP" />
+        <div></div>
+        <app-input asp-for="DataInicio" label="Data de Início *" type="month" />
+        <div class="form-grupo" id="grupo-data-fim">
+            <app-input asp-for="DataFim" label="Data de Término" type="month" />
+        </div>
+    </div>
+    <label class="form-check-label">
+        <app-checkbox asp-for="EmAndamento" id="check-em-andamento" data-em-andamento />
+        <span>Trabalho aqui atualmente</span>
+    </label>
+    <div class="form-grupo">
+        <app-textarea asp-for="Descricao" label="Descrição das atividades" rows="4" />
+    </div>
+    <div class="form-acoes form-acoes-com-delete">
+        <form method="post" asp-page-handler="Deletar" class="form-delete" onsubmit="return confirm('Remover esta experiência?')">
+            <app-input type="hidden" name="experienciaId" value="@Model.ExperienciaId" />
+            <app-input type="hidden" name="curriculoId" value="@Model.CurriculoId" />
+            <app-button type="submit" variant="danger" class="btn btn-danger-ghost">Remover</app-button>
+        </form>
+        <div class="form-acoes-direita">
+            <a href="@ModuloRotas.Curriculos.MeuCurriculo_Experiencias" class="btn btn-ghost">Cancelar</a>
+            <app-button type="submit" variant="primary">Salvar</app-button>
+        </div>
+    </div>
+</form>
+<script src="~/Contextos/MeuCurriculo/experiencias.js" asp-append-version="true"></script>

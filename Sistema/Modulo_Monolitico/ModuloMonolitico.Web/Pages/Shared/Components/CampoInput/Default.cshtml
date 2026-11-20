@@ -1,0 +1,51 @@
+@model ModuloMonolitico.Web.Pages.Shared.Components.CampoInput.CampoInputViewModel
+@{
+    var cid = Model.ComponentId;
+}
+
+
+
+<div class="ci-wrap-@cid">
+    <label class="ci-label-@cid" for="ci_input_@cid">@Model.Label@(Model.Obrigatorio ? " *" : "")</label>
+    
+    <div class="ci-field-@cid">
+        @if (!string.IsNullOrEmpty(Model.IconSvg))
+        {
+            <div class="ci-icon-@cid">
+                @Html.Raw(Model.IconSvg)
+            </div>
+        }
+        
+        @if (Model.Tipo == "textarea")
+        {
+            if (string.IsNullOrEmpty(Model.Mascara))
+            {
+                <textarea class="ci-input-@cid" id="ci_input_@cid" name="@Model.FieldName" 
+                          placeholder="@Model.Placeholder" rows="2"
+                          @(Model.Obrigatorio ? "required" : "")>@Model.ValorAtual</textarea>
+            }
+            else
+            {
+                <textarea class="ci-input-@cid" id="ci_input_@cid" name="@Model.FieldName" 
+                          placeholder="@Model.Placeholder" rows="2" data-mascara="@Model.Mascara"
+                          @(Model.Obrigatorio ? "required" : "")>@Model.ValorAtual</textarea>
+            }
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(Model.Mascara))
+            {
+                <input type="@Model.Tipo" class="ci-input-@cid" id="ci_input_@cid" name="@Model.FieldName" 
+                       value="@Model.ValorAtual" placeholder="@Model.Placeholder"
+                       @(Model.Obrigatorio ? "required" : "") />
+            }
+            else
+            {
+                <input type="@Model.Tipo" class="ci-input-@cid" id="ci_input_@cid" name="@Model.FieldName" 
+                       value="@Model.ValorAtual" placeholder="@Model.Placeholder" data-mascara="@Model.Mascara"
+                       @(Model.Obrigatorio ? "required" : "") />
+            }
+        }
+    </div>
+</div>
+

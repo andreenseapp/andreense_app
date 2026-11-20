@@ -1,0 +1,196 @@
+@page
+@using ModuloMonolitico.Dominio.Configuracoes
+@model ModuloMonolitico.Web.Pages.Curriculos.DetalhesModel
+@{
+    ViewData[ViewDataKeys.Title] = Model.Curriculo != null ? $"{Model.Curriculo.CargoDesejado} — {Model.Curriculo.NomeCompleto}" : "Currículo";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Curriculos/detalhes.css" asp-append-version="true" />
+}
+
+@if (Model.Curriculo is null)
+{
+    <div class="curriculo-nao-encontrado">
+        <p>Currículo não encontrado ou não está mais disponível.</p>
+        <a href="/Curriculos" class="btn-voltar">← Voltar para o banco de talentos</a>
+    </div>
+}
+else
+{
+    var c = Model.Curriculo;
+    <div class="curriculo-detalhe-wrapper">
+        <a href="/Curriculos" class="link-voltar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Voltar para resultados
+        </a>
+
+        <div class="curriculo-card-principal">
+            <div class="curriculo-perfil-header">
+                <div class="perfil-avatar">
+                    @if (!string.IsNullOrWhiteSpace(c.UrlFotoPerfil))
+                    {
+                        <img src="@c.UrlFotoPerfil" alt="Foto de @c.NomeCompleto" />
+                    }
+                    else
+                    {
+                        <div class="perfil-avatar-inicial">@(c.NomeCompleto.FirstOrDefault())</div>
+                    }
+                </div>
+                <div class="perfil-info-principal">
+                    <h1 class="perfil-nome">@c.NomeCompleto</h1>
+                    <p class="perfil-cargo">@c.CargoDesejado</p>
+                    <p class="perfil-area">@c.AreaAtuacao</p>
+                    <div class="perfil-badges">
+                        <span class="badge nivel">@c.Nivel</span>
+                        <span class="badge modalidade">@c.Modalidade.ToUpper()</span>
+                        @if (c.Pcd) { <span class="badge pcd">♿ PCD</span> }
+                        @if (c.AceitaViagem) { <span class="badge">✈ Aceita viagem</span> }
+                        @if (c.AceitaMudanca) { <span class="badge">🏠 Aceita mudança</span> }
+                    </div>
+                </div>
+                <div class="perfil-acoes">
+                    @if (c.PretensaoSalarial.HasValue)
+                    {
+                        <div class="perfil-pretensao">
+                            <span class="pretensao-label">Pretensão salarial</span>
+                            <span class="pretensao-valor">@c.PretensaoSalarial.Value.ToString("C0")</span>
+                        </div>
+                    }
+                    <div class="perfil-disponibilidade">
+                        <span class="disponibilidade-dot"></span>
+                        @(c.Disponibilidade == "imediata" ? "Disponível imediatamente" : $"Disponível em {c.Disponibilidade}")
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(c.Telefone))
+                    {
+                        <a href="https://wa.me/55@ChavesSistema.LimparNumeroWhatsapp(c.Telefone)" target="_blank" rel="noopener" class="btn-whatsapp">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.017 22l4.98-1.304A9.952 9.952 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 0 1-4.076-1.115l-.291-.173-3.014.79.803-2.934-.19-.301A7.973 7.973 0 0 1 4 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8z"/></svg>
+                            Entrar em contato
+                        </a>
+                    }
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(c.ResumoProfissional))
+            {
+                <section class="curriculo-secao">
+                    <h2 class="secao-titulo">Sobre mim</h2>
+                    <p class="secao-texto">@c.ResumoProfissional</p>
+                </section>
+            }
+
+            @if (c.Experiencias.Any())
+            {
+                <section class="curriculo-secao">
+                    <h2 class="secao-titulo">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                        Experiência Profissional
+                    </h2>
+                    <div class="timeline">
+                        @foreach (var exp in c.Experiencias)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-conteudo">
+                                    <strong class="timeline-cargo">@exp.Cargo</strong>
+                                    <span class="timeline-empresa">@exp.Empresa</span>
+                                    @if (!string.IsNullOrWhiteSpace(exp.Cidade)) { <span class="timeline-local">📍 @exp.Cidade</span> }
+                                    <span class="timeline-periodo">
+                                        @exp.DataInicio.ToString("MM/yyyy") — @(exp.EmAndamento ? "Presente" : exp.DataFim?.ToString("MM/yyyy"))
+                                    </span>
+                                    @if (!string.IsNullOrWhiteSpace(exp.Descricao))
+                                    {
+                                        <p class="timeline-descricao">@exp.Descricao</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+
+            @if (c.Formacoes.Any())
+            {
+                <section class="curriculo-secao">
+                    <h2 class="secao-titulo">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        Formação Acadêmica
+                    </h2>
+                    <div class="timeline">
+                        @foreach (var fmr in c.Formacoes)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-conteudo">
+                                    <strong class="timeline-cargo">@fmr.Curso</strong>
+                                    <span class="timeline-empresa">@fmr.Instituicao</span>
+                                    <span class="timeline-grau">@fmr.Grau</span>
+                                    <span class="timeline-periodo">@fmr.DataInicio.ToString("yyyy") — @(fmr.EmAndamento ? "Cursando" : fmr.DataFim?.ToString("yyyy"))</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+
+            @if (c.Cursos.Any())
+            {
+                <section class="curriculo-secao">
+                    <h2 class="secao-titulo">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+                        Cursos e Certificações
+                    </h2>
+                    <div class="cursos-lista">
+                        @foreach (var curso in c.Cursos)
+                        {
+                            <div class="curso-item">
+                                <strong>@curso.Nome</strong>
+                                @if (!string.IsNullOrWhiteSpace(curso.Instituicao)) { <span>— @curso.Instituicao</span> }
+                                @if (curso.AnoConclusao.HasValue) { <span class="curso-ano">@curso.AnoConclusao</span> }
+                                @if (curso.CargaHoraria.HasValue) { <span class="curso-carga">@curso.CargaHoraria h</span> }
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+
+            @if (c.Idiomas.Any())
+            {
+                <section class="curriculo-secao">
+                    <h2 class="secao-titulo">🌍 Idiomas</h2>
+                    <div class="idiomas-grid">
+                        @foreach (var idioma in c.Idiomas)
+                        {
+                            <div class="idioma-item">
+                                <span class="idioma-nome">@idioma.Idioma</span>
+                                <span class="idioma-nivel @idioma.Nivel">@idioma.Nivel</span>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+
+            @if (c.Habilidades.Any())
+            {
+                <section class="curriculo-secao">
+                    <h2 class="secao-titulo">⚡ Habilidades</h2>
+                    <div class="habilidades-lista">
+                        @foreach (var hab in c.Habilidades)
+                        {
+                            <span class="habilidade-tag">@hab</span>
+                        }
+                    </div>
+                </section>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(c.CnhCategorias))
+            {
+                <section class="curriculo-secao">
+                    <h2 class="secao-titulo">🚗 CNH</h2>
+                    <p>Categorias: <strong>@c.CnhCategorias</strong></p>
+                </section>
+            }
+        </div>
+    </div>
+}
+<script src="~/Contextos/Curriculos/detalhes.js" asp-append-version="true"></script>

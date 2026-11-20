@@ -1,0 +1,124 @@
+@page
+@model ModuloMonolitico.Web.Pages.Agendamentos.MeusAgendamentos.IndexModel
+@using System.Globalization
+@{
+    ViewData[ViewDataKeys.Title] = "Meus Agendamentos";
+    Layout = "~/Pages/Shared/Layouts/_AreaClienteLayout.cshtml";
+    var cultura = new CultureInfo("pt-BR");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Agendamentos/css/meus-agendamentos-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Agendamentos
+        </div>
+        <h1 class="titulo-pagina">Meus Agendamentos</h1>
+        <p class="subtitulo-pagina">Acompanhe e gerencie seus agendamentos.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Agendamentos.MeusAgendamentos_Novo" class="botao botao-primario btn-header-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Agendamento
+        </a>
+    </div>
+</div>
+
+<main class="main-content meus-agendamentos-container">
+    <div class="titulo-secao">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Próximos Agendamentos
+    </div>
+
+    @if (!Model.Proximos.Any())
+    {
+        <div class="estado-vazio">
+            <div class="estado-vazio-icone" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
+            <p class="estado-vazio-texto">Você não tem agendamentos futuros.</p>
+            <a href="@ModuloRotas.Agendamentos.MeusAgendamentos_Novo" class="botao botao-primario botao-acao-vazio">Fazer um Agendamento</a>
+        </div>
+    }
+    else
+    {
+        @foreach (var ag in Model.Proximos)
+        {
+            var corCard = ag.CorHexadecimalServico ?? "var(--clr-primary)";
+            <a href="@Model.UrlDetalhes(ag.Id)" class="agend-cartao" style="--cartao-destaque: @corCard">
+                <div class="agend-date">
+                    <div class="agend-date-day">@ag.DataHoraInicio.ToString("dd")</div>
+                    <div class="agend-date-mon">@ag.DataHoraInicio.ToString("MMM", cultura)</div>
+                </div>
+                <div class="agend-info">
+                    <div class="agend-servico">@ag.NomeTipoServico</div>
+                    <div class="agend-meta">
+                        <span class="agend-meta-item">
+                            <svg class="agend-meta-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            @ag.DataHoraInicio.ToString("HH:mm") – @ag.DataHoraFim.ToString("HH:mm")
+                        </span>
+                        <span class="agend-meta-item">
+                            <svg class="agend-meta-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            @ag.NomeProfissional
+                        </span>
+                        <span class="etiqueta situacao-@ag.Situacao">@ag.RotuloSituacao</span>
+                    </div>
+                </div>
+                <svg class="agend-cartao-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </a>
+        }
+    }
+
+    <hr class="divider" />
+
+    <div class="titulo-secao titulo-secao--muted">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Histórico
+    </div>
+
+    @if (!Model.Historico.Any())
+    {
+        <p class="historico-vazio">Nenhum histórico de agendamentos.</p>
+    }
+    else
+    {
+        @foreach (var ag in Model.Historico)
+        {
+            var corCard = ag.CorHexadecimalServico ?? "var(--clr-primary)";
+            var cardClass = "agend-cartao agend-cartao--historico";
+            if (ag.Situacao == "cancelado") cardClass += " agend-cartao--cancelado";
+
+            <a href="@Model.UrlDetalhes(ag.Id)" class="@cardClass" style="--cartao-destaque: @corCard">
+                <div class="agend-date">
+                    <div class="agend-date-day">@ag.DataHoraInicio.ToString("dd")</div>
+                    <div class="agend-date-mon">@ag.DataHoraInicio.ToString("MMM yyyy", cultura)</div>
+                </div>
+                <div class="agend-info">
+                    <div class="agend-servico agend-servico--compact">@ag.NomeTipoServico</div>
+                    <div class="agend-meta">
+                        <span>@ag.DataHoraInicio.ToString("HH:mm")</span>
+                        <span>@ag.NomeProfissional</span>
+                        <span class="etiqueta situacao-@ag.Situacao">@ag.RotuloSituacao</span>
+                    </div>
+                </div>
+            </a>
+        }
+
+        @if (Model.TotalPaginas > 1)
+        {
+            <div class="log-paginacao">
+                <span>Página @Model.PaginaAtual de @Model.TotalPaginas — @Model.TotalItens agendamentos</span>
+                <div class="paginacao-nav">
+                    <a href="?PaginaAtual=@(Model.PaginaAtual - 1)"
+                       class="paginacao-btn @(Model.PaginaAtual == 1 ? "desabilitado" : "")">← Anterior</a>
+                    <a href="?PaginaAtual=@(Model.PaginaAtual + 1)"
+                       class="paginacao-btn @(Model.PaginaAtual == Model.TotalPaginas ? "desabilitado" : "")">Próxima →</a>
+                </div>
+            </div>
+        }
+    }
+</main>

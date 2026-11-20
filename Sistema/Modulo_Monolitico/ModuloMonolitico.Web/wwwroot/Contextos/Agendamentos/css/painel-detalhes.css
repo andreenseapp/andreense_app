@@ -1,0 +1,215 @@
+/* Agendamentos — Painel Detalhes */
+
+.painel-detalhes-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+}
+
+.botao-voltar {
+    white-space: nowrap;
+}
+
+.painel-vidro {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--glass-shadow-lg);
+    margin-bottom: 1.5rem;
+}
+
+.titulo-secao {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin-bottom: 1rem;
+}
+
+.barra-servico {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.ponto-servico {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--cor-servico, var(--clr-primary));
+}
+
+.info-servico {
+    margin-left: auto;
+}
+
+.lista-detalhe {
+    display: flex;
+    flex-direction: column;
+}
+
+.linha-detalhe {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.linha-detalhe:last-child {
+    border-bottom: none;
+}
+
+.linha-detalhe--stack {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+}
+
+.rotulo-detalhe {
+    color: var(--clr-text-muted);
+    font-size: 0.875rem;
+    min-width: 140px;
+}
+
+.valor-detalhe {
+    font-weight: 600;
+    color: var(--clr-text);
+    text-align: right;
+}
+
+.linha-detalhe--stack .valor-detalhe {
+    text-align: left;
+    width: 100%;
+}
+
+.valor-detalhe--obs {
+    max-width: 100%;
+    line-height: 1.5;
+}
+
+.link-detalhe {
+    color: var(--clr-primary);
+    text-decoration: none;
+}
+
+.link-detalhe:hover {
+    text-decoration: underline;
+}
+
+.etiqueta {
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.situacao-pendente   { background: rgba(251, 191, 36, 0.15);  color: var(--clr-status-pendente); border: 1px solid rgba(251, 191, 36, 0.3); }
+.situacao-confirmado { background: rgba(99, 102, 241, 0.15);  color: var(--clr-status-andamento); border: 1px solid rgba(99, 102, 241, 0.3); }
+.situacao-concluido  { background: rgba(16, 185, 129, 0.15);  color: var(--clr-status-concluido); border: 1px solid rgba(16, 185, 129, 0.3); }
+.situacao-cancelado  { background: rgba(239, 68, 68, 0.15);   color: var(--clr-status-cancelado); border: 1px solid rgba(239, 68, 68, 0.3); }
+.situacao-faltou     { background: rgba(148, 163, 184, 0.15); color: var(--clr-text-placeholder); border: 1px solid rgba(148, 163, 184, 0.3); }
+
+.acoes-situacao {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.formulario-situacao {
+    display: inline;
+}
+
+.botao-situacao {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.85rem !important;
+}
+
+.botao-situacao--muted {
+    color: var(--clr-text-placeholder) !important;
+    border-color: rgba(148, 163, 184, 0.4) !important;
+}
+
+.modal-fundo {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-fundo.open {
+    display: flex;
+}
+
+.modal-cartao {
+    width: 100%;
+    max-width: 480px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.modal-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    font-weight: 700;
+    color: var(--clr-text);
+}
+
+.modal-fechar {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--clr-text-muted);
+    cursor: pointer;
+    padding: 0;
+}
+
+.modal-corpo {
+    padding: 1.5rem;
+}
+
+.modal-rodape {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding: 1rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.btn-modal-cancelar {
+    padding: 0.6rem 1.25rem;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--clr-text);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .linha-detalhe {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .valor-detalhe {
+        text-align: left;
+    }
+}

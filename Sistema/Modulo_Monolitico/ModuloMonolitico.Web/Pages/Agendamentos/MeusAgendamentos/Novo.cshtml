@@ -1,0 +1,202 @@
+@page
+@model ModuloMonolitico.Web.Pages.Agendamentos.MeusAgendamentos.NovoModel
+@using System.Globalization
+@using ModuloMonolitico.Dominio.Configuracoes
+@{
+    ViewData[ViewDataKeys.Title] = "Novo Agendamento";
+    Layout = "~/Pages/Shared/Layouts/_AreaClienteLayout.cshtml";
+    var cultura = new CultureInfo("pt-BR");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Agendamentos/css/meus-agendamentos-novo.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Agendamento
+        </div>
+        <h1 class="titulo-pagina">Novo Agendamento</h1>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Agendamentos.MeusAgendamentos" class="botao botao-fantasma botao-voltar">← Meus Agendamentos</a>
+    </div>
+</div>
+
+<main class="main-content assistente-container">
+    <div class="passos">
+        <div class="passo @(Model.Passo >= 1 ? (Model.Passo > 1 ? "concluido" : "ativo") : "")">
+            <div class="passo-num">@(Model.Passo > 1 ? "✓" : "1")</div>
+            <div class="passo-rotulo">Empresa</div>
+        </div>
+        <div class="passo-linha"></div>
+        <div class="passo @(Model.Passo >= 2 ? (Model.Passo > 2 ? "concluido" : "ativo") : "")">
+            <div class="passo-num">@(Model.Passo > 2 ? "✓" : "2")</div>
+            <div class="passo-rotulo">Serviço & Horário</div>
+        </div>
+        <div class="passo-linha"></div>
+        <div class="passo @(Model.Passo == 3 ? "ativo" : "")">
+            <div class="passo-num">3</div>
+            <div class="passo-rotulo">Confirmar</div>
+        </div>
+    </div>
+
+    @if (Model.Passo == 1)
+    {
+        <div class="painel-vidro">
+            <div class="painel-titulo">Em qual empresa você quer agendar?</div>
+            <p class="painel-dica">Exibindo apenas empresas vinculadas à sua conta.</p>
+
+            @if (!Model.EmpresasVinculadas.Any())
+            {
+                <div class="estado-vazio">
+                    <p class="estado-vazio-texto">Você ainda não tem empresas vinculadas.</p>
+                    <a href="@ModuloRotas.Fidelizacao.Index" class="botao botao-primario botao-acao-vazio">Voltar ao início</a>
+                </div>
+            }
+            else
+            {
+                <form method="post" asp-page-handler="Passo1">
+                    <div class="select-grid" id="gridEmpresas">
+                        @foreach (var emp in Model.EmpresasVinculadas)
+                        {
+                            <app-button type="button"
+                                        class="cartao-selecao cartao-selecao-empresa"
+                                        data-empresa-id="@emp.Id"
+                                        data-empresa-nome="@emp.Nome">
+                                <div class="cartao-nome">@emp.Nome</div>
+                                @if (!string.IsNullOrEmpty(emp.Segmento))
+                                {
+                                    <div class="cartao-desc">@emp.Segmento</div>
+                                }
+                            </app-button>
+                        }
+                    </div>
+                    <app-input type="hidden" name="empresaId" id="inputEmpresaId" value="" />
+                    <app-input type="hidden" name="empresaNome" id="inputEmpresaNome" value="" />
+                    <div class="nav-btns">
+                        <a href="@ModuloRotas.Agendamentos.MeusAgendamentos" class="botao-voltar">Cancelar</a>
+                        <app-save-button type="submit" id="btnP1">Próximo</app-save-button>
+                    </div>
+                </form>
+            }
+        </div>
+    }
+
+    @if (Model.Passo == 2)
+    {
+        <div class="painel-vidro">
+            <div class="empresa-selecionada">@Model.AssistenteEmpresaNome</div>
+
+            <form method="post"
+                  asp-page-handler="Passo2"
+                  id="formPasso2"
+                  data-empresa-id="@Model.AssistenteEmpresaId">
+                <app-input type="hidden" name="tipoServicoId" id="inputTsId" value="" />
+                <app-input type="hidden" name="servicoNome" id="inputTsNome" value="" />
+                <app-input type="hidden" name="dataHoraInicio" id="inputDHI" value="" />
+                <app-input type="hidden" name="dataHoraFim" id="inputDHF" value="" />
+                <app-input type="hidden" name="profissionalIdRaw" id="inputProfRaw" value="" />
+                <app-input type="hidden" name="profNome" id="inputProfNome" value="" />
+
+                <div class="secao-formulario">
+                    <label class="campo-rotulo">Qual serviço? *</label>
+                    <div class="select-grid select-grid-servicos">
+                        @foreach (var ts in Model.TiposServico)
+                        {
+                            <app-button type="button"
+                                        class="cartao-selecao cartao-selecao-servico"
+                                        data-servico-id="@ts.Id"
+                                        data-servico-nome="@ts.Descricao"
+                                        data-duracao="@ts.DuracaoMinutos">
+                                <div class="cartao-nome">
+                                    <span class="cor-dot" style="--cor-servico: @ts.CorHexadecimal"></span>@ts.Descricao
+                                </div>
+                                <div class="cartao-desc">@ts.DuracaoMinutos min · @ts.PrecoVenda.ToString("C2", cultura)</div>
+                            </app-button>
+                        }
+                    </div>
+                </div>
+
+                <div class="grade-formulario">
+                    <app-select id="selProf" label="Profissional" class="campo-controle">
+                        <option value="">Qualquer disponível</option>
+                        @foreach (var p in Model.Profissionais)
+                        {
+                            var rawVal = p.UsuarioId.HasValue ? ChavesSistema.PrestadorIdComposto("U", p.UsuarioId) : ChavesSistema.PrestadorIdComposto("C", p.ContatoId);
+                            <option value="@rawVal">@p.NomeExibicao</option>
+                        }
+                    </app-select>
+                    <app-input type="date"
+                               id="inputData"
+                               label="Data *"
+                               class="campo-controle"
+                               value="@DateTime.Today.ToString("yyyy-MM-dd")"
+                               min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                               required="required" />
+                </div>
+
+                <div class="secao-formulario">
+                    <label class="campo-rotulo">Horário disponível *</label>
+                    <div id="containerHorarios" class="horarios-carregando">Selecione o serviço e a data para ver os horários.</div>
+                </div>
+
+                <div class="nav-btns">
+                    <a href="@Model.UrlPasso(1)" class="botao-voltar">Voltar</a>
+                    <app-save-button type="submit" id="btnP2">Próximo</app-save-button>
+                </div>
+            </form>
+        </div>
+    }
+
+    @if (Model.Passo == 3)
+    {
+        DateTime? dhInicio = DateTime.TryParse(Model.AssistenteDataHoraInicio, out var dhi) ? dhi : null;
+        DateTime? dhFim = DateTime.TryParse(Model.AssistenteDataHoraFim, out var dhf) ? dhf : null;
+
+        <div class="painel-vidro">
+            <h2 class="confirmacao-titulo">Confirme seu agendamento</h2>
+
+            <div class="confirmacao-linha">
+                <span class="confirmacao-rotulo">Empresa</span>
+                <span class="confirmacao-valor">@Model.AssistenteEmpresaNome</span>
+            </div>
+            <div class="confirmacao-linha">
+                <span class="confirmacao-rotulo">Serviço</span>
+                <span class="confirmacao-valor">@Model.AssistenteServicoNome</span>
+            </div>
+            <div class="confirmacao-linha">
+                <span class="confirmacao-rotulo">Profissional</span>
+                <span class="confirmacao-valor">@Model.AssistenteProfNome</span>
+            </div>
+            @if (dhInicio.HasValue)
+            {
+                <div class="confirmacao-linha">
+                    <span class="confirmacao-rotulo">Data</span>
+                    <span class="confirmacao-valor">@dhInicio.Value.ToString("dddd, dd 'de' MMMM 'de' yyyy", cultura)</span>
+                </div>
+                <div class="confirmacao-linha">
+                    <span class="confirmacao-rotulo">Horário</span>
+                    <span class="confirmacao-valor">@dhInicio.Value.ToString("HH:mm") – @dhFim?.ToString("HH:mm")</span>
+                </div>
+            }
+        </div>
+
+        <div class="aviso-cancelamento">
+            Cancelamentos devem ser feitos com <strong>pelo menos 2 horas de antecedência</strong>.
+        </div>
+
+        <form method="post" asp-page-handler="Confirmar">
+            <div class="nav-btns">
+                <a href="@Model.UrlPasso(2)" class="botao-voltar">Voltar</a>
+                <app-save-button type="submit" class="btn-confirmar">Confirmar Agendamento</app-save-button>
+            </div>
+        </form>
+    }
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Agendamentos/js/meus-agendamentos-novo.js" asp-append-version="true"></script>
+}

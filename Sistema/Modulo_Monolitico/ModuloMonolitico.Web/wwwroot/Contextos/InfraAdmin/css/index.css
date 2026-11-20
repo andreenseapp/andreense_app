@@ -1,0 +1,7 @@
+/* InfraAdmin — Index */
+
+.page-badge--restrito {
+    color: var(--clr-status-cancelado);
+    border-color: var(--clr-status-cancelado);
+    background: rgba(255, 77, 79, 0.1);
+}

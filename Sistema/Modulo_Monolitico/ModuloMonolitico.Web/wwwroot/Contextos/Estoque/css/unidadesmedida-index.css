@@ -1,0 +1,119 @@
+/* Estoque — Unidades de Medida Index */
+
+.unidades-grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.unidade-item {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s;
+    position: relative;
+}
+
+.unidade-item:hover {
+    border-color: var(--clr-primary, var(--clr-primary));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.etiqueta-origem {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.etiqueta-sistema {
+    background: rgba(59, 130, 246, 0.08);
+    color: var(--clr-primary);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.etiqueta-personalizada {
+    background: rgba(168, 85, 247, 0.08);
+    color: var(--clr-status-andamento);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.unidade-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.unidade-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--clr-status-concluido), var(--clr-success));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--clr-surface);
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+.unidade-principal {
+    flex: 1;
+    min-width: 0;
+    padding-right: 4.5rem;
+}
+
+.unidade-nome {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--clr-text, var(--clr-text-heading));
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+}
+
+.unidade-sigla {
+    font-size: 0.85rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-weight: 500;
+}
+
+.estado-vazio {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px dashed var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+}
+
+.estado-vazio-icone {
+    opacity: 0.35;
+    margin-bottom: 1rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.estado-vazio-texto {
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 1.1rem;
+    margin: 0 0 0.75rem;
+}
+
+.estado-vazio-dica {
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 0.875rem;
+    margin: 0;
+    max-width: 420px;
+    margin-inline: auto;
+    line-height: 1.5;
+}

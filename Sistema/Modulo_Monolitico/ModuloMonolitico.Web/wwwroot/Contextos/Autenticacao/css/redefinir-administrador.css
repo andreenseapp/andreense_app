@@ -1,0 +1,57 @@
+.redefinir-administrador-container {
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.redefinir-administrador-cartao {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.75rem;
+}
+
+.redefinir-administrador-aviso {
+    display: flex;
+    gap: 0.75rem;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--clr-text, var(--clr-text-heading));
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.redefinir-administrador-aviso svg {
+    color: var(--clr-warning);
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+.redefinir-administrador-acoes {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.alerta-formulario {
+    padding: 0.875rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+
+.alerta-formulario--sucesso {
+    background: rgba(22, 163, 74, 0.1);
+    border: 1px solid rgba(22, 163, 74, 0.25);
+    color: var(--clr-success);
+}
+
+.alerta-formulario--erro {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: var(--clr-status-cancelado);
+}

@@ -1,0 +1,885 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa de Rotas e Status de Desenvolvimento</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+    
+    body {
+      background-color: #090d16;
+      color: #e2e8f0;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .developer-dashboard {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 32px;
+      border-radius: 16px;
+      border: 1px solid #1e293b;
+      max-width: 1200px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #1e293b;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    
+    .header-info h2 {
+      margin: 0 0 6px 0;
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .header-info p {
+      margin: 0;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    
+    .stats-container {
+      display: flex;
+      gap: 16px;
+    }
+    
+    .stat-badge {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid #334155;
+      padding: 10px 20px;
+      border-radius: 12px;
+      text-align: center;
+      min-width: 90px;
+    }
+    
+    .stat-val {
+      display: block;
+      font-size: 24px;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+    
+    .stat-lbl {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.02);
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+    
+    .badge {
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-info { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+    
+    .access-tag {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .tag-admin { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .tag-estab { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .tag-client { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .tag-cidade { background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.3); }
+    
+    .hub-section {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hub-header {
+      background: rgba(30, 41, 59, 0.8);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+    }
+    
+    .hub-title {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .hub-title span {
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    
+    .table-container {
+      padding: 16px;
+      overflow-x: auto;
+    }
+    
+    .dashboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    
+    .dashboard-table th {
+      text-align: left;
+      padding: 12px 16px;
+      color: #64748b;
+      font-weight: 600;
+      border-bottom: 1px solid #1e293b;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    
+    .dashboard-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+    }
+    
+    .dashboard-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .chk-done {
+      color: #10b981;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .chk-pending {
+      color: #64748b;
+    }
+    
+    .alert-card {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 32px;
+    }
+    
+    .alert-title {
+      font-weight: 600;
+      color: #818cf8;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="developer-dashboard">
+
+  <!-- Cabeçalho Principal -->
+  <div class="dashboard-header">
+    <div class="header-info">
+      <h2>Painel de Mapeamento & Status das Telas</h2>
+      <p>Acompanhamento de rotas, componentização e design system no ERP Andreense</p>
+    </div>
+    <div class="stats-container">
+      <div class="stat-badge">
+        <span class="stat-val">44</span>
+        <span class="stat-lbl">Telas</span>
+      </div>
+      <div class="stat-badge">
+        <span class="stat-val">38</span>
+        <span class="stat-lbl">Prontas</span>
+      </div>
+      <div class="stat-badge">
+        <span class="stat-val">6</span>
+        <span class="stat-lbl">Breve</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legendas Rápidas -->
+  <div class="legend-row">
+    <div class="legend-item"><span class="badge badge-success">🟢 Pronto</span> Rota e tela 100% funcionais.</div>
+    <div class="legend-item"><span class="badge badge-warning">🟡 Ajustes</span> Em refatoração ou homologação.</div>
+    <div class="legend-item"><span class="badge badge-info">⏳ Em Breve</span> Planejado para sprints futuras.</div>
+    <div class="legend-item"><span class="access-tag tag-admin">👑 Admin</span> Infra/Auditoria.</div>
+    <div class="legend-item"><span class="access-tag tag-estab">🏢 Estab</span> Lojistas/ERP.</div>
+    <div class="legend-item"><span class="access-tag tag-client">🧑 Cliente</span> Consumidor Final.</div>
+  </div>
+
+  <!-- HUB PRINCIPAL -->
+  <div class="hub-section">
+    <div class="hub-header">
+      <div class="hub-title">🏠 Hub Principal <span>/Principal/Index</span></div>
+      <div>
+        <span class="access-tag tag-estab">🏢 Estab</span>
+        <span class="badge badge-success">🟢 Pronto</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Tela / Grid Card</th>
+            <th>Rota</th>
+            <th>Componentizado?</th>
+            <th>Layout Padrão?</th>
+            <th>Acesso</th><th>Análise IA</th><th>Requer Login?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Área do Cliente</strong></td>
+            <td>/AreaCliente/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="access-tag tag-client">🧑 Cliente</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td><strong>Área de Serviços</strong></td>
+            <td>/AreaServicos/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="access-tag tag-estab">🏢 Estab</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td><strong>Varejo (PDV)</strong></td>
+            <td>/Varejo/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="access-tag tag-estab">🏢 Estab</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td><strong>ERP</strong></td>
+            <td>/ERP/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-pending" title="Layout=null no arquivo, herda _ViewStart.cshtml">⚠️ Ver obs.</span></td>
+            <td><span class="access-tag tag-estab">🏢 Estab</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td><strong>Cidade</strong></td>
+            <td>/Cidade/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="access-tag tag-cidade">🏙️ Cidade</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td><strong>CRM</strong></td>
+            <td>/CRM/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="access-tag tag-estab">🏢 Estab</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td><strong>Infra / Admin (Restrito)</strong></td>
+            <td>/InfraAdmin/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="access-tag tag-admin">👑 Admin</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ADMINISTRAÇÃO E AUDITORIA -->
+  <div class="hub-section">
+    <div class="hub-header">
+      <div class="hub-title">👑 Painel de Administração e Auditoria <span>/InfraAdmin/Index</span></div>
+      <div>
+        <span class="access-tag tag-admin">👑 Admin</span>
+        <span class="badge badge-success">🟢 Pronto</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Sub-tela Filha</th>
+            <th>Rota</th>
+            <th>Componentizado?</th>
+            <th>Layout Padrão?</th>
+            <th>Status</th><th>Análise IA</th><th>Requer Login?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Painel de Logs</td>
+            <td>/InfraAdmin/Logs</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Histórico de Logins</td>
+            <td>/InfraAdmin/HistoricoLogin</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Inspetor de Sessão</td>
+            <td>/InfraAdmin/Sessao</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Últimos Conectados</td>
+            <td>/InfraAdmin/UltimosConectados</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Contas & Assinaturas SaaS</td>
+            <td>/InfraAdmin/SaaS/Contas</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Faturas & Cobranças SaaS</td>
+            <td>/InfraAdmin/SaaS/Faturas</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Planos & Features SaaS</td>
+            <td>/InfraAdmin/SaaS/Planos</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Grupos e Cargos SaaS</td>
+            <td>/InfraAdmin/GruposSaaS</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Grupos de Permissões Globais</td>
+            <td>/InfraAdmin/Grupos</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Termos & Documentos Legais</td>
+            <td>/InfraAdmin/Documentos</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AREA CLIENTE -->
+  <div class="hub-section">
+    <div class="hub-header">
+      <div class="hub-title">👥 Área Cliente <span>/AreaCliente/Index</span></div>
+      <div>
+        <span class="access-tag tag-client">🧑 Cliente</span>
+        <span class="badge badge-success">🟢 Pronto</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Sub-tela Filha</th>
+            <th>Rota</th>
+            <th>Componentizado?</th>
+            <th>Layout Padrão?</th>
+            <th>Status</th><th>Análise IA</th><th>Requer Login?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Meus Cartões</td>
+            <td>/AreaCliente/MeusCartoes</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Meu Cashback</td>
+            <td>/AreaCliente/MeuCashback</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Ler QRCode</td>
+            <td>/AreaCliente/LerQRCode</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Meus Agendamentos</td>
+            <td>-</td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="badge badge-info">⏳ Em Breve</span></td><td><span style="color:#818cf8;font-weight:700">⏳ Não iniciado</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Minhas Compras</td>
+            <td>-</td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="badge badge-info">⏳ Em Breve</span></td><td><span style="color:#818cf8;font-weight:700">⏳ Não iniciado</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AREA SERVIÇOS -->
+  <div class="hub-section">
+    <div class="hub-header">
+      <div class="hub-title">⚙️ Área Serviços <span>/AreaServicos/Index</span></div>
+      <div>
+        <span class="access-tag tag-estab">🏢 Estab</span>
+        <span class="badge badge-success">🟢 Pronto</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Sub-tela Filha</th>
+            <th>Rota</th>
+            <th>Componentizado?</th>
+            <th>Layout Padrão?</th>
+            <th>Status</th><th>Análise IA</th><th>Requer Login?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Gerar Cashback</td>
+            <td>/Cashback/Gerar</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Validar Cartão Fidelidade</td>
+            <td>/Fidelidade/Validar</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Histórico de Cashback</td>
+            <td>/Cashback/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-pending" title="Layout=null, usa HTML próprio com Toolbar parcial">⚠️ Layout=null</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Campanhas de Fidelidade</td>
+            <td>/Fidelidade/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-pending" title="Layout=null, usa HTML próprio com Toolbar parcial">⚠️ Layout=null</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ERP -->
+  <div class="hub-section">
+    <div class="hub-header">
+      <div class="hub-title">💼 ERP (Empresarial) <span>/ERP/Index</span></div>
+      <div>
+        <span class="access-tag tag-estab">🏢 Estab</span>
+        <span class="badge badge-success">🟢 Pronto</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Sub-tela Filha</th>
+            <th>Rota</th>
+            <th>Componentizado?</th>
+            <th>Layout Padrão?</th>
+            <th>Status</th><th>Análise IA</th><th>Requer Login?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Empresas & Filiais</td>
+            <td>/Empresas/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Contatos Geral</td>
+            <td>/Contatos</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Vendedores & Comissões</td>
+            <td>/Base/Vendedores/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Catálogo de Produtos</td>
+            <td>/ERP/Produtos/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Movimentações de Estoque</td>
+            <td>/ERP/Estoque/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Tabelas/Contextos de Preço</td>
+            <td>/ERP/ContextosPreco/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Categorias de Produtos</td>
+            <td>/ERP/Categorias</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Marcas de Produtos</td>
+            <td>/ERP/Marcas</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Unidades de Medida</td>
+            <td>/ERP/UnidadesMedida</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Configurações do Tenant</td>
+            <td>/Base/Configuracoes</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Grupos de Permissões de Usuários</td>
+            <td>/Base/GruposAcesso</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CIDADE -->
+  <div class="hub-section">
+    <div class="hub-header">
+      <div class="hub-title">🏙️ Cidade (Utilidade Pública) <span>/Cidade/Index</span></div>
+      <div>
+        <span class="access-tag tag-cidade">🏙️ Cidade</span>
+        <span class="badge badge-success">🟢 Pronto</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Sub-tela Filha</th>
+            <th>Rota</th>
+            <th>Componentizado?</th>
+            <th>Layout Padrão?</th>
+            <th>Status</th><th>Análise IA</th><th>Requer Login?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mural Achados e Perdidos</td>
+            <td>/Cidade/AchadosPerdidos</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔓 Não</span></td>
+          </tr>
+          <tr>
+            <td>Gerador de Código de Barras</td>
+            <td>/Cidade/CodigoBarras</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔓 Não</span></td>
+          </tr>
+          <tr>
+            <td>Emissor de Etiqueta de Envio</td>
+            <td>/Cidade/EtiquetaEnvio</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔓 Não</span></td>
+          </tr>
+          <tr>
+            <td>Portal de Empregos</td>
+            <td>-</td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="badge badge-info">⏳ Em Breve</span></td><td><span style="color:#818cf8;font-weight:700">⏳ Não iniciado</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CRM -->
+  <div class="hub-section">
+    <div class="hub-header">
+      <div class="hub-title">📈 CRM (Vendas & Contatos) <span>/CRM/Index</span></div>
+      <div>
+        <span class="access-tag tag-estab">🏢 Estab</span>
+        <span class="badge badge-success">🟢 Pronto</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Sub-tela Filha</th>
+            <th>Rota</th>
+            <th>Componentizado?</th>
+            <th>Layout Padrão?</th>
+            <th>Status</th><th>Análise IA</th><th>Requer Login?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vendedores do CRM</td>
+            <td>/Base/Vendedores/Index</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Contatos / Leads Filtrados</td>
+            <td>/CRM/Contatos</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-warning">🟡 Ajustes</span></td><td><span style="color:#fbbf24;font-weight:700">⚠️ Ajustes pendentes</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AUTENTICAÇÃO, CADASTRO E PERFIL -->
+  <div class="hub-section">
+    <div class="hub-header">
+      <div class="hub-title">🔐 Autenticação, Cadastro & Perfil <span>/Auth e Root</span></div>
+      <div>
+        <span class="access-tag tag-client">🧑 Todos</span>
+        <span class="badge badge-success">🟢 Pronto</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Tela</th>
+            <th>Rota</th>
+            <th>Componentizado?</th>
+            <th>Layout Padrão?</th>
+            <th>Status</th><th>Análise IA</th><th>Requer Login?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Login</td>
+            <td>/Auth/Login</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔓 Não</span></td>
+          </tr>
+          <tr>
+            <td>Cadastro de Usuário</td>
+            <td>/Auth/Cadastro</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔓 Não</span></td>
+          </tr>
+          <tr>
+            <td>Esqueci minha Senha</td>
+            <td>/Auth/EsqueciSenha</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔓 Não</span></td>
+          </tr>
+          <tr>
+            <td>Redefinir Senha</td>
+            <td>/Auth/RedefinirSenha</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔓 Não</span></td>
+          </tr>
+          <tr>
+            <td>Validar E-mail</td>
+            <td>/Auth/ValidarEmail</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Meu Perfil</td>
+            <td>/MeuPerfil</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>Desativar Conta/Perfil</td>
+            <td>/MeuPerfilDesativar</td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="chk-done">✔ Sim</span></td>
+            <td><span class="badge badge-success">🟢 Pronto</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- OUTROS MÓDULOS (EM BREVE) -->
+  <div class="hub-section">
+    <div class="hub-header">
+      <div class="hub-title">🏗️ Futuros Módulos <span>Fila de Desenvolvimento</span></div>
+      <div>
+        <span class="badge badge-info">⏳ Em Breve</span>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Módulo Planejado</th>
+            <th>Rota Proposta</th>
+            <th>Componentizado?</th>
+            <th>Layout Padrão?</th>
+            <th>Nível de Acesso</th><th>Análise IA</th><th>Requer Login?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>💰 Financeiro (Contas, Caixa, DRE)</td>
+            <td>/Financeiro/Index</td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="access-tag tag-estab">🏢 Estab</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>🚚 Logística (Frotas e Entregas)</td>
+            <td>/Logistica/Index</td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="access-tag tag-estab">🏢 Estab</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>🎧 HelpDesk (Suporte ao Cliente)</td>
+            <td>/HelpDesk/Index</td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="access-tag tag-estab">🏢 Estab</span> / <span class="access-tag tag-client">🧑 Cliente</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+          <tr>
+            <td>📝 Fiscal (Lotes, Mensageria NF-e)</td>
+            <td>/Fiscal/Index</td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="chk-pending">❌ Não</span></td>
+            <td><span class="access-tag tag-estab">🏢 Estab</span></td><td><span style="color:#34d399;font-weight:700">✅ Analisado — OK</span></td><td><span style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.25);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.78rem;font-weight:700">🔒 Sim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Informações Adicionais / Lógicas Especiais -->
+  <div class="alert-card">
+    <div class="alert-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      Regras de Negócio e Comportamento Especial
+    </div>
+    <div style="font-size: 13px; line-height: 1.5; color: #cbd5e1;">
+      <strong>Filtro de Papéis de Contatos no CRM:</strong> Ao abrir a tela de contatos através da rota do CRM, o banco de dados deve filtrar a busca selecionando estritamente contatos que tenham o papel <code>Lead</code> ou <code>Prospect</code> ativo. Ao criar contatos através deste módulo, eles devem ser gerados automaticamente com o respectivo papel ativado.
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

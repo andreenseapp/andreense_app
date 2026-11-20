@@ -1,0 +1,91 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fidelizacao.Fidelidade.NovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Novo Cartão Fidelidade";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Fidelizacao/css/fidelidade-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.Fidelizacao.Fidelidade,
+    TextoVoltar = "Cartões",
+    Titulo = "Novo Cartão Fidelidade",
+    Subtitulo = "Configure selos, recompensa e vigência da campanha."
+}' />
+
+<main class="conteudo-principal fidelidade-novo-container">
+    <form method="post" id="formCartaoFidelidade" class="cartao-formulario">
+        <h2 class="titulo-secao-formulario">Identidade da Campanha</h2>
+
+        <div class="grade-formulario">
+            <app-input asp-for="Cartao.Titulo"
+                       label="Título do Cartão *"
+                       type="text"
+                       placeholder="Ex: Cartão Fidelidade Pizza 10, Almoço Grátis..."
+                       required="required"
+                       class="campo-formulario-full mb-0" />
+
+            <app-textarea asp-for="Cartao.Descricao"
+                          label="Descrição / Regras Curtas"
+                          rows="2"
+                          placeholder="Ex: A cada R$ 50 em compras ganhe 1 selo."
+                          class="campo-formulario-full campo-formulario-spaced mb-0" />
+
+            <app-input asp-for="Cartao.PontosNecessarios"
+                       label="Selos Necessários para Ganhar *"
+                       type="number"
+                       required="required"
+                       class="campo-formulario-spaced mb-0" />
+
+            <app-input asp-for="Cartao.Recompensa"
+                       label="Recompensa (O que o cliente ganha?) *"
+                       type="text"
+                       placeholder="Ex: 1 Pizza Broto, R$ 20 de desconto..."
+                       required="required"
+                       class="campo-formulario-spaced mb-0" />
+        </div>
+
+        <h2 class="titulo-secao-formulario">Vigência e Expiração</h2>
+
+        <div class="grade-formulario">
+            <app-input asp-for="Cartao.DiasValidadeCarimbo"
+                       label="Validade de cada Selo (Dias)"
+                       type="number"
+                       placeholder="Opcional"
+                       class="mb-0" />
+
+            <app-input asp-for="Cartao.DiasInatividadeCartao"
+                       label="Zerar cartão se inativo por (Dias)"
+                       type="number"
+                       placeholder="Opcional"
+                       class="campo-formulario-spaced mb-0" />
+
+            <app-input asp-for="Cartao.DataInicioVigencia"
+                       label="Início da Campanha"
+                       type="date"
+                       class="campo-formulario-spaced mb-0" />
+
+            <app-input asp-for="Cartao.DataFimVigencia"
+                       label="Término da Campanha"
+                       type="date"
+                       class="campo-formulario-spaced mb-0" />
+
+            <app-checkbox asp-for="Cartao.TemReferencia" class="campo-formulario-full checkbox-card mb-0">
+                <span class="checkbox-titulo-cartao">Exigir Código de Venda</span>
+                <span class="checkbox-card-desc">Obrigatório informar o número do cupom ao carimbar.</span>
+            </app-checkbox>
+        </div>
+
+        <div class="acoes-formulario">
+            <a href="@ModuloRotas.Fidelizacao.Fidelidade" class="botao-cancelar">Descartar</a>
+            <app-save-button type="submit">Criar Cartão</app-save-button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/captura-formulario.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,94 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.Grupos.EditarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Configurar Grupo e Permissões";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+
+    var recursosPorModulo = Model.TodosRecursos
+        .GroupBy(r => string.IsNullOrEmpty(r.Modulo) ? "Outros" : r.Modulo);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/grupos-editar.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.InfraAdmin.Grupos,
+    TextoVoltar = "Grupos de Usuários",
+    Titulo = "Configurar Grupo e Permissões"
+}' />
+
+<main class="main-content editar-container">
+    <form method="post">
+        <input type="hidden" asp-for="Comando.Id" />
+        <input type="hidden" asp-for="Comando.EhAdministrador" />
+
+        <div class="painel-formulario">
+            <h2 class="titulo-secao-formulario">Dados do Grupo</h2>
+
+            <app-input asp-for="Comando.Nome"
+                       label="Nome do Grupo"
+                       type="text"
+                       required="required" />
+
+            <div class="campo-grupo-descricao">
+                <app-textarea asp-for="Comando.Descricao"
+                              label="Descrição"
+                              rows="2" />
+            </div>
+
+            <app-toggle asp-for="Comando.Ativo" title="Ativo no sistema" label-on="Sim" label-off="Não" />
+        </div>
+
+        <div class="painel-formulario">
+            <h2 class="titulo-secao-formulario">Recursos e Permissões</h2>
+
+            @if (Model.Comando.EhAdministrador)
+            {
+                <div class="admin-banner">
+                    Os <strong>Grupos de Usuários</strong> definem o que os <strong>funcionários da sua empresa</strong> podem ver e fazer no ERP e na Área de Serviços.
+                </div>
+            }
+            else
+            {
+                <p class="permissions-intro">Selecione quais telas e ações os usuários deste grupo podem visualizar e interagir.</p>
+
+                @foreach (var modulo in recursosPorModulo)
+                {
+                    <div class="module-card">
+                        <div class="module-title">Módulo: @modulo.Key</div>
+                        <div class="permissions-grid">
+                            @foreach (var recurso in modulo)
+                            {
+                                var isChecked = Model.Comando.RecursosSelecionados.Contains(recurso.Id);
+                                <div class="permission-item">
+                                    <input type="checkbox"
+                                           class="permission-checkbox"
+                                           name="Comando.RecursosSelecionados"
+                                           value="@recurso.Id"
+                                           id="rec_@recurso.Id"
+                                           @(isChecked ? "checked" : "") />
+                                    <div class="permission-label-wrap">
+                                        <label for="rec_@recurso.Id" class="permission-name">@recurso.Nome</label>
+                                        <span class="permission-desc">@recurso.Descricao</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="painel-formulario">
+            <div class="acoes-formulario">
+                <a href="@ModuloRotas.InfraAdmin.Grupos" class="btn-cancelar">Cancelar</a>
+                <app-save-button type="submit">Salvar Configurações</app-save-button>
+            </div>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/grupos-editar.js" asp-append-version="true"></script>
+}

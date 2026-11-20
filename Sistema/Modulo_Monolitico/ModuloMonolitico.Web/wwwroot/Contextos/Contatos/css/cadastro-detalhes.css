@@ -1,0 +1,333 @@
+/* Contatos — Cadastro Detalhes */
+
+.cadastro-detalhes-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.botao-voltar {
+    height: 38px;
+    padding: 0 1rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-header-editar {
+    height: 38px;
+    padding: 0 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.detalhes-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .detalhes-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.detalhes-col-principal,
+.detalhes-col-lateral {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.75rem;
+}
+
+.info-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--clr-text, var(--clr-text-heading));
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.info-card-title svg {
+    color: var(--clr-primary, var(--clr-primary));
+    flex-shrink: 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+
+@media (max-width: 640px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.info-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.info-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--clr-text, var(--clr-text-heading));
+}
+
+.info-value--capitalize {
+    text-transform: capitalize;
+}
+
+.endereco-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.endereco-vazio {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.endereco-detalhe {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.endereco-detalhe-linha-principal {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--clr-text, var(--clr-text-heading));
+    margin-bottom: 0.25rem;
+}
+
+.endereco-detalhe-linha-secundaria {
+    font-size: 0.85rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.endereco-detalhe-cep {
+    font-size: 0.8rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    margin-top: 0.25rem;
+    font-family: ui-monospace, monospace;
+}
+
+.endereco-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.endereco-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+}
+
+.endereco-tag--entrega {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--clr-status-concluido);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.endereco-tag--faturamento {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--clr-primary);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.endereco-tag--fiscal {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--clr-warning);
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+.endereco-tag--cobranca {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--clr-status-andamento);
+    border-color: rgba(139, 92, 246, 0.2);
+}
+
+.endereco-tag--retirada {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+    border-color: rgba(107, 114, 128, 0.2);
+}
+
+.papel-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.papel-detalhe {
+    border: 1px solid var(--clr-border, var(--clr-border));
+    background: transparent;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.papel-detalhe-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.papel-detalhe-nome {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.papel-detalhe--ativo.papel-detalhe--cliente {
+    border-color: rgba(26, 115, 232, 0.25);
+    background: var(--clr-primary-glow, rgba(59, 130, 246, 0.03));
+}
+
+.papel-detalhe--ativo.papel-detalhe--cliente .papel-detalhe-nome {
+    color: var(--clr-primary, var(--clr-primary));
+}
+
+.papel-detalhe--ativo.papel-detalhe--fornecedor {
+    border-color: rgba(16, 185, 129, 0.25);
+    background: rgba(16, 185, 129, 0.03);
+}
+
+.papel-detalhe--ativo.papel-detalhe--fornecedor .papel-detalhe-nome {
+    color: var(--clr-status-concluido);
+}
+
+.papel-detalhe--ativo.papel-detalhe--transportador {
+    border-color: rgba(245, 158, 11, 0.25);
+    background: rgba(245, 158, 11, 0.03);
+}
+
+.papel-detalhe--ativo.papel-detalhe--transportador .papel-detalhe-nome {
+    color: var(--clr-warning);
+}
+
+.papel-detalhe--ativo.papel-detalhe--lead {
+    border-color: rgba(139, 92, 246, 0.25);
+    background: rgba(139, 92, 246, 0.03);
+}
+
+.papel-detalhe--ativo.papel-detalhe--lead .papel-detalhe-nome {
+    color: var(--clr-status-andamento);
+}
+
+.papel-detalhe--ativo.papel-detalhe--prospect {
+    border-color: rgba(99, 102, 241, 0.25);
+    background: rgba(99, 102, 241, 0.03);
+}
+
+.papel-detalhe--ativo.papel-detalhe--prospect .papel-detalhe-nome {
+    color: var(--clr-status-andamento);
+}
+
+.papel-detalhe--ativo.papel-detalhe--funcionario {
+    border-color: rgba(100, 116, 139, 0.25);
+    background: rgba(100, 116, 139, 0.03);
+}
+
+.papel-detalhe--ativo.papel-detalhe--funcionario .papel-detalhe-nome {
+    color: var(--clr-text-label);
+}
+
+.papel-detalhe-meta {
+    font-size: 0.8rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.papel-detalhe-observacao {
+    font-size: 0.8rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-style: italic;
+    background: var(--clr-bg, var(--clr-surface-alt));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    padding: 0.4rem;
+    border-radius: 4px;
+    margin-top: 0.25rem;
+}
+
+.distintivo-situacao {
+    display: inline-flex;
+    align-self: flex-start;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.situacao-ativo {
+    background: var(--clr-primary, var(--clr-primary));
+    color: var(--clr-surface);
+    border: none;
+}
+
+.papel-detalhe--fornecedor .situacao-ativo {
+    background: var(--clr-status-concluido);
+}
+
+.papel-detalhe--transportador .situacao-ativo {
+    background: var(--clr-warning);
+}
+
+.papel-detalhe--lead .situacao-ativo {
+    background: var(--clr-status-andamento);
+}
+
+.papel-detalhe--prospect .situacao-ativo {
+    background: var(--clr-status-andamento);
+}
+
+.papel-detalhe--funcionario .situacao-ativo {
+    background: var(--clr-text-label);
+}
+
+.situacao-inativo {
+    background: var(--clr-text-muted, var(--clr-text-label));
+    color: var(--clr-surface);
+    border: none;
+}

@@ -1,0 +1,146 @@
+/* Gerador de Código de Barras — Cidadania */
+
+.barcode-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+    .barcode-container { grid-template-columns: 1fr; }
+}
+
+.card-config, .card-preview {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--glass-shadow);
+}
+
+.section-title {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: var(--font-heading); font-weight: 700; font-size: 0.875rem;
+    text-transform: uppercase; letter-spacing: 0.07em; color: var(--clr-text-muted);
+    margin-bottom: 1.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--glass-border);
+}
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.campo-grupo.full { grid-column: 1 / -1; }
+
+.input-label {
+    font-size: 0.85rem; font-weight: 700; color: var(--clr-text);
+    display: block; margin-bottom: 0.5rem;
+}
+
+.input-control {
+    width: 100%; padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.5); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm); color: var(--clr-text); font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+[data-tema='dark'] .input-control { background: rgba(0,0,0,0.2); }
+.input-control:focus {
+    outline: none; border-color: var(--clr-primary);
+    box-shadow: 0 0 0 3px var(--clr-primary-glow);
+}
+
+.checkbox-group {
+    display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer;
+}
+.checkbox-group input[type="checkbox"] {
+    width: 1.1rem; height: 1.1rem; accent-color: var(--clr-primary);
+    margin-top: 0.15rem; flex-shrink: 0;
+}
+
+.btn-generate {
+    width: 100%; margin-top: 1.5rem; padding: 0.9rem 1.5rem;
+    background: var(--clr-primary); color: var(--clr-botao-primario-texto);
+    border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 1rem;
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    transition: all 0.2s; box-shadow: 0 4px 12px var(--clr-primary-glow);
+}
+.btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--clr-primary-glow); }
+
+.preview-content {
+    display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+    min-height: 280px; justify-content: center;
+}
+
+.scanner-frame {
+    position: relative; width: 100%; padding: 2rem;
+    background: rgba(0,0,0,0.02); border: 2px dashed var(--glass-border);
+    border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+}
+[data-tema='dark'] .scanner-frame { background: rgba(255,255,255,0.02); }
+
+.scanner-frame.success {
+    border-style: solid; border-color: rgba(16,185,129,0.4);
+    background: rgba(16,185,129,0.05);
+}
+
+.laser-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--clr-primary), transparent);
+    animation: laserScan 2s ease-in-out infinite; opacity: 0.6;
+}
+.scanner-frame.success .laser-line { display: none; }
+
+@keyframes laserScan {
+    0%, 100% { top: 10%; }
+    50% { top: 90%; }
+}
+
+.barcode-image { max-width: 100%; height: auto; }
+
+.placeholder-scanner {
+    display: flex; flex-direction: column; align-items: center; gap: 1rem;
+    text-align: center; color: var(--clr-text-muted);
+}
+.placeholder-icon { opacity: 0.4; }
+
+.btn-download {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.5rem; background: rgba(16,185,129,0.1);
+    color: var(--clr-status-concluido); border: 1px solid rgba(16,185,129,0.3);
+    border-radius: var(--radius-sm); font-weight: 700; text-decoration: none;
+    transition: all 0.2s;
+}
+.btn-download:hover { background: rgba(16,185,129,0.2); transform: translateY(-2px); }
+
+.validation-msg {
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+}
+
+.form-select { cursor: pointer; }
+
+.checkbox-field { margin-top: 0.5rem; }
+
+.checkbox-label-title {
+    font-weight: 700;
+    color: var(--clr-text);
+    font-size: 0.9rem;
+}
+
+.checkbox-label-desc {
+    font-size: 0.75rem;
+    color: var(--clr-text-muted);
+    margin-top: 2px;
+}
+
+.placeholder-title {
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+    color: var(--clr-text);
+}
+
+.placeholder-desc {
+    font-size: 0.875rem;
+    margin: 0;
+    line-height: 1.4;
+}

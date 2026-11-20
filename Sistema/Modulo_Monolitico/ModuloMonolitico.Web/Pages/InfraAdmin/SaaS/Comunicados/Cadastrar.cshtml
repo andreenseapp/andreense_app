@@ -1,0 +1,88 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.SaaS.Comunicados.CadastrarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Cadastrar Comunicado";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/saas-comunicados-cadastrar.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.InfraAdmin.SaaS_Comunicados,
+    TextoVoltar = "Comunicados",
+    Titulo = "Novo Comunicado / Enquete",
+    Subtitulo = "Crie um novo aviso ou pesquisa para os usuários da plataforma."
+}' />
+
+<main class="main-content formulario-container">
+    <form method="post" class="cartao-formulario">
+        <app-input asp-for="Titulo"
+                   label="Título do Comunicado"
+                   type="text"
+                   placeholder="Ex: Funcionamento no Feriado"
+                   required="required"
+                   autofocus="autofocus" />
+
+        <app-textarea asp-for="Mensagem"
+                      label="Mensagem / Pergunta"
+                      rows="4"
+                      placeholder="Descreva o aviso ou a pergunta da enquete..."
+                      required="required" />
+
+        <div class="grid-2">
+            <app-select asp-for="Tipo" label="Tipo de Disparo">
+                <option value="aviso">Aviso (Estou Ciente)</option>
+                <option value="enquete">Enquete (Múltiplas Opções)</option>
+            </app-select>
+
+            <app-select asp-for="ModuloAlvo" label="Módulo Alvo">
+                <option value="Todos">Todos os Módulos</option>
+                <option value="ERP">ERP / Dashboard</option>
+                <option value="AreaServicos">Área de Serviços</option>
+                <option value="CRM">CRM</option>
+                <option value="Financeiro">Financeiro</option>
+                <option value="Fiscal">Fiscal</option>
+                <option value="Logistica">Logística</option>
+                <option value="HelpDesk">HelpDesk</option>
+                <option value="Varejo">Varejo</option>
+            </app-select>
+        </div>
+
+        <app-input asp-for="DataExpiracao"
+                   label="Expiração (Opcional)"
+                   type="datetime-local" />
+        <span class="field-hint">Após esta data o comunicado não será mais exibido para os usuários.</span>
+
+        <div id="enquete-opcoes-wrapper" class="enquete-opcoes-wrapper">
+            <p class="section-title">Opções de Resposta</p>
+
+            <div id="opcoes-list" class="opcoes-list">
+                <div class="opcao-item">
+                    <app-input type="text" name="OpcoesTextos" class="opcao-input mb-0" placeholder="Texto da opção..." />
+                    <app-button type="button" variant="ghost" size="sm" class="btn-deletar-opcao btn-remover-opcao" title="Remover opção">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </app-button>
+                </div>
+                <div class="opcao-item">
+                    <app-input type="text" name="OpcoesTextos" class="opcao-input mb-0" placeholder="Texto da opção..." />
+                    <app-button type="button" variant="ghost" size="sm" class="btn-deletar-opcao btn-remover-opcao" title="Remover opção">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </app-button>
+                </div>
+            </div>
+
+            <app-button type="button" variant="secondary" class="btn-nova-opcao">+ Adicionar Opção</app-button>
+        </div>
+
+        <div class="acoes-formulario">
+            <a href="@ModuloRotas.InfraAdmin.SaaS_Comunicados" class="btn-cancelar">Cancelar</a>
+            <app-save-button type="submit">Publicar Comunicado</app-save-button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/saas-comunicados-cadastrar.js" asp-append-version="true"></script>
+}

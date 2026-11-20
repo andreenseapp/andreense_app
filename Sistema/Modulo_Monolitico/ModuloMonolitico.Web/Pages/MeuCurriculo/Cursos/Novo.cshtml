@@ -1,0 +1,24 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.Cursos.NovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Novo Curso";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Cursos" class="link-voltar-secao">← Cursos</a>
+        <h1 class="titulo-pagina">Novo Curso / Certificação</h1>
+    </div>
+</div>
+<form method="post" class="form-curriculo">
+    <div class="form-grid-duplo">
+        <app-input asp-for="Nome" label="Nome do Curso *" placeholder="Ex: Desenvolvimento Web Full Stack" />
+        <app-input asp-for="Instituicao" label="Instituição" placeholder="Ex: Alura, Coursera, SENAI..." />
+        <app-input asp-for="CargaHoraria" label="Carga Horária (h)" placeholder="Ex: 40" type="number" />
+        <app-input asp-for="AnoConclusao" label="Ano de Conclusão" placeholder="Ex: 2023" type="number" />
+    </div>
+    <div class="form-acoes">
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Cursos" class="btn btn-ghost">Cancelar</a>
+        <app-button type="submit" variant="primary">Salvar curso</app-button>
+    </div>
+</form>

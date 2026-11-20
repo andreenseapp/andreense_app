@@ -1,0 +1,51 @@
+/* Gestão — Tipos de Vendedor Novo */
+
+.tiposvendedor-novo-container {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.cartao-formulario {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.75rem;
+}
+
+.campo-formulario-espacado {
+    margin-top: 1.25rem;
+}
+
+.campo-alternancia {
+    margin-top: 1.25rem;
+    padding-top: 0.25rem;
+}
+
+.acoes-formulario {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.botao-cancelar {
+    display: inline-flex;
+    align-items: center;
+    height: 38px;
+    padding: 0 1.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background 0.12s, color 0.12s;
+}
+
+.botao-cancelar:hover {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    color: var(--clr-text, var(--clr-text-heading));
+}

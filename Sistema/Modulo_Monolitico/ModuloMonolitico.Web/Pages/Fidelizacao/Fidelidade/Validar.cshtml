@@ -1,0 +1,119 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fidelizacao.Fidelidade.ValidarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Validar Visita";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+    var semCartao = Model.CartaoAplicavel == null && string.IsNullOrEmpty(Model.QrCodeBase64);
+    var comCartao = Model.CartaoAplicavel != null && string.IsNullOrEmpty(Model.QrCodeBase64);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Fidelizacao/css/fidelidade-validar.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/Contextos/Fidelizacao/js/fidelidade-validar.js" asp-append-version="true"></script>
+}
+
+<div class="cabecalho-pagina">
+    <div class="selo-pagina selo-pagina--fidelidade">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        Fidelidade
+    </div>
+    <h1 class="titulo-pagina">Validar Visita / Selo</h1>
+    <p class="subtitulo-pagina">Gere um código para o cliente carimbar o cartão fidelidade dele.</p>
+</div>
+
+<div class="conteudo-principal fidelidade-validar-container">
+
+    @if (semCartao)
+    {
+        <div class="alerta-sem-cartao">
+            <div class="alerta-sem-cartao-icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <strong>Nenhum cartão fidelidade ativo!</strong>
+            <p class="alerta-sem-cartao-text">
+                Cadastre ou ative um cartão fidelidade antes de gerar um código de visita.
+            </p>
+            <a href="@ModuloRotas.Fidelizacao.Fidelidade" class="alerta-sem-cartao-link">
+                Gerenciar Cartões
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </a>
+        </div>
+    }
+    else if (comCartao)
+    {
+        <div class="cartao-ativo-banner">
+            <div class="cartao-ativo-icon" aria-hidden="true">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div class="cartao-ativo-body">
+                <div class="cartao-ativo-label">Cartão Ativo</div>
+                <div class="cartao-ativo-title">@Model.CartaoAplicavel!.Titulo</div>
+                <div class="cartao-ativo-meta">
+                    @Model.CartaoAplicavel.PontosNecessarios selos para resgatar: <strong>@Model.CartaoAplicavel.Recompensa</strong>
+                    @(Model.CartaoAplicavel.DiasValidadeCarimbo.HasValue ? $" · Selo expira em {Model.CartaoAplicavel.DiasValidadeCarimbo} dias" : "")
+                </div>
+            </div>
+            <a href="@ModuloRotas.Fidelizacao.Fidelidade" title="Gerenciar cartões" class="card-manage-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>
+            </a>
+        </div>
+    }
+
+    <div class="qr-card">
+        @if (string.IsNullOrEmpty(Model.QrCodeBase64))
+        {
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+            {
+                <div class="form-alert form-alert--error" role="alerta">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        if (!string.IsNullOrEmpty(error.ErrorMessage))
+                        {
+                            <div>@error.ErrorMessage</div>
+                        }
+                    }
+                </div>
+            }
+
+            <div class="estado-pronto">
+                <div class="estado-pronto-icon" aria-hidden="true">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <h3 class="estado-pronto-title">Pronto para validar?</h3>
+                <p class="estado-pronto-desc">Clique no botão abaixo para gerar o QR Code de validação de visita.</p>
+            </div>
+
+            <form method="post">
+                <app-button type="submit" variant="primary" class="botao-enviar-validar" disabled="@(Model.CartaoAplicavel == null ? true : false)">
+                    Gerar Código de Visita
+                </app-button>
+            </form>
+        }
+        else
+        {
+            <div id="qrcode-area" class="qrcode-area">
+                <div class="qrcode-frame">
+                    <img src="data:image/svg+xml;base64,@Model.QrCodeBase64" alt="QR Code de validação de visita" class="qrcode-image" />
+                </div>
+
+                <h3 class="qrcode-title">Selo Pronto!</h3>
+                <p class="qrcode-desc">
+                    O cliente deve escanear este código para receber um selo no cartão fidelidade.
+                </p>
+
+                <div class="qrcode-actions">
+                    <a href="@ModuloRotas.Fidelizacao.Fidelidade_Validar" class="botao botao-contorno">Novo Código</a>
+                    <app-button type="button" variant="secondary" class="botao-imprimir">Imprimir</app-button>
+                </div>
+
+                <div class="qrcode-expiry">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Este código expira em 90 segundos por segurança.
+                </div>
+            </div>
+        }
+    </div>
+</div>

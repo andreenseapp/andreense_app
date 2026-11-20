@@ -1,0 +1,154 @@
+/* Gerador de Etiquetas Correios — Cidadania */
+
+.label-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+    .label-container { grid-template-columns: 1fr; }
+}
+
+.card-form, .card-preview-wrapper {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--glass-shadow);
+}
+
+.section-title {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: var(--font-heading); font-weight: 700; font-size: 0.875rem;
+    text-transform: uppercase; letter-spacing: 0.07em; color: var(--clr-text-muted);
+    margin-bottom: 1.25rem;
+}
+
+.form-tabs {
+    display: flex; gap: 0.5rem; margin-bottom: 1.5rem;
+    background: rgba(0,0,0,0.03); padding: 0.35rem; border-radius: var(--radius-sm);
+}
+[data-tema='dark'] .form-tabs { background: rgba(255,255,255,0.05); }
+
+.form-tab-btn {
+    flex: 1; padding: 0.65rem 1rem; border: none; border-radius: 6px;
+    background: transparent; color: var(--clr-text-muted); font-weight: 600;
+    font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+}
+.form-tab-btn.active {
+    background: var(--glass-bg); color: var(--clr-primary);
+    box-shadow: var(--glass-shadow);
+}
+.form-tab-btn:hover:not(.active) { color: var(--clr-text); }
+
+.form-section-fields { display: none; }
+.form-section-fields.active { display: block; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.campo-grupo.full { grid-column: 1 / -1; }
+
+.input-label {
+    font-size: 0.8rem; font-weight: 700; color: var(--clr-text);
+    display: block; margin-bottom: 0.4rem;
+}
+
+.input-control {
+    width: 100%; padding: 0.65rem 0.85rem;
+    background: rgba(255,255,255,0.5); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm); color: var(--clr-text); font-size: 0.9rem;
+}
+[data-tema='dark'] .input-control { background: rgba(0,0,0,0.2); }
+.input-control:focus {
+    outline: none; border-color: var(--clr-primary);
+    box-shadow: 0 0 0 3px var(--clr-primary-glow);
+}
+
+.botao-imprimir {
+    width: 100%; margin-top: 1.5rem; padding: 0.85rem 1.5rem;
+    background: var(--clr-primary); color: var(--clr-botao-primario-texto);
+    border: none; border-radius: var(--radius-sm); font-weight: 700;
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    transition: all 0.2s;
+}
+.botao-imprimir:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--clr-primary-glow); }
+
+.label-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.correios-img-logo {
+    max-height: 80px;
+    max-width: 170px;
+    display: block;
+    object-fit: contain;
+    margin: 0 auto;
+}
+
+.correios-svg-logo {
+    width: 100%;
+    text-align: center;
+}
+
+.correios-logo { margin: 0 auto; }
+
+.preview-cep-bold { font-weight: 700; }
+
+.preview-pane {
+    display: flex; justify-content: center; padding: 1rem 0;
+}
+
+.correios-label-box {
+    width: 100%; max-width: 400px; background: var(--clr-surface); color: #000;
+    border: 2px solid #000; padding: 1.5rem; font-family: Arial, sans-serif;
+    font-size: 0.85rem; line-height: 1.4;
+}
+
+.block-destinatario { margin-bottom: 1.5rem; }
+.block-remetente { border-top: 1px solid #ccc; padding-top: 1rem; }
+
+.destinatario-title, .remetente-title {
+    font-weight: 700; font-size: 0.75rem; letter-spacing: 0.05em;
+}
+
+.title-separator {
+    height: 2px; background: #000; margin: 0.25rem 0 0.75rem;
+}
+
+.destinatario-info strong, .remetente-info strong {
+    display: block; font-size: 1rem; margin-bottom: 0.25rem;
+}
+
+.cep-barcode-wrapper { margin-top: 1rem; }
+.simulated-barcode-cep {
+    height: 50px;
+    background: repeating-linear-gradient(
+        90deg,
+        #000 0px, #000 2px,
+        var(--clr-surface) 2px, var(--clr-surface) 4px,
+        #000 4px, #000 5px,
+        var(--clr-surface) 5px, var(--clr-surface) 8px,
+        #000 8px, #000 10px,
+        var(--clr-surface) 10px, var(--clr-surface) 11px,
+        #000 11px, #000 14px,
+        var(--clr-surface) 14px, var(--clr-surface) 16px
+    );
+}
+
+@media print {
+    body * { visibility: hidden; }
+    #label-to-print, #label-to-print * { visibility: visible; }
+    #label-to-print {
+        position: absolute; left: 0; top: 0;
+        width: 100mm; border: none; padding: 5mm;
+    }
+}

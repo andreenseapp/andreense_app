@@ -1,0 +1,71 @@
+@page
+@model ModuloMonolitico.Web.Pages.Financeiro.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Módulo Financeiro";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Financeiro
+        </div>
+        <h1 class="titulo-pagina">Gestão Financeira</h1>
+        <p class="subtitulo-pagina">Contas a pagar e receber, conciliação e controle de crédito.</p>
+    </div>
+</div>
+
+<div class="construcao-banner mb-4">
+    <div class="construcao-icon" aria-hidden="true">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+    </div>
+    <div>
+        <div class="construcao-titulo">Módulo em Desenvolvimento</div>
+        <div class="construcao-desc">
+            A gestão financeira completa está sendo construída. Os recursos abaixo mostram o planejamento desta área e estarão disponíveis em breve.
+        </div>
+    </div>
+</div>
+
+<div class="modulos-grid">
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = "#",
+        nome = "Contas a Receber",
+        descricao = "Controle de recebimentos, boletos emitidos, cartões e faturamento de clientes.",
+        textoLink = "Em breve",
+        corHexadecimal = "#94a3b8", corRgb = "148, 163, 184",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"12\" y1=\"1\" x2=\"12\" y2=\"23\"></line><path d=\"M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6\"></path><path d=\"M16 17l-4 4-4-4\"></path></svg>",
+        emBreve = true
+    })
+
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = "#",
+        nome = "Contas a Pagar",
+        descricao = "Gestão de despesas, obrigações com fornecedores e agendamento de pagamentos.",
+        textoLink = "Em breve",
+        corHexadecimal = "#94a3b8", corRgb = "148, 163, 184",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"12\" y1=\"1\" x2=\"12\" y2=\"23\"></line><path d=\"M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6\"></path><path d=\"M8 11l4-4 4 4\"></path></svg>",
+        emBreve = true
+    })
+
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = "#",
+        nome = "Crédito Cliente",
+        descricao = "Limite de crédito pré-aprovado, conta corrente do cliente e adiantamentos.",
+        textoLink = "Em breve",
+        corHexadecimal = "#94a3b8", corRgb = "148, 163, 184",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M22 11.08V12a10 10 0 1 1-5.93-9.14\"></path><polyline points=\"22 4 12 14.01 9 11.01\"></polyline></svg>",
+        emBreve = true
+    })
+
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = "#",
+        nome = "Crédito Fornecedor",
+        descricao = "Controle de adiantamentos a fornecedores, limites de compra e saldo credor.",
+        textoLink = "Em breve",
+        corHexadecimal = "#94a3b8", corRgb = "148, 163, 184",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"12 2 2 7 12 12 22 7 12 2\"></polygon><polyline points=\"2 17 12 22 22 17\"></polyline></svg>",
+        emBreve = true
+    })
+</div>

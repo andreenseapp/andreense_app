@@ -1,0 +1,167 @@
+@page
+
+@model ModuloMonolitico.Web.Pages.Autenticacao.RedefinirSenhaModel
+
+@{
+
+  ViewData[ViewDataKeys.Title] = "Redefinir Senha — Andreense";
+
+  Layout = null;
+
+}
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="utf-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="description" content="Redefina sua senha do sistema Andreense." />
+
+  <title>@ViewData[ViewDataKeys.Title]</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <partial name="~/Pages/Shared/Partials/_ContextoStandaloneHead.cshtml" />
+  <link rel="stylesheet" href="@Model.UrlCssPagina" asp-append-version="true" />
+
+</head>
+
+<body>
+
+<div class="fundo-animado" aria-hidden="true"></div>
+
+
+
+<main class="layout-autenticacao autenticacao-principal" role="main">
+
+  <partial name="~/Pages/Shared/Partials/_ContextoStandaloneThemeToggle.cshtml" />
+
+
+
+  <div class="cartao-autenticacao">
+
+    <div class="marca-autenticacao">
+
+      <div class="autenticacao-marca-icone autenticacao-marca-logo" aria-hidden="true">
+
+        <img src="/img/brand/logo-lg.png" alt="Andreense Logo" />
+
+      </div>
+
+      <h1 id="titulo-autenticacao">Código de Verificação</h1>
+
+      <p id="subtitulo-autenticacao">Insira o código de 6 dígitos enviado para seu e-mail.</p>
+
+    </div>
+
+
+
+    <form method="post" id="form-redefinir" novalidate>
+
+      @Html.AntiForgeryToken()
+
+      <!-- Etapa 1: Validar Código -->
+      <div id="etapa-codigo" class="autenticacao-etapa active">
+
+        <app-input asp-for="Email"
+
+              type="email"
+
+              placeholder="seu@email.com"
+
+              required="required"
+
+              readonly="readonly"
+
+              maxlength="255" />
+
+
+
+        <app-input asp-for="Codigo"
+
+              type="text"
+
+              placeholder="Código de 6 dígitos"
+
+              required="required"
+
+              maxlength="6"
+
+              autofocus="autofocus" />
+
+        <app-save-button type="button" id="btn-validar-codigo" full-width="true">Verificar Código</app-save-button>
+
+        <div class="autenticacao-ajuda-inferior">
+          <span>Não recebeu o código?</span>
+          <button type="button" id="btn-reenviar" class="btn-link-clean">Reenviar código</button>
+        </div>
+
+      </div>
+
+      <!-- Etapa 2: Nova Senha (oculta inicialmente) -->
+      <div id="etapa-senha" class="autenticacao-etapa hidden">
+
+        <app-input asp-for="NovaSenha"
+
+              type="password"
+
+              placeholder="Nova Senha"
+
+              required="required"
+
+              maxlength="128"
+
+              mostrar-senha-forte="true" />
+
+
+
+        <app-input asp-for="ConfirmarNovaSenha"
+
+              type="password"
+
+              placeholder="Confirmar Nova Senha"
+
+              required="required"
+
+              maxlength="128" />
+
+
+
+        <app-save-button type="submit" id="btn-salvar" full-width="true">Definir Nova Senha</app-save-button>
+
+      </div>
+
+    </form>
+
+
+
+    <div class="link-autenticacao autenticacao-link--espacado">
+
+      <a href="@ModuloRotas.Autenticacao.Login">Cancelar</a>
+
+    </div>
+
+  </div>
+
+</main>
+
+
+
+<partial name="~/Pages/Shared/Partials/_ContextoStandaloneFoot.cshtml" />
+<script src="@Model.UrlJsPagina" asp-append-version="true"></script>
+
+<div class="mensagens-servidor"
+     data-sucesso="@TempData[TempDataKeys.MensagemSucesso]"
+     data-erro="@(TempData[TempDataKeys.MensagemErro] ?? Model.MensagemErro)">
+</div>
+</body>
+
+</html>
+
+
+
+

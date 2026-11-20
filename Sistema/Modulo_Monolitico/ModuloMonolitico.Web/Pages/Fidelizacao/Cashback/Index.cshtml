@@ -1,0 +1,96 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fidelizacao.Cashback.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Campanhas de Cashback";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+
+    string UrlPagina(int pagina) => $"?Pagina={pagina}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Fidelizacao/css/cashback-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Fidelização
+        </div>
+        <h1 class="titulo-pagina">Regras de Cashback</h1>
+        <p class="subtitulo-pagina">Configure como seus clientes ganham e utilizam benefícios na sua loja.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Fidelizacao.Cashback_Novo" class="botao botao-primario botao-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Nova Campanha
+        </a>
+    </div>
+</div>
+
+@if (!Model.Regras.Any())
+{
+    <div class="estado-vazio">
+        <svg class="estado-vazio-icone" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        <p class="estado-vazio-texto">Você ainda não criou nenhuma regra de cashback.</p>
+        <a href="@ModuloRotas.Fidelizacao.Cashback_Novo" class="botao botao-primario botao-estado-vazio">Criar minha primeira regra</a>
+    </div>
+}
+else
+{
+    <div class="barra-listagem">
+        <div class="barra-listagem-contagem">
+            Total de <strong>@Model.TotalItens</strong> campanhas encontradas.
+        </div>
+    </div>
+
+    <div class="grade-campanhas">
+        @foreach (var regra in Model.Regras)
+        {
+            var urlEditar = $"{ModuloRotas.Fidelizacao.Cashback_Editar}?id={regra.Id}";
+            var ativo = regra.Situacao == "ativo";
+
+            <article class="cartao-campanha">
+                <div class="card-percent">@regra.Percentual.ToString("N1")%</div>
+
+                <span class="selo-situacao @(ativo ? "situacao-ativo" : "situacao-inativo")">
+                    @(ativo ? "Ativo" : "Inativo")
+                </span>
+
+                <h3 class="titulo-cartao">@regra.Titulo</h3>
+                <p class="card-desc">@(string.IsNullOrEmpty(regra.Descricao) ? "—" : regra.Descricao)</p>
+
+                <div class="card-meta">
+                    <div class="meta-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        @(regra.DiasValidade.HasValue ? $"{regra.DiasValidade} dias de validade" : "Sem expiração")
+                    </div>
+                    @if (regra.TemReferencia)
+                    {
+                        <div class="meta-item meta-item-highlight">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Exige Referência
+                        </div>
+                    }
+                </div>
+
+                <div class="rodape-cartao">
+                    <a href="@urlEditar" class="link-editar-cartao">Editar Campanha</a>
+                </div>
+            </article>
+        }
+    </div>
+
+    @if (Model.TotalPaginas > 1)
+    {
+        <div class="log-paginacao">
+            <span>Página @Model.Pagina de @Model.TotalPaginas — @Model.TotalItens campanhas</span>
+            <div class="paginacao-nav">
+                <a href="@UrlPagina(Model.Pagina - 1)"
+                   class="paginacao-btn @(Model.Pagina == 1 ? "desabilitado" : "")">← Anterior</a>
+                <a href="@UrlPagina(Model.Pagina + 1)"
+                   class="paginacao-btn @(Model.Pagina == Model.TotalPaginas ? "desabilitado" : "")">Próxima →</a>
+            </div>
+        </div>
+    }
+}

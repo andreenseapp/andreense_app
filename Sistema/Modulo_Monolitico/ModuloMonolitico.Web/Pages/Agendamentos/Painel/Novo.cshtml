@@ -1,0 +1,103 @@
+@page
+@model ModuloMonolitico.Web.Pages.Agendamentos.Painel.NovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Novo Agendamento";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Agendamentos/css/painel-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = Model.UrlVoltar,
+    TextoVoltar = Model.TextoVoltar,
+    Titulo = "Novo Agendamento",
+    Subtitulo = "Preencha os dados do cliente e escolha o horário disponível."
+}' />
+
+<main class="main-content painel-novo-container">
+    <form method="post" id="formNovoAgend">
+        <app-input type="hidden" asp-for="DataHora" id="inputDataHora" />
+
+        <div class="painel-vidro">
+            <div class="titulo-secao">Serviço</div>
+
+            <div id="containerServico">
+                @await Component.InvokeAsync("SeletorProdutoVariacao", new { apenasServicos = true })
+            </div>
+
+            <div class="grade-formulario grade-formulario-servico">
+                <div class="campo-grupo">
+                    @await Component.InvokeAsync("SeletorProfissional", new {
+                        label       = "Profissional",
+                        fieldName   = "PrestadorIdComposto",
+                        valorAtual  = Model.PrestadorIdComposto,
+                        nomeAtual   = Model.PrestadorNome,
+                        obrigatorio = false
+                    })
+                </div>
+
+                <app-input asp-for="DataAgendamento"
+                           label="Data"
+                           type="date"
+                           required="required"
+                           min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                           onchange="carregarHorarios()" />
+            </div>
+
+            <div class="secao-horarios">
+                <label class="campo-rotulo">Horário disponível *</label>
+                <div id="containerHorarios" class="horarios-carregando">Selecione o serviço e a data para ver os horários.</div>
+            </div>
+        </div>
+
+        <div class="painel-vidro">
+            <div class="titulo-secao">Dados do Cliente</div>
+            <div class="grade-formulario">
+                <div class="campo-grupo full" id="wrapSeletorCliente">
+                    @await Component.InvokeAsync("SeletorUsuario", new {
+                        label = "Nome do Cliente",
+                        fieldName = "ClienteIdRaw",
+                        papel = "cliente",
+                        urlNovo = $"{ModuloRotas.Contatos.Cadastro_Novo}?papel=cliente"
+                    })
+                    <app-input type="hidden" asp-for="ClienteNome" id="inpCliNome" />
+                </div>
+
+                <app-input asp-for="ClienteTelefone"
+                           label="Telefone"
+                           type="tel"
+                           placeholder="(00) 00000-0000" />
+
+                <app-input asp-for="ClienteEmail"
+                           label="E-mail (para notificações)"
+                           type="email"
+                           placeholder="cliente@email.com"
+                           class="full" />
+
+                <div class="campo-grupo full toggle-email">
+                    <app-toggle asp-for="EnviaEmailConfirmacao"
+                                title="Enviar e-mail de confirmação / status"
+                                label-on="Sim"
+                                label-off="Não" />
+                </div>
+
+                <app-textarea asp-for="Observacoes"
+                              label="Observações"
+                              rows="3"
+                              placeholder="Informações adicionais..."
+                              class="full" />
+            </div>
+        </div>
+
+        <div class="acoes-formulario">
+            <a href="@Model.UrlVoltar" class="botao-cancelar">Cancelar</a>
+            <app-save-button id="btnSalvar" type="submit">Confirmar Agendamento</app-save-button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Agendamentos/js/painel-novo.js" asp-append-version="true"></script>
+}

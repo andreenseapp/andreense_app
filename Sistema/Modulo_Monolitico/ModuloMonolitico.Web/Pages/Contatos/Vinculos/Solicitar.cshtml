@@ -1,0 +1,55 @@
+@page
+@model ModuloMonolitico.Web.Pages.Contatos.Vinculos.SolicitarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Solicitar Vínculo";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Contatos/css/vinculos-solicitar.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.Contatos.Vinculos,
+    TextoVoltar = "Vínculos",
+    Titulo = "Novo Vínculo",
+    Subtitulo = "Envie um convite para outra conta da plataforma."
+}' />
+
+<main class="sol-main">
+    <div class="sol-card">
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div class="sol-form-grid">
+                <app-input asp-for="Formulario.Email"
+                           label="E-mail do destinatário"
+                           type="email"
+                           placeholder="exemplo@empresa.com.br"
+                           required="required"
+                           class="form-field-full mb-0" />
+                <span class="sol-ajuda">O e-mail do titular da conta que você deseja vincular.</span>
+
+                <app-select asp-for="Formulario.TipoVinculo" label="Tipo de Vínculo" class="form-field-full mb-0">
+                    <option value="confianca">Confiança (Compartilhamento restrito)</option>
+                    <option value="servico">Serviço (Prestação de serviços)</option>
+                    <option value="comercial">Comercial (Cliente/Fornecedor)</option>
+                </app-select>
+
+                <app-textarea asp-for="Formulario.Mensagem"
+                              label="Mensagem (opcional)"
+                              rows="4"
+                              placeholder="Olá, gostaria de conectar nossas contas para..."
+                              class="form-field-full mb-0" />
+            </div>
+
+            <div class="sol-actions">
+                <a href="@ModuloRotas.Contatos.Vinculos" class="sol-botao-cancelar">Cancelar</a>
+                <app-button type="submit" variant="primary">Enviar Solicitação</app-button>
+            </div>
+        </form>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="~/Pages/Shared/Partials/_ValidationScriptsPartial.cshtml" />
+}

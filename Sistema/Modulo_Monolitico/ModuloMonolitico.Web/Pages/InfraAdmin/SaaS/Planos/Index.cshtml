@@ -1,0 +1,91 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.SaaS.PlanosIndexModel
+@using ModuloMonolitico.Dominio.Entidades
+@{
+    ViewData[ViewDataKeys.Title] = "Planos SaaS";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/saas-planos-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            SaaS
+        </div>
+        <h1 class="titulo-pagina">Planos SaaS</h1>
+        <p class="subtitulo-pagina">Defina os pacotes comerciais disponíveis para as contas clientes.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.InfraAdmin.SaaS_Planos_Novo" class="botao botao-primario btn-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Plano
+        </a>
+    </div>
+</div>
+
+@if (!Model.Planos.Any())
+{
+    <div class="estado-vazio">
+        <p class="estado-vazio-texto">Nenhum plano cadastrado ainda.</p>
+        <a href="@ModuloRotas.InfraAdmin.SaaS_Planos_Novo" class="botao-novo botao-acao-estado-vazio">Criar primeiro plano</a>
+    </div>
+}
+else
+{
+    <p class="section-label">@Model.Planos.Count() plano(s) cadastrado(s)</p>
+    <div class="planos-grid">
+        @foreach (var plano in Model.Planos)
+        {
+            <div class="plano-card">
+                <div class="plano-header">
+                    <div>
+                        <p class="plano-nome">@plano.Nome</p>
+                        <div class="plano-valor">
+                            R$ @plano.ValorMensal.ToString("N2")<span>/mês</span>
+                        </div>
+                    </div>
+                    <span class="situacao-badge @(plano.Ativo ? "situacao-ativo" : "situacao-inativo")">
+                        @(plano.Ativo ? "Ativo" : "Inativo")
+                    </span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(plano.Descricao))
+                {
+                    <p class="plano-desc">@plano.Descricao</p>
+                }
+
+                @if (plano.Recursos.Any())
+                {
+                    <div class="feature-list">
+                        @foreach (var f in plano.Recursos)
+                        {
+                            <div class="feature-item">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                @f.RecursoChave
+                                @if (f.RecursoTipo == "quantidade")
+                                {
+                                    <span class="feature-qtde">@f.Valor</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+
+                <div class="plano-actions">
+                    <a href="@($"{ModuloRotas.InfraAdmin.SaaS_Planos_Editar}?id={plano.Id}")" class="btn-acao">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        Editar Plano
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/saas-planos-index.js" asp-append-version="true"></script>
+}

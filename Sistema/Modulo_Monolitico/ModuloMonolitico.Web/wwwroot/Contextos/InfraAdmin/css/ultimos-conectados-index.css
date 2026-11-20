@@ -1,0 +1,154 @@
+/* InfraAdmin — Últimos Conectados */
+
+.conectados-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.conectado-card {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.conectado-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    border-color: var(--clr-primary, var(--clr-primary));
+}
+
+.conectado-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-status-andamento));
+    color: var(--clr-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+}
+
+.conectado-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.conectado-email {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--clr-text, var(--clr-text-heading));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conectado-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.conectado-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.conectado-meta-item svg {
+    opacity: 0.6;
+}
+
+.conectado-tempo {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--clr-status-concluido);
+    white-space: nowrap;
+}
+
+.conectado-ip {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+    background: var(--clr-bg, var(--clr-surface-hover));
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+}
+
+.badge-provedor-sm {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    background: var(--clr-bg, var(--clr-border));
+    color: var(--clr-text-muted, var(--clr-text-label));
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.conectado-ua {
+    font-size: 0.72rem;
+    color: var(--clr-text-muted, var(--clr-text-placeholder));
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conectado-acoes {
+    flex-shrink: 0;
+}
+
+.btn-revogar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--clr-danger);
+    background: rgba(239, 68, 68, 0.05);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+    text-decoration: none;
+}
+
+.btn-revogar:hover {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: var(--clr-danger);
+}
+
+.badge-na {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    background: var(--clr-bg, var(--clr-surface-hover));
+    color: var(--clr-text-muted, var(--clr-text-placeholder));
+    border: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.conectados-vazio {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--clr-text-muted, var(--clr-text-placeholder));
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+}
+
+.conectados-vazio svg {
+    opacity: 0.25;
+    margin-bottom: 1rem;
+}

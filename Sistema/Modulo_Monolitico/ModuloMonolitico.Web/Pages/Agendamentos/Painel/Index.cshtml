@@ -1,0 +1,365 @@
+@page
+@model ModuloMonolitico.Web.Pages.Agendamentos.Painel.IndexModel
+@using System.Globalization
+@{
+    ViewData[ViewDataKeys.Title] = "Agendamentos";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+
+    var cultura = new CultureInfo("pt-BR");
+    var primeiroDiaMes = Model.MesAtual;
+    var ultimoDiaMes = primeiroDiaMes.AddMonths(1).AddDays(-1);
+    var agendsPorDia = Model.AgendamentosExibicao
+        .GroupBy(a => a.DataHoraInicio.Date)
+        .ToDictionary(g => g.Key, g => g.ToList());
+    int inicioDia = (int)primeiroDiaMes.DayOfWeek;
+    int totalCelulas = inicioDia + ultimoDiaMes.Day;
+    int semanas = (int)Math.Ceiling(totalCelulas / 7.0);
+    string[] diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    int totalPendentes = Model.AgendamentosMes.Count(a => string.Equals(a.Situacao, "pendente", StringComparison.OrdinalIgnoreCase));
+    int totalConfirmados = Model.AgendamentosMes.Count(a => string.Equals(a.Situacao, "confirmado", StringComparison.OrdinalIgnoreCase));
+    int totalConcluidos = Model.AgendamentosMes.Count(a => string.Equals(a.Situacao, "concluido", StringComparison.OrdinalIgnoreCase));
+    int totalCancelados = Model.AgendamentosMes.Count(a => string.Equals(a.Situacao, "cancelado", StringComparison.OrdinalIgnoreCase));
+
+    string MontarUrlFiltro(string situacao)
+    {
+        var filtroAtivo = string.Equals(Model.SituacaoFiltro, situacao, StringComparison.OrdinalIgnoreCase);
+        var situacaoQuery = filtroAtivo ? string.Empty : $"&situacaoFiltro={situacao}";
+        var prestadorQuery = string.IsNullOrEmpty(Model.PrestadorIdComposto) ? string.Empty : $"&prestadorIdComposto={Model.PrestadorIdComposto}";
+        return $"?ano={Model.Ano}&mes={Model.Mes}&dia={Model.Dia}&modoVisualizacao={Model.ModoVisualizacao}{prestadorQuery}{situacaoQuery}";
+    }
+
+    bool FiltroAtivo(string situacao) => string.Equals(Model.SituacaoFiltro, situacao, StringComparison.OrdinalIgnoreCase);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Agendamentos/css/painel-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-agenda">
+    <div class="cabecalho-titulos">
+        <h1 class="titulo-pagina">Agenda</h1>
+        <p class="subtitulo-pagina">Consulte e gerencie os compromissos </p>
+    </div>
+
+    <div class="cabecalho-legendas">
+        <a href="@MontarUrlFiltro("pendente")" class="legenda-badge bg-pendente @(FiltroAtivo("pendente") ? "ativo" : "")" title="@totalPendentes agendamento(s) pendente(s)">
+            <span class="dot"></span> Pendente <span class="legenda-contador">@totalPendentes</span>
+        </a>
+        <a href="@MontarUrlFiltro("confirmado")" class="legenda-badge bg-confirmado @(FiltroAtivo("confirmado") ? "ativo" : "")" title="@totalConfirmados agendamento(s) confirmado(s)">
+            <span class="dot"></span> Confirmado <span class="legenda-contador">@totalConfirmados</span>
+        </a>
+        <a href="@MontarUrlFiltro("concluido")" class="legenda-badge bg-concluido @(FiltroAtivo("concluido") ? "ativo" : "")" title="@totalConcluidos agendamento(s) concluído(s)">
+            <span class="dot"></span> Concluído <span class="legenda-contador">@totalConcluidos</span>
+        </a>
+        <a href="@MontarUrlFiltro("cancelado")" class="legenda-badge bg-cancelado @(FiltroAtivo("cancelado") ? "ativo" : "")" title="@totalCancelados agendamento(s) cancelado(s)">
+            <span class="dot"></span> Cancelado <span class="legenda-contador">@totalCancelados</span>
+        </a>
+    </div>
+
+    <div class="cabecalho-acoes">
+        <button type="button" class="botao botao-primario" data-abrir-modal="novo">
+            + Novo agendamento
+        </button>
+    </div>
+</div>
+
+<main class="main-content painel-index-container">
+    <div class="agenda-toolbar">
+        <div class="toolbar-esquerda">
+            <a href="@Model.UrlMesAnterior" class="btn-navegacao">&lt;</a>
+            <a href="@Model.UrlMesProximo" class="btn-navegacao">&gt;</a>
+            <a href="?ano=@DateTime.Today.Year&mes=@DateTime.Today.Month&dia=@DateTime.Today.Day&modoVisualizacao=@Model.ModoVisualizacao&situacaoFiltro=@Model.SituacaoFiltro" class="btn-hoje">Hoje</a>
+            
+            <span class="toolbar-data-texto">
+                @if (Model.ModoVisualizacao == "mes") {
+                    @primeiroDiaMes.ToString("MMMM yyyy", cultura)
+                } else if (Model.ModoVisualizacao == "dia") {
+                    @Model.DiaAtual.ToString("d 'de' MMMM", cultura)
+                } else {
+                    @: @Model.InicioSemanaAtual.ToString("d 'de' MMMM", cultura) - @Model.InicioSemanaAtual.AddDays(6).ToString("d 'de' MMMM", cultura)
+                }
+            </span>
+        </div>
+
+        <div class="toolbar-direita">
+            <div class="grupo-botoes-modo">
+                <a href="?ano=@Model.Ano&mes=@Model.Mes&dia=@Model.Dia&modoVisualizacao=dia&situacaoFiltro=@Model.SituacaoFiltro" class="btn-modo @(Model.ModoVisualizacao == "dia" ? "ativo" : "")">Dia</a>
+                <a href="?ano=@Model.Ano&mes=@Model.Mes&dia=@Model.Dia&modoVisualizacao=semana&situacaoFiltro=@Model.SituacaoFiltro" class="btn-modo @(Model.ModoVisualizacao == "semana" ? "ativo" : "")">Semana</a>
+                <a href="?ano=@Model.Ano&mes=@Model.Mes&dia=@Model.Dia&modoVisualizacao=mes&situacaoFiltro=@Model.SituacaoFiltro" class="btn-modo @(Model.ModoVisualizacao == "mes" ? "ativo" : "")">Mês</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="cal-layout">
+        <div>
+            @if (Model.ModoVisualizacao == "mes")
+            {
+                <div class="cal-grade">
+                    @foreach (var d in diasSemana)
+                    {
+                        <div class="cal-dow">@d</div>
+                    }
+
+                    @for (int semana = 0; semana < semanas; semana++)
+                    {
+                        for (int col = 0; col < 7; col++)
+                        {
+                            int idx = semana * 7 + col;
+                            int dia = idx - inicioDia + 1;
+                            bool dentroDoMes = dia >= 1 && dia <= ultimoDiaMes.Day;
+                            var dataCell = dentroDoMes ? new DateTime(Model.Ano, Model.Mes, dia) : DateTime.MinValue;
+                            bool ehHoje = dentroDoMes && dataCell.Date == DateTime.Today;
+                            bool diaAtivo = dentroDoMes && (Model.Configuracoes.FirstOrDefault(c => c.DiaSemana == (int)dataCell.DayOfWeek)?.Ativo ?? false);
+
+                            var agendsHoje = dentroDoMes && agendsPorDia.TryGetValue(dataCell.Date, out var lista) ? lista : [];
+
+                            var cssCell = "cal-celula";
+                            if (!dentroDoMes) cssCell += " outro-mes";
+                            else if (ehHoje) cssCell += " hoje";
+                            else if (!diaAtivo) cssCell += " inativo";
+
+                            if (dentroDoMes && !string.IsNullOrEmpty(Model.SituacaoFiltro) && agendsHoje.Count > 0)
+                                cssCell += $" destaque-filtro-{Model.SituacaoFiltro}";
+
+                            <div class="@cssCell"
+                                 @(dentroDoMes ? Html.Raw($"data-dia=\"{dataCell:yyyy-MM-dd}\" data-selecionavel=\"true\"") : null)>
+                                <div class="cal-num">
+                                    <div class="cal-num-left">
+                                        @if (dentroDoMes)
+                                        {
+                                            <span class="dia-numero">@dia</span>
+                                        }
+                                        @if (dentroDoMes && !diaAtivo)
+                                        {
+                                            <span class="dia-fechado-etiqueta">Fechado</span>
+                                        }
+                                    </div>
+                                    @if (dentroDoMes && diaAtivo)
+                                    {
+                                        <button type="button" class="cal-add cal-stop-propagation" data-abrir-modal="novo" data-alvo="@dataCell.ToString("yyyy-MM-dd")" title="Novo agendamento">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                        </button>
+                                    }
+                                </div>
+                                @if (dentroDoMes)
+                                {
+                                    <div class="agends-container">
+                                        @foreach (var ag in agendsHoje.Take(4))
+                                        {
+                                            var corChip = ag.CorHexadecimalServico ?? "var(--clr-primary)";
+                                            <a class="agend-chip cal-stop-propagation"
+                                               href="@($"{ModuloRotas.Agendamentos.Painel_Detalhes}?id={ag.Id}")"
+                                               style="--chip-color: @corChip"
+                                               title="@ag.ClienteNome — @ag.NomeTipoServico">
+                                                <span class="chip-hora">@ag.DataHoraInicio.ToString("HH:mm")</span>
+                                                <span class="chip-titulo">@ag.ClienteNome</span>
+                                            </a>
+                                        }
+                                        @if (agendsHoje.Count > 4)
+                                        {
+                                            <div class="chip-mais">+ @(agendsHoje.Count - 4) mais</div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <partial name="~/Pages/Agendamentos/Painel/_GradeHoraria.cshtml" model="Model" />
+            }
+        </div>
+
+        <div class="cal-coluna-direita">
+            <div class="agenda-filtros-ocultos">
+                <form method="get" id="formFiltroPrestador" style="width: 100%;">
+                    <app-input type="hidden" name="ano" value="@Model.Ano" />
+                    <app-input type="hidden" name="mes" value="@Model.Mes" />
+                    <app-input type="hidden" name="dia" value="@Model.Dia" />
+                    <app-input type="hidden" name="modoVisualizacao" value="@Model.ModoVisualizacao" />
+                    <app-input type="hidden" name="situacaoFiltro" value="@Model.SituacaoFiltro" />
+                    <app-select asp-for="PrestadorIdComposto"
+                                asp-items="Model.OpcoesPrestador"
+                                default-option="Todos os Profissionais" />
+                </form>
+                <a href="@Model.UrlConfiguracoes" class="btn-configurar-simples">
+                    Configurar Agenda
+                </a>
+            </div>
+
+            @if (Model.ModoVisualizacao == "mes")
+            {
+                <div class="painel-dia" id="painelDia">
+                    <div class="painel-dia-cabecalho">
+                        <div class="painel-dia-titulo" id="tituloPainelDia">Selecione um dia</div>
+                        <div class="painel-dia-subtitulo" id="subtituloPainelDia"></div>
+                    </div>
+
+                    <div class="agend-list" id="conteudoPainelDia">
+                        <div class="painel-vazio-placeholder">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            <p>Clique em um dia do calendário para ver os agendamentos ou adicionar um novo.</p>
+                        </div>
+                    </div>
+
+                    <div id="acoesPainelDia" class="painel-dia-acoes">
+                        <button type="button" id="btnNovoAgendamento" class="botao-agendar" data-abrir-modal="novo">
+                           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                           Novo Agendamento  
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script id="dadosRotas" type="application/json">
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new {
+        detalhes = ModuloRotas.Agendamentos.Painel_Detalhes,
+        novo = ModuloRotas.Agendamentos.Painel_Novo,
+        prestadorIdComposto = Model.PrestadorIdComposto ?? ""
+    }))
+    </script>
+    <script id="dadosAgendamentos" type="application/json">
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        Model.AgendamentosExibicao.Select(a => new {
+            id = a.Id,
+            dia = a.DataHoraInicio.ToString("yyyy-MM-dd"),
+            hora = a.DataHoraInicio.ToString("HH:mm"),
+            horaFim = a.DataHoraFim.ToString("HH:mm"),
+            cliente = a.ClienteNome ?? "—",
+            servico = a.NomeTipoServico,
+            profissional = a.NomeProfissional,
+            situacao = a.RotuloSituacao,
+            classeCssSituacao = a.ClasseCssSituacao,
+            cor = a.CorHexadecimalServico ?? "#6366f1"
+        })
+    ))
+    </script>
+    <script id="dadosConfiguracoes" type="application/json">
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        Model.Configuracoes.Select(c => new { diaSemana = c.DiaSemana, ativo = c.Ativo })
+    ))
+    </script>
+
+    <partial name="~/Pages/Agendamentos/Painel/_ModalNovoAgendamento.cshtml" />
+</main>
+<style>
+.modal-backdrop {
+    position: fixed !important;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(4px);
+    display: flex !important;
+    align-items: flex-start; justify-content: center; padding-top: 5vh; padding-bottom: 5vh;
+    z-index: 999999 !important;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.modal-backdrop.ativo {
+    opacity: 1 !important; pointer-events: auto !important;
+}
+.modal-dialog {
+    background: var(--glass-bg, #fff);
+    border: 1px solid var(--glass-border, #ccc);
+    border-radius: 12px; width: 100%; max-width: 500px; max-height: 90vh; overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.3s ease; display: flex; flex-direction: column;
+}
+.modal-dialog form {
+    display: flex !important; flex-direction: column !important; flex: 1 !important; min-height: 0 !important; overflow: hidden !important;
+}
+.modal-dialog .modal-body {
+    flex: 1 !important; min-height: 0 !important; overflow-y: auto !important;
+}
+.modal-dialog .modal-footer {
+    flex-shrink: 0 !important;
+}
+.modal-backdrop.ativo .modal-dialog {
+    transform: translateY(0) scale(1);
+}
+</style>
+
+<script>
+async function carregarHorarios(data) {
+    const select = document.getElementById('modalHorarioAgendamento');
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">Buscando horários...</option>';
+    
+    try {
+        const response = await fetch('/Contextos/Agendamentos/Painel?handler=HorariosLivres&data=' + data);
+        if (response.ok) {
+            const horarios = await response.json();
+            if (horarios.length === 0) {
+                select.innerHTML = '<option value="">Sem horários (Fechado)</option>';
+            } else {
+                select.innerHTML = '<option value="">Selecione o horário</option>';
+                horarios.forEach(h => {
+                    select.innerHTML += '<option value="' + h + '">' + h + '</option>';
+                });
+            }
+        } else {
+            select.innerHTML = '<option value="">Erro ao buscar horários</option>';
+        }
+    } catch (err) {
+        select.innerHTML = '<option value="">Erro de conexão</option>';
+    }
+}
+
+document.addEventListener('click', function(e) {
+    const btnAbrir = e.target.closest('[data-abrir-modal="novo"]');
+    if (btnAbrir) {
+        e.preventDefault();
+        const modal = document.getElementById('modalNovoAgendamento');
+        if (modal) {
+            let dataEscolhida = btnAbrir.getAttribute('data-alvo');
+            if (!dataEscolhida) {
+                const celulaAtiva = document.querySelector('.cal-celula.dia-selecionado');
+                if (celulaAtiva) {
+                    dataEscolhida = celulaAtiva.getAttribute('data-dia');
+                } else {
+                    const hoje = new Date();
+                    dataEscolhida = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(hoje.getDate()).padStart(2, '0');
+                }
+            }
+            const inputData = document.getElementById('modalDataAgendamento');
+            if (inputData) {
+                inputData.value = dataEscolhida;
+                carregarHorarios(dataEscolhida); // <--- Busca horarios pro dia preenchido!
+            }
+
+            modal.classList.add('ativo');
+        }
+    }
+
+    const btnFechar = e.target.closest('[data-fechar-modal]');
+    if (btnFechar) {
+        e.preventDefault();
+        const modal = document.getElementById('modalNovoAgendamento');
+        if (modal) modal.classList.remove('ativo');
+    }
+
+    const modalBackground = document.getElementById('modalNovoAgendamento');
+    if (e.target === modalBackground) {
+        modalBackground.classList.remove('ativo');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const inputData = document.getElementById('modalDataAgendamento');
+    if (inputData) {
+        inputData.addEventListener('change', function() {
+            carregarHorarios(this.value);
+        });
+    }
+});
+</script>
+
+
+@section Scripts {
+    <script src="~/Contextos/Agendamentos/js/painel-index.js" asp-append-version="true"></script>
+}

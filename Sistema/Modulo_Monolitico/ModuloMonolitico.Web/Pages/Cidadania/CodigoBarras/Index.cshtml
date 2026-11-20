@@ -1,0 +1,129 @@
+@page
+@using ModuloMonolitico.Dominio.InterfacesDeServico
+@model ModuloMonolitico.Web.Pages.Cidadania.CodigoBarras.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Gerador de Código de Barras Online";
+    Layout = "~/Pages/Shared/Layouts/_CidadeLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Cidadania/css/codigo-barras.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <partial name="Partials/_LinkVoltar" model='new LinkVoltarModelo { Url = ModuloRotas.Cidadania.Index, TextoDestino = "Serviços da Cidade" }' />
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="6" y1="9" x2="6" y2="15"></line><line x1="10" y1="9" x2="10" y2="15"></line><line x1="14" y1="9" x2="14" y2="15"></line><line x1="18" y1="9" x2="18" y2="15"></line></svg>
+            Cidade
+        </div>
+        <h1 class="titulo-pagina">Gerador de Códigos de Barras</h1>
+        <p class="subtitulo-pagina">Crie e exporte códigos de barras nos principais formatos industriais gratuitamente.</p>
+    </div>
+</div>
+
+<div class="barcode-container">
+    <div class="card-config">
+        <div class="section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Configurações
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.MensagemErro))
+        {
+            <div class="cidadania-alert-erro" role="alerta">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <div>
+                    <span class="cidadania-alert-erro-titulo">Falha de Validação</span>
+                    <span class="cidadania-alert-erro-texto">@Model.MensagemErro</span>
+                </div>
+            </div>
+        }
+
+        <form method="post">
+            <div class="form-grid">
+                <app-input asp-for="Conteudo"
+                           type="text"
+                           class="full mb-0"
+                           placeholder="Insira o texto ou número para codificar..."
+                           required="required"
+                           autocomplete="off" />
+
+                <app-select asp-for="Formato" class="full mb-0">
+                    @foreach (var format in Enum.GetValues<FormatoCodigoBarras>())
+                    {
+                        <option value="@format">@format</option>
+                    }
+                </app-select>
+
+                <app-input asp-for="Largura"
+                           type="number"
+                           class="mb-0"
+                           required="required" />
+
+                <app-input asp-for="Altura"
+                           type="number"
+                           class="mb-0"
+                           required="required" />
+
+                <div class="campo-grupo full checkbox-field">
+                    <label class="checkbox-group">
+                        <app-checkbox asp-for="IncluirRotulo" class="mb-0" />
+                        <div>
+                            <div class="checkbox-label-title">Exibir Rótulo de Leitura</div>
+                            <div class="checkbox-label-desc">Adiciona o texto correspondente logo abaixo das barras.</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <app-button type="submit" variant="primary" class="btn-generate">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                Gerar Código de Barras
+            </app-button>
+        </form>
+
+    </div>
+
+    <div class="card-preview">
+        <div class="section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            Visualização
+        </div>
+
+        <div class="preview-content">
+            @if (Model.ExibirResultado && !string.IsNullOrEmpty(Model.CodigoBarrasBase64))
+            {
+                <div class="scanner-frame success">
+                    <div class="laser-line"></div>
+                    <img src="data:image/png;base64,@Model.CodigoBarrasBase64" alt="Código de Barras Gerado" class="barcode-image" />
+                </div>
+
+                <a href="data:image/png;base64,@Model.CodigoBarrasBase64" download="codigo_barras_@(Model.Formato)_@(DateTime.Now.ToString("yyyyMMddHHmmss")).png" class="btn-download">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Baixar Imagem (PNG)
+                </a>
+            }
+            else
+            {
+                <div class="scanner-frame">
+                    <div class="placeholder-scanner">
+                        <svg class="placeholder-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                            <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                            <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                            <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                            <line x1="8" y1="6" x2="8" y2="18"></line>
+                            <line x1="12" y1="6" x2="12" y2="18"></line>
+                            <line x1="16" y1="6" x2="16" y2="18"></line>
+                        </svg>
+                        <div>
+                            <h5 class="placeholder-title">Pronto para Leitura</h5>
+                            <p class="placeholder-desc">Preencha o formulário e clique em "Gerar" para visualizar o código de barras gerado.</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

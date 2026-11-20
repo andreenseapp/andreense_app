@@ -1,0 +1,231 @@
+@page
+@using ModuloMonolitico.Web.Extensions
+@model ModuloMonolitico.Web.Pages.Base.Equipe.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Gestão de Equipe";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Base/css/equipe-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Equipe
+        </div>
+        <h1 class="titulo-pagina">Gestão de Equipe</h1>
+        <p class="subtitulo-pagina">Gerencie os membros com acesso à sua empresa e envie convites.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <app-button type="button" variant="primary" class="botao botao-primario botao-cabecalho-novo botao-abrir-convite">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+            Convidar Membro
+        </app-button>
+    </div>
+</div>
+
+<div class="acoes-topo">
+    <a href="@ModuloRotas.Perfil.MeusVinculos" class="btn-vinculos">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9.5C2 7 4 5 6.5 5H18c2.2 0 4 1.8 4 4v8Z"></path><polyline points="15,9 18,9 18,11"></polyline><path d="M6.5 5C9 5 11 7 11 9.5V17a2 2 0 0 1-2 2"></path></svg>
+        Ver Meus Vínculos e Convites
+    </a>
+</div>
+
+@if (!Model.Itens.Any())
+{
+    <div class="estado-vazio">
+        <p class="estado-vazio-texto">Nenhum membro ou convite pendente nesta empresa.</p>
+        <app-button type="button" variant="primary" class="botao botao-primario botao-estado-vazio botao-abrir-convite">Convidar primeiro membro</app-button>
+    </div>
+}
+else
+{
+    <div class="envoltorio-tabela-registro">
+        <div class="tabela-responsiva">
+            <table class="tabela-registro" data-seletor-colunas="true">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>E-mail</th>
+                        <th>Perfil</th>
+                        <th>Situação</th>
+                        <th>Data de Inclusão</th>
+                        <th data-coluna-fixa>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var membro in Model.Itens)
+                    {
+                        var inicial = AvatarIniciais.DeNomeOuEmail(membro.Nome, membro.Email);
+
+                        <tr>
+                            <td>
+                                <div class="membro-cell">
+                                    @if (!string.IsNullOrEmpty(membro.UrlImagem))
+                                    {
+                                        <img src="@membro.UrlImagem" alt="Avatar" class="membro-avatar membro-avatar--img" />
+                                    }
+                                    else
+                                    {
+                                        <div class="membro-avatar membro-avatar--iniciais">@inicial</div>
+                                    }
+                                    <div class="membro-nome-linha">
+                                        @membro.Nome
+                                        @if (membro.EhTitular)
+                                        {
+                                            <span class="badge-titular" title="Dono da Conta">Proprietário</span>
+                                        }
+                                        @if (membro.UsuarioId == Model.UsuarioId)
+                                        {
+                                            <span class="badge-voce">Você</span>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="celula-email">@membro.Email</td>
+                            <td><span class="perfil-badge">@membro.Perfil</span></td>
+                            <td>
+                                @if (membro.Ativo)
+                                {
+                                    <span class="distintivo-situacao situacao-ativo">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        Ativo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="distintivo-situacao situacao-inativo">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                        Pendente
+                                    </span>
+                                }
+                            </td>
+                            <td class="celula-data">@membro.DataInclusao.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (membro.UsuarioId != Model.UsuarioId && !membro.EhTitular)
+                                {
+                                    <div class="acoes-celula">
+                                        @if (!membro.Ativo)
+                                        {
+                                            <form method="post" asp-page-handler="ReenviarConvite" asp-route-usuarioId="@membro.UsuarioId" class="form-acao-inline">
+                                                <app-button type="submit" variant="ghost" size="sm" class="botao-acao botao-acao--info" title="Reenviar notificação de convite">Reenviar Convite</app-button>
+                                            </form>
+                                        }
+
+                                        <app-button type="button"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    class="botao-acao botao-acao--editar botao-abrir-editar"
+                                                    data-usuario-id="@membro.UsuarioId"
+                                                    data-perfil="@membro.Perfil"
+                                                    title="Alterar Grupo">
+                                            Editar
+                                        </app-button>
+
+                                        <form method="post" asp-page-handler="DeletarFisico" asp-route-usuarioId="@membro.UsuarioId" class="form-acao-inline">
+                                            <app-button type="submit"
+                                                        variant="danger"
+                                                        size="sm"
+                                                        class="botao-acao botao-acao--perigo"
+                                                        data-confirmacao="Tem certeza que deseja remover o acesso deste membro?"
+                                                        data-confirmacao-tipo="perigo"
+                                                        data-confirmacao-titulo="Remover Membro">
+                                                Remover
+                                            </app-button>
+                                        </form>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (Model.TotalPaginas > 1)
+        {
+            <div class="log-paginacao">
+                <span>Página @Model.PaginaAtual de @Model.TotalPaginas — @Model.TotalItens membros</span>
+                <div class="paginacao-nav">
+                    <a href="?PaginaAtual=@(Model.PaginaAtual - 1)"
+                       class="paginacao-btn @(Model.PaginaAtual == 1 ? "desabilitado" : "")">← Anterior</a>
+                    <a href="?PaginaAtual=@(Model.PaginaAtual + 1)"
+                       class="paginacao-btn @(Model.PaginaAtual == Model.TotalPaginas ? "desabilitado" : "")">Próxima →</a>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<div id="modal-convite" class="fundo-modal">
+    <div class="cartao-modal">
+        <div class="cabecalho-modal">
+            <span>Convidar Novo Membro</span>
+            <app-button type="button" variant="ghost" size="sm" class="fechar-modal botao-fechar-convite" aria-label="Fechar">&times;</app-button>
+        </div>
+        <form method="post" asp-page-handler="Convidar">
+            <div class="corpo-modal">
+                <p class="dica-modal">
+                    O usuário já precisa ter um cadastro na plataforma. Ele receberá um convite em seu painel pessoal ("Meu Perfil") para aceitar o vínculo com esta empresa.
+                </p>
+
+                <app-input asp-for="EmailConvite"
+                           label="E-mail do usuário"
+                           type="email"
+                           placeholder="exemplo@email.com"
+                           required="required" />
+
+                <app-select asp-for="GrupoIdConvite" label="Grupo de Acesso" default-option="Selecione o grupo de acesso">
+                    @foreach (var grupo in Model.GruposDisponiveis)
+                    {
+                        <option value="@grupo.Id">@grupo.Nome</option>
+                    }
+                </app-select>
+            </div>
+            <div class="rodape-modal">
+                <app-button type="button" variant="secondary" class="botao-modal-cancelar botao-fechar-convite">Cancelar</app-button>
+                <app-save-button type="submit">Enviar Convite</app-save-button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="modal-editar" class="fundo-modal">
+    <div class="cartao-modal">
+        <div class="cabecalho-modal">
+            <span>Alterar Perfil de Acesso</span>
+            <app-button type="button" variant="ghost" size="sm" class="fechar-modal botao-fechar-editar" aria-label="Fechar">&times;</app-button>
+        </div>
+        <form method="post" asp-page-handler="EditarGrupo">
+            <app-input type="hidden" asp-for="UsuarioIdEditar" id="editarUsuarioId" />
+            <div class="corpo-modal">
+                <p class="dica-modal">
+                    Selecione o novo grupo de acesso para este usuário. Ele passará a ter as permissões do novo perfil imediatamente.
+                </p>
+
+                <div class="cabecalho-selecao-grupo">
+                    <label class="rotulo-selecao-grupo" for="novoGrupoId">Grupo de Usuário</label>
+                    <a href="@ModuloRotas.Autenticacao.Grupos_Novo" class="link-novo-grupo">+ Novo Grupo</a>
+                </div>
+                <app-select asp-for="NovoGrupoId" label="" default-option="Selecione o grupo de acesso">
+                    @foreach (var grupo in Model.GruposDisponiveis)
+                    {
+                        <option value="@grupo.Id">@grupo.Nome</option>
+                    }
+                </app-select>
+            </div>
+            <div class="rodape-modal">
+                <app-button type="button" variant="secondary" class="botao-modal-cancelar botao-fechar-editar">Cancelar</app-button>
+                <app-save-button type="submit">Salvar Alteração</app-save-button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Base/js/equipe-index.js" asp-append-version="true"></script>
+}

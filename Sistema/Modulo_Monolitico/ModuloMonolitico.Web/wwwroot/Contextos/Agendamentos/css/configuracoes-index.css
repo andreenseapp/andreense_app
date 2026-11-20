@@ -1,0 +1,446 @@
+/* Agendamentos — Configurações Index */
+
+.configuracoes-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+    animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.botao-voltar {
+    white-space: nowrap;
+}
+
+.painel-barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.painel-dica {
+
+    font-size: 0.95rem;
+    max-width: 600px;
+    margin: 0;
+}
+
+.cal-filtro-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.cal-filtro-select .campo-grupo {
+    margin-bottom: 0;
+}
+
+.cal-filtro-select select {
+    min-width: 250px;
+}
+
+.acoes-formulario {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.info-banner {
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+
+    padding: 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.info-banner svg {
+    flex-shrink: 0;
+}
+
+.info-banner strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.info-banner span {
+    font-size: 0.95rem;
+}
+
+.estado-vazio {
+    text-align: center;
+    padding: 4rem 2rem;
+
+}
+
+.estado-vazio--tracejado {
+    padding: 3rem 2rem;
+    background: rgba(0, 0, 0, 0.015);
+    border-radius: 12px;
+    border: 1px dashed var(--glass-border);
+}
+
+.estado-vazio-icone {
+    width: 80px;
+    height: 80px;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+
+}
+
+.estado-vazio-titulo {
+
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.estado-vazio-texto {
+    margin: 0;
+}
+
+.cell-servico,
+.cell-preco {
+    font-weight: 600;
+}
+
+.cell-muted {
+
+}
+
+.tag-duracao {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.col-acoes {
+    text-align: right;
+}
+
+.prof-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.prof-avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-status-andamento));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.prof-nome {
+    font-weight: 600;
+    display: block;
+}
+
+.prof-tipo {
+    font-size: 0.75rem;
+
+}
+
+.servicos-tags {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.servico-tag {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.periodo-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.periodo-cell svg {
+
+    flex-shrink: 0;
+}
+
+.periodo-sep {
+
+    font-weight: 400;
+}
+
+.etiqueta-empresa {
+    background: var(--clr-text);
+    color: var(--glass-bg);
+}
+
+.cell-prestador {
+    font-weight: 600;
+}
+
+.formulario-inline {
+    display: inline;
+}
+
+.formulario-embutido-title {
+    margin: 0 0 1.5rem;
+
+    font-size: 1.25rem;
+}
+
+.formulario-embutido-nome {
+
+}
+
+.horario-dia-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+}
+
+.horario-dia-nome {
+    font-weight: 700;
+    font-size: 1.05rem;
+
+}
+
+.entradas-hora.is-disabled {
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.item-check-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.cor-dot {
+    background: var(--cor-servico, var(--clr-primary));
+}
+
+.cor-dot-sm {
+    width: 8px;
+    height: 8px;
+    margin-right: 4px;
+}
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* -- Premium Tabs -- */
+        .tabs { 
+            display: flex; 
+            gap: 0.5rem; 
+            margin-bottom: 2.5rem; 
+            background: rgba(255, 255, 255, 0.4); 
+            padding: 0.5rem; 
+            border-radius: 14px; 
+            border: 1px solid var(--glass-border); 
+            backdrop-filter: blur(12px);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        [data-tema='dark'] .tabs { background: rgba(0,0,0,0.2); }
+        
+        .botao-aba { 
+            flex: 1; 
+            text-align: center; 
+            padding: 0.85rem 1rem; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            font-size: 0.95rem; 
+
+            text-decoration: none; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .botao-aba:hover { 
+
+            background: rgba(255,255,255,0.5); 
+        }
+        [data-tema='dark'] .botao-aba:hover { background: rgba(255,255,255,0.05); }
+        
+        .botao-aba.ativa { 
+
+            background: var(--clr-surface); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        [data-tema='dark'] .botao-aba.ativa { 
+            background: rgba(99, 102, 241, 0.15); 
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+        }
+
+        /* -- Glass Panels -- */
+        .painel-vidro { 
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 20px; 
+            padding: 2.5rem; 
+            box-shadow: var(--glass-shadow-lg); 
+            position: relative;
+        }
+
+        /* -- Typography & Forms -- */
+        .campo-rotulo { font-size: 0.85rem; font-weight: 700; color: var(--clr-text); display: block; margin-bottom: 0.5rem; letter-spacing: 0.2px; }
+        .campo-controle { 
+            padding: 0.8rem 1rem; 
+            background: rgba(255,255,255,0.5); 
+            border: 1px solid rgba(0,0,0,0.1); 
+            border-radius: 10px; 
+
+            font-size: 0.95rem; 
+            width: 100%; 
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        [data-tema='dark'] .campo-controle { background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); }
+        .campo-controle:focus { outline: none; border-color: var(--clr-primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); background: transparent; }
+        
+        /* -- Toggle Switches (iOS Style) -- */
+        .interruptor { position: relative; display: inline-block; width: 48px; height: 26px; flex-shrink: 0; }
+        .interruptor input { opacity: 0; width: 0; height: 0; }
+        .interruptor-deslizante { 
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
+            background-color: rgba(0,0,0,0.15); border: 1px solid transparent; 
+            transition: .4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 34px; 
+        }
+        [data-tema='dark'] .interruptor-deslizante { background-color: rgba(255,255,255,0.1); }
+        .interruptor-deslizante:before { 
+            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 2px; 
+            background-color: white; transition: .4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 50%; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+        }
+        .interruptor input:checked + .interruptor-deslizante { background-color: var(--clr-primary); }
+        .interruptor input:checked + .interruptor-deslizante:before { transform: translateX(22px); }
+
+        /* -- Buttons -- */
+        .botao-salvar { 
+            background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary) 100%); 
+            color: var(--clr-surface); padding: 0.75rem 1.75rem; border-radius: 10px; font-weight: 700; 
+            border: none; cursor: pointer; transition: all 0.3s ease; 
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .botao-salvar:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4); }
+        .botao-salvar:active { transform: translateY(0); }
+        
+        .botao-contorno {
+            background: transparent; border: 1px solid var(--glass-border); color: var(--clr-text);
+            padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+        }
+        .botao-contorno:hover { background: rgba(0,0,0,0.03); border-color: var(--clr-border-soft); }
+        [data-tema='dark'] .botao-contorno:hover { background: rgba(255,255,255,0.05); }
+
+        .botao-perigo { 
+            background: rgba(239,68,68,0.1); color: var(--clr-status-cancelado); border: 1px solid rgba(239,68,68,0.2); 
+            padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; 
+            cursor: pointer; transition: all 0.2s; 
+        }
+        .botao-perigo:hover { background: var(--clr-status-cancelado); color: white; }
+
+        .add-btn { 
+            display: flex; align-items: center; gap: 0.5rem; padding: 1rem; 
+            border: 2px dashed var(--glass-border); border-radius: 12px; 
+            color: var(--clr-primary); background: rgba(99,102,241,0.02); 
+            cursor: pointer; font-size: 0.95rem; font-weight: 700; margin-top: 1.5rem; width: 100%; 
+            justify-content: center; transition: all 0.3s ease; 
+        }
+        .add-btn:hover { background: rgba(99,102,241,0.08); border-color: rgba(99,102,241,0.3); transform: translateY(-1px); }
+
+        /* -- Horarios Grid -- */
+        .horario-row { 
+            display: grid; grid-template-columns: 160px 1fr; gap: 2rem; align-items: center; 
+            padding: 1.25rem 1rem; border-bottom: 1px solid var(--glass-border); 
+            transition: background 0.3s ease; border-radius: 12px; margin: 0 -1rem;
+        }
+        .horario-row:hover { background: rgba(0,0,0,0.02); }
+        [data-tema='dark'] .horario-row:hover { background: rgba(255,255,255,0.02); }
+        .horario-row:last-child { border-bottom: none; }
+        .entradas-hora { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; align-items: center; }
+
+        /* -- Data Tables -- */
+        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 1rem; }
+        .data-table th { 
+            padding: 1rem; text-align: left; font-size: 0.75rem; 
+            font-weight: 700; color: var(--clr-text-muted); text-transform: uppercase; 
+            letter-spacing: 0.5px; border-bottom: 2px solid var(--glass-border); 
+        }
+        .data-table td { 
+            padding: 1rem; border-bottom: 1px solid var(--glass-border); 
+            font-size: 0.95rem; color: var(--clr-text); vertical-align: middle; 
+        }
+        .data-table tr { transition: background 0.2s ease; }
+        .data-table tr:hover td { background: rgba(0,0,0,0.015); }
+        [data-tema='dark'] .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .data-table tr:last-child td { border-bottom: none; }
+
+        .cor-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; vertical-align: middle; margin-right: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        .etiqueta { padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .etiqueta-ativo   { background: rgba(16,185,129,0.15); color: var(--clr-success); border: 1px solid rgba(16,185,129,0.2); }
+        .etiqueta-inativo { background: rgba(239,68,68,0.15);  color: var(--clr-danger); border: 1px solid rgba(239,68,68,0.2); }
+        [data-tema='dark'] .etiqueta-ativo { color: var(--clr-success); }
+        [data-tema='dark'] .etiqueta-inativo { color: var(--clr-status-cancelado); }
+
+        /* -- Forms Animations -- */
+        .grade-formulario { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grade-formulario.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+        .campo-grupo { display: flex; flex-direction: column; gap: 0.25rem; }
+        .campo-grupo.full { grid-column: 1 / -1; }
+        
+        .formulario-embutido { 
+            max-height: 0; overflow: hidden; opacity: 0; 
+            background: rgba(0,0,0,0.02); border: 1px solid transparent; 
+            border-radius: 16px; margin-top: 0; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [data-tema='dark'] .formulario-embutido { background: rgba(255,255,255,0.02); }
+        .formulario-embutido.aberto { 
+            max-height: 1000px; opacity: 1; padding: 2rem; margin-top: 1.5rem; 
+            border-color: var(--glass-border); 
+        }
+        
+        .checkboxes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 0.75rem; }
+        .item-check { 
+            display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; 
+            border-radius: 10px; border: 1px solid var(--glass-border); 
+            background: var(--glass-bg); cursor: pointer; transition: all 0.2s; 
+        }
+        .item-check:hover { border-color: var(--clr-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+
+

@@ -1,0 +1,122 @@
+/* InfraAdmin — Grupos de Usuários Editar */
+
+.editar-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.painel-formulario {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.titulo-secao-formulario {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--clr-text, var(--clr-text-heading));
+    margin: 0 0 1.5rem;
+}
+
+.campo-grupo-descricao {
+    margin-bottom: 1.5rem;
+}
+
+.admin-banner {
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    color: var(--clr-warning);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.permissions-intro {
+    color: var(--clr-text-muted, var(--clr-text-label));
+    margin: 0 0 1.5rem;
+}
+
+.module-card {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.module-title {
+    font-weight: 700;
+    color: var(--clr-text, var(--clr-text-heading));
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.permission-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background 0.12s;
+}
+
+.permission-item:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.permission-checkbox {
+    width: 1.2rem;
+    height: 1.2rem;
+    cursor: pointer;
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+}
+
+.permission-label-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.permission-name {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--clr-text, var(--clr-text-heading));
+}
+
+.permission-desc {
+    font-size: 0.75rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.acoes-formulario {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.btn-cancelar {
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    color: var(--clr-text, var(--clr-text-heading));
+    transition: background 0.12s;
+}
+
+.btn-cancelar:hover {
+    background: var(--clr-bg, var(--clr-surface-alt));
+}

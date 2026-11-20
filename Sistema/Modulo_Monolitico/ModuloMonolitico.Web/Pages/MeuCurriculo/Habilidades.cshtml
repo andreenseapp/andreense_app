@@ -1,0 +1,47 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.HabilidadesModel
+@{
+    ViewData[ViewDataKeys.Title] = "Habilidades";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<link rel="stylesheet" href="~/Contextos/MeuCurriculo/habilidades.css" asp-append-version="true" />
+
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo" class="link-voltar-secao">← Meu Currículo</a>
+        <h1 class="titulo-pagina">⚡ Habilidades</h1>
+        <p class="subtitulo-pagina">Adicione suas competências técnicas e comportamentais.</p>
+    </div>
+</div>
+
+<form method="post" class="form-curriculo" id="form-habilidades">
+    <app-input type="hidden" asp-for="HabilidadesJson" id="habilidades-json" />
+
+    <div class="habilidades-editor">
+        <div id="tags-habilidades" class="tags-container">
+        </div>
+        <div class="adicionar-habilidade">
+            <app-input type="text" id="input-habilidade" class="form-input mb-0" placeholder="Ex: Excel, Photoshop, Comunicação, Node.js..." maxlength="100" />
+            <app-button type="button" variant="secondary" id="btn-adicionar-habilidade" class="btn btn-secondary">+ Adicionar</app-button>
+        </div>
+        <p class="habilidades-hint">Pressione Enter ou clique em Adicionar. Mínimo de 3 caracteres por habilidade.</p>
+
+        <div class="sugestoes-habilidades">
+            <span class="sugestoes-titulo">Sugestões populares:</span>
+            @foreach (var sug in new[] { "Excel", "Word", "PowerPoint", "Inglês", "Trabalho em equipe", "Comunicação", "Liderança", "Photoshop", "JavaScript", "Python", "SQL", "Vendas", "Atendimento ao cliente", "Gestão de projetos", "Negociação" })
+            {
+                <app-button type="button" variant="ghost" size="sm" class="sugestao-tag" data-sugestao="@sug">@sug</app-button>
+            }
+        </div>
+    </div>
+
+    <div class="form-acoes">
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo" class="btn btn-ghost">Cancelar</a>
+        <app-button type="submit" variant="primary">Salvar habilidades</app-button>
+    </div>
+</form>
+
+<script>
+    const habilidadesIniciais = @Html.Raw(Model.HabilidadesJson);
+</script>
+<script src="~/Contextos/MeuCurriculo/habilidades.js" asp-append-version="true"></script>

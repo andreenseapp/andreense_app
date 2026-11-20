@@ -1,0 +1,141 @@
+@page
+@model ModuloMonolitico.Web.Pages.Autenticacao.CadastroModel
+@{
+  ViewData[ViewDataKeys.Title] = "Criar Conta - Andreense";
+  Layout = null;
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Crie sua conta no sistema Andreense." />
+  <title>@ViewData[ViewDataKeys.Title]</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <partial name="~/Pages/Shared/Partials/_ContextoStandaloneHead.cshtml" />
+  <link rel="stylesheet" href="@Model.UrlCssPagina" asp-append-version="true" />
+</head>
+<body>
+<div class="fundo-animado" aria-hidden="true"></div>
+
+<main class="layout-autenticacao autenticacao-principal" role="main">
+  <partial name="~/Pages/Shared/Partials/_ContextoStandaloneThemeToggle.cshtml" />
+
+  <div class="cartao-autenticacao cartao-autenticacao--largo">
+    <div class="marca-autenticacao">
+      <div class="autenticacao-marca-icone autenticacao-marca-logo" aria-hidden="true">
+        <img src="/img/brand/logo-lg.png" alt="Andreense Logo" />
+      </div>
+      <h1>Criar sua conta</h1>
+      <p>Comece agora, é gratuito</p>
+    </div>
+
+    @if (TempData[TempDataKeys.MensagemSucesso] != null)
+    {
+      <div class="alerta alerta-sucesso" role="alerta" id="alerta-sucesso">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span>@TempData[TempDataKeys.MensagemSucesso]</span>
+      </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.MensagemErro))
+    {
+      <div class="alerta alerta-erro" role="alerta" id="alerta-erro">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <span>@Model.MensagemErro</span>
+        @if (Model.MensagemErro.Contains("j\u00e1 est\u00e1 cadastrado", StringComparison.OrdinalIgnoreCase))
+        {
+          <div class="mt-3">
+            <a href="@ModuloRotas.Autenticacao.Login" class="botao btn-sm botao-perigo w-100 autenticacao-alerta-botao-login">Fazer Login Agora</a>
+          </div>
+        }
+      </div>
+    }
+
+    <form method="post" id="form-cadastro" novalidate>
+      @Html.AntiForgeryToken()
+
+      <div class="campo-grupo autenticacao-campo-grupo">
+          <app-input asp-for="Formulario.Nome"
+                     type="text"
+                     placeholder="Seu nome completo"
+                     required="required"
+                     icon-svg="<svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><path d=&quot;M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2&quot;></path><circle cx=&quot;12&quot; cy=&quot;7&quot; r=&quot;4&quot;></circle></svg>" />
+      </div>
+
+      <div class="campo-grupo autenticacao-campo-grupo">
+          <app-input asp-for="Formulario.Email"
+                     type="email"
+                     placeholder="seu@email.com"
+                     required="required"
+                     icon-svg="<svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><path d=&quot;M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z&quot;></path><polyline points=&quot;22,6 12,13 2,6&quot;></polyline></svg>" />
+      </div>
+
+      <app-input asp-for="Formulario.Senha"
+            type="password"
+            placeholder="Mínimo 8 caracteres"
+            required="required"
+            minlength="8"
+            maxlength="128"
+            autocomplete="new-password"
+            mostrar-senha-forte="true" />
+
+      <app-input asp-for="Formulario.ConfirmarSenha"
+            type="password"
+            placeholder="Repita a senha"
+            required="required"
+            maxlength="128"
+            autocomplete="new-password" />
+
+      <div class="campo-grupo autenticacao-termos">
+          <app-checkbox asp-for="Formulario.AceitouTermos" required="required">
+              <span class="autenticacao-termos-texto">
+                  Li e concordo com os Termos e Políticas de Privacidade
+                  @if (Model.DocumentosAtivos.Any())
+                  {
+                      <span class="autenticacao-termos-docs">
+                          @foreach (var doc in Model.DocumentosAtivos)
+                          {
+                              <span>- <a href="#" data-abrir-modal-doc="modal-doc-@doc.Id">@doc.Titulo (v@(doc.Versao))</a></span>
+                          }
+                      </span>
+                  }
+              </span>
+          </app-checkbox>
+          <span asp-validation-for="Formulario.AceitouTermos" class="text-danger autenticacao-msg-validacao"></span>
+      </div>
+
+      <app-button type="submit" variant="primary" id="btn-cadastro" full-width="true">Criar conta</app-button>
+    </form>
+
+    <div class="link-autenticacao">
+      Já tem conta? <a href="@ModuloRotas.Autenticacao.Login">Entrar</a>
+    </div>
+  </div>
+</main>
+
+@foreach (var doc in Model.DocumentosAtivos)
+{
+    <div id="modal-doc-@doc.Id" class="autenticacao-modal-doc" aria-hidden="true">
+        <div class="autenticacao-modal-doc-dialogo">
+            <div class="autenticacao-modal-doc-cabecalho">
+                <h3 class="autenticacao-modal-doc-titulo">@doc.Titulo</h3>
+                <button type="button" class="autenticacao-modal-doc-fechar" data-fechar-modal-doc="modal-doc-@doc.Id" aria-label="Fechar">&times;</button>
+            </div>
+            <div class="autenticacao-modal-doc-corpo">@doc.Texto</div>
+            <div class="autenticacao-modal-doc-rodape">
+                <app-button type="button" variant="primary" data-fechar-modal-doc="modal-doc-@doc.Id">Entendi</app-button>
+            </div>
+        </div>
+    </div>
+}
+
+<partial name="~/Pages/Shared/Partials/_ContextoStandaloneFoot.cshtml" />
+<script src="@Model.UrlJsPagina" asp-append-version="true"></script>
+
+<div class="mensagens-servidor"
+     data-sucesso="@TempData[TempDataKeys.MensagemSucesso]"
+     data-erro="@(TempData[TempDataKeys.MensagemErro] ?? Model.MensagemErro)">
+</div>
+</body>
+</html>

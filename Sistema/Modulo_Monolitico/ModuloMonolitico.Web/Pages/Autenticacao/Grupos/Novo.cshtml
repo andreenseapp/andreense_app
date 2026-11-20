@@ -1,0 +1,50 @@
+@page
+@model ModuloMonolitico.Web.Pages.Autenticacao.Grupos.NovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Novo Grupo de Usuários";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Autenticacao/css/grupos-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.Autenticacao.Grupos,
+    TextoVoltar = "Grupos de Usuários",
+    Titulo = "Cadastrar Grupo de Usuários"
+}' />
+
+<main class="main-content novo-container">
+    <div class="novo-card">
+        <form method="post">
+            <app-input asp-for="Comando.Nome"
+                       label="Nome do Grupo"
+                       type="text"
+                       placeholder="Ex: Financeiro, Recepcionistas, Estoquistas..."
+                       required="required"
+                       autofocus="autofocus" />
+
+            <div class="campo-grupo-descricao">
+                <app-textarea asp-for="Comando.Descricao"
+                              label="Descrição (opcional)"
+                              rows="3"
+                              placeholder="Descreva brevemente o propósito deste grupo..." />
+            </div>
+
+            <div class="toggle-grid">
+                <app-toggle asp-for="Comando.Ativo" title="Ativo no sistema" label-on="Sim" label-off="Não" />
+                <app-toggle asp-for="Comando.EhAdministrador" title="Privilégios de Administrador" label-on="Sim" label-off="Não" />
+            </div>
+
+            <div class="form-actions">
+                <a href="@ModuloRotas.Autenticacao.Grupos" class="btn-cancelar">Cancelar</a>
+                <app-save-button type="submit">Salvar Grupo</app-save-button>
+            </div>
+        </form>
+    </div>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Autenticacao/js/grupos-novo.js" asp-append-version="true"></script>
+}

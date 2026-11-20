@@ -1,0 +1,65 @@
+@page
+@model ModuloMonolitico.Web.Pages.Empresas.SelecionarModel
+@{
+  ViewData[ViewDataKeys.Title] = "Selecionar Empresa";
+  Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+  <link rel="stylesheet" href="~/Contextos/Empresas/css/selecionar.css" asp-append-version="true" />
+}
+
+<div class="seletor-empresa-wrapper">
+  <div class="cartao-empresa">
+    <div class="text-center mb-5">
+      <div class="icone-cabecalho">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+            <path d="M9 22v-4h6v4"></path>
+            <path d="M8 6h.01"></path>
+            <path d="M16 6h.01"></path>
+            <path d="M12 6h.01"></path>
+            <path d="M12 10h.01"></path>
+            <path d="M12 14h.01"></path>
+            <path d="M16 10h.01"></path>
+            <path d="M16 14h.01"></path>
+            <path d="M8 10h.01"></path>
+            <path d="M8 14h.01"></path>
+        </svg>
+      </div>
+      <h2 class="cartao-empresa-titulo">Acessar Workspace</h2>
+      <p class="cartao-empresa-descricao">Selecione qual empresa ou filial você deseja gerenciar neste momento.</p>
+    </div>
+
+    <div class="lista-empresas">
+      @foreach (var emp in Model.EmpresasDetalhes)
+      {
+        <form method="post" class="form-envolvente">
+          <app-input type="hidden" name="EmpresaIdSelecionada" value="@emp.EmpresaId" />
+          <app-input type="hidden" name="@ModuloRotas.ParametroUrlRetorno" value="@Model.UrlRetorno" />
+          <app-button type="submit" variant="ghost" class="btn-empresa">
+            <div class="btn-empresa-interno">
+              <div class="empresa-inicial">
+                  @(string.IsNullOrEmpty(emp.EmpresaNome) ? "?" : emp.EmpresaNome.Substring(0, 1).ToUpper())
+              </div>
+              <div class="empresa-info">
+                  <div class="empresa-titulo">@emp.EmpresaNome</div>
+                  <div class="empresa-perfil">
+                    <span class="badge-perfil">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        @emp.Perfil
+                    </span>
+                  </div>
+              </div>
+            </div>
+            <div class="icone-seta">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </app-button>
+        </form>
+      }
+    </div>
+  </div>
+</div>
+
+

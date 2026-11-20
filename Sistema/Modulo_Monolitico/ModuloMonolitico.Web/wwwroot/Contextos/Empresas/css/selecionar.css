@@ -1,0 +1,168 @@
+.seletor-empresa-wrapper {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% -20%, var(--clr-bg-start), var(--clr-bg-end));
+    margin: -1.5rem; /* Ajuste para preencher a área se houver padding do layout */
+    padding: 2rem;
+  }
+  .cartao-empresa {
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    box-shadow: var(--glass-shadow-lg);
+    padding: 3rem;
+    border: 1px solid var(--glass-border);
+    max-width: 580px;
+    width: 100%;
+    box-sizing: border-box;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .lista-empresas {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+  }
+
+  .cartao-empresa-titulo {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--clr-text);
+    font-size: 1.75rem;
+    letter-spacing: -0.5px;
+  }
+  .cartao-empresa-descricao {
+    font-family: var(--font-body);
+    color: var(--clr-text-muted);
+    font-size: 1.05rem;
+    max-width: 80%;
+    margin: 0 auto;
+  }
+  .btn-empresa {
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    background: var(--glass-bg);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--clr-text);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    cursor: pointer;
+  }
+  .btn-empresa .botao-texto {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .btn-empresa-interno {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+  .btn-empresa:hover {
+    border-color: var(--glass-border-focus);
+    background: var(--glass-bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -8px var(--clr-primary-glow);
+    color: var(--clr-text);
+  }
+  .btn-empresa:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+  .empresa-inicial {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--clr-primary-glow) 0%, rgba(255,255,255,0.02) 100%);
+    border: 1px solid var(--glass-border);
+    color: var(--clr-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+  .btn-empresa:hover .empresa-inicial {
+    background: var(--clr-primary);
+    color: var(--clr-botao-primario-texto);
+    box-shadow: 0 4px 12px var(--clr-primary-glow);
+  }
+  .empresa-info {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .empresa-titulo {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--clr-text);
+    transition: color 0.2s ease;
+    line-height: 1.2;
+  }
+  .btn-empresa:hover .empresa-titulo {
+    color: var(--clr-primary);
+  }
+  .empresa-perfil {
+    font-size: 0.85rem;
+    color: var(--clr-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .badge-perfil {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--clr-text-muted);
+    border: 1px solid var(--glass-border);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .icone-cabecalho {
+    width: 68px;
+    height: 68px;
+    background: linear-gradient(135deg, var(--clr-primary-glow) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid var(--glass-border);
+    color: var(--clr-primary);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem auto;
+    box-shadow: 0 8px 16px -4px var(--clr-primary-glow);
+  }
+  .icone-seta {
+    transition: transform 0.3s ease, color 0.3s ease;
+    color: var(--clr-text-subtle);
+  }
+  .btn-empresa:hover .icone-seta {
+    transform: translateX(4px);
+    color: var(--clr-primary);
+  }
+  .form-envolvente {
+    margin-bottom: 0.75rem;
+    width: 100%;
+  }
+  .form-envolvente:last-child {
+    margin-bottom: 0;
+  }

@@ -1,0 +1,131 @@
+@page
+@model ModuloMonolitico.Web.Pages.Empresas.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Minhas Empresas";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var filtrosAtivos = !string.IsNullOrEmpty(Model.Filtros.Busca);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Empresas/css/empresas-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 21h18M3 7v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7M9 3h6v4H9z"></path><line x1="9" y1="11" x2="15" y2="11"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+            Base
+        </div>
+        <h1 class="titulo-pagina">Minhas Empresas</h1>
+        <p class="subtitulo-pagina">Gerencie as filiais e CNPJs da sua conta.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Empresas.Empresas_Editar" class="botao botao-primario botao-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Nova Empresa
+        </a>
+    </div>
+</div>
+
+<form method="get" id="formularioFiltros" class="painel-filtro">
+    <app-input asp-for="Filtros.Busca"
+               label="Buscar Empresa"
+               type="text"
+               placeholder="Nome Fantasia, Razão Social ou CNPJ..."
+               class="grupo-filtro grupo-filtro--wide mb-0" />
+    <div class="acoes-filtro">
+        @if (filtrosAtivos)
+        {
+            <a href="@ModuloRotas.Empresas.Index" class="botao-filtro-icone" title="Limpar filtros">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </a>
+        }
+        <app-button type="submit" variant="primary" class="botao-filtro">Filtrar</app-button>
+    </div>
+</form>
+
+@if (!Model.Empresas.Any())
+{
+    <div class="estado-vazio">
+        <p class="estado-vazio-texto">
+            @(filtrosAtivos
+                ? "Nenhuma empresa encontrada para a busca informada."
+                : "Nenhuma empresa cadastrada para esta conta.")
+        </p>
+        <a href="@ModuloRotas.Empresas.Empresas_Editar" class="botao botao-primario botao-estado-vazio">Cadastrar agora</a>
+    </div>
+}
+else
+{
+    <div class="barra-lista">
+        <div class="barra-lista-contagem">
+            Total de <strong>@Model.Empresas.Count()</strong> empresas encontradas.
+        </div>
+        <app-button type="button" variant="secondary" class="botao-modo-selecao" id="botaoAlternarSelecao" data-selecao-toggle>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="9 11 12 14 22 4"></polyline></svg>
+            Selecionar
+        </app-button>
+    </div>
+
+    <form method="post" id="formularioSelecaoLote" class="form-selecao-lote">
+        @Html.AntiForgeryToken()
+        <div class="table-container">
+            <table class="app-table" data-selecao-tabela data-seletor-colunas="true">
+                <thead>
+                    <tr>
+                        <th class="col-selecao" data-coluna-fixa>
+                            <app-checkbox id="caixaSelecionarTodos" class="app-checkbox" data-selecao-mestre />
+                        </th>
+                        <th>Nome / Fantasia</th>
+                        <th>CNPJ</th>
+                        <th>Situação</th>
+                        <th class="col-acoes" data-coluna-fixa>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var empresa in Model.Empresas)
+                    {
+                        var urlDetalhes = $"{ModuloRotas.Empresas.Empresas_Detalhes}?id={empresa.Id}";
+                        var urlEditar = $"{ModuloRotas.Empresas.Empresas_Editar}?id={empresa.Id}";
+
+                        <tr>
+                            <td class="col-selecao">
+                                <app-checkbox name="IdsSelecionados" value="@empresa.Id" class="app-checkbox" data-selecao-item />
+                            </td>
+                            <td>
+                                <a href="@urlDetalhes" class="empresa-link">@empresa.Nome</a>
+                                @if (!string.IsNullOrEmpty(empresa.RazaoSocial) && empresa.RazaoSocial != empresa.Nome)
+                                {
+                                    <div class="empresa-razao">@empresa.RazaoSocial</div>
+                                }
+                            </td>
+                            <td>@(string.IsNullOrEmpty(empresa.Cnpj) ? "—" : empresa.Cnpj)</td>
+                            <td>
+                                <span class="distintivo-situacao @(empresa.Ativo ? "situacao-ativo" : "situacao-inativo")">
+                                    @(empresa.Ativo ? "Ativa" : "Inativa")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="acoes-celula">
+                                    <a href="@urlDetalhes" class="btn-acao">Visualizar</a>
+                                    <a href="@urlEditar" class="btn-acao">Editar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    <partial name="~/Pages/Shared/Partials/_FloatingBulkActions.cshtml" model='new ModuloMonolitico.Web.Pages.Shared.FloatingBulkActionsViewModel {
+        FormId = "formularioSelecaoLote",
+        Handler = "DeletarSeguroEmLote",
+        MensagemConfirmacao = "Deseja realmente excluir todas as empresas selecionadas? Esta ação não poderá ser desfeita."
+    }' />
+}
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Empresas/js/empresas-index.js" asp-append-version="true"></script>
+}

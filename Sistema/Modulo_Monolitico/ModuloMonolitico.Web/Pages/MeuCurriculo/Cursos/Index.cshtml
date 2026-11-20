@@ -1,0 +1,38 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.Cursos.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Cursos e Certificações";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo" class="link-voltar-secao">← Meu Currículo</a>
+        <h1 class="titulo-pagina">📜 Cursos e Certificações</h1>
+    </div>
+    <div class="cabecalho-acoes">
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Cursos_Novo" class="btn btn-primary">+ Novo curso</a>
+    </div>
+</div>
+@if (!Model.Cursos.Any())
+{
+    <div class="lista-vazia">
+        <p>Nenhum curso cadastrado ainda.</p>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Cursos_Novo" class="btn btn-primary">Adicionar curso</a>
+    </div>
+}
+else
+{
+    <div class="lista-itens-curriculo">
+        @foreach (var curso in Model.Cursos)
+        {
+            <div class="item-curriculo">
+                <div class="item-curriculo-info">
+                    <strong class="item-titulo">@curso.Nome</strong>
+                    @if (!string.IsNullOrWhiteSpace(curso.Instituicao)) { <span class="item-subtitulo">@curso.Instituicao</span> }
+                    <span class="item-periodo">@(curso.AnoConclusao.HasValue ? $"Concluído em {curso.AnoConclusao}" : "") @(curso.CargaHoraria.HasValue ? $"· {curso.CargaHoraria}h" : "")</span>
+                </div>
+                <a href="@ModuloRotas.Curriculos.MeuCurriculo_Cursos_Editar?id=@curso.Id" class="btn btn-secondary btn-sm">Editar</a>
+            </div>
+        }
+    </div>
+}

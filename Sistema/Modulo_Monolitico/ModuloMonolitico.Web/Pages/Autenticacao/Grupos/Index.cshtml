@@ -1,0 +1,108 @@
+@page
+@model ModuloMonolitico.Web.Pages.Autenticacao.Grupos.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Grupos de Usuários";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Autenticacao/css/grupos-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+            Segurança
+        </div>
+        <h1 class="titulo-pagina">Grupos de Usuários</h1>
+        <p class="subtitulo-pagina">Defina cargos e configure quais telas cada funcionário pode acessar.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Autenticacao.Grupos_Novo" class="botao botao-primario btn-header-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Grupo
+        </a>
+    </div>
+</div>
+
+<div class="info-banner">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <span>Os <strong>Grupos de Usuários</strong> definem o que os <strong>funcionários da sua empresa</strong> podem ver e fazer no ERP e na Área de Serviços. Crie um grupo, selecione as telas permitidas e depois vincule cada usuário a um grupo na tela de usuários.</span>
+</div>
+
+<div class="log-table-wrapper">
+    <div class="table-responsive">
+        <table class="log-table" data-seletor-colunas="true">
+            <thead>
+                <tr>
+                    <th>Nome do Grupo</th>
+                    <th>Descrição</th>
+                    <th>Nível</th>
+                    <th>Situação</th>
+                    <th data-coluna-fixa>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Grupos.Any())
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="log-vazio">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                                <div>Nenhum grupo cadastrado ainda.</div>
+                                <a href="@ModuloRotas.Autenticacao.Grupos_Novo" class="botao botao-primario botao-estado-vazio">Criar primeiro grupo</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @foreach (var grupo in Model.Grupos)
+                {
+                    <tr>
+                        <td><span class="grupo-nome-celula">@grupo.Nome</span></td>
+                        <td><span class="grupo-descricao-celula">@(string.IsNullOrEmpty(grupo.Descricao) ? "—" : grupo.Descricao)</span></td>
+                        <td>
+                            @if (grupo.EhAdministrador)
+                            {
+                                <span class="admin-badge">Admin</span>
+                            }
+                            else
+                            {
+                                <span class="grupo-nivel-padrao">Padrão</span>
+                            }
+                        </td>
+                        <td>
+                            <span class="status-badge @(grupo.Ativo ? "status-ativo" : "status-inativo")">
+                                @(grupo.Ativo ? "Ativo" : "Inativo")
+                            </span>
+                        </td>
+                        <td>
+                            <div class="acoes-celula">
+                                <a href="@($"{ModuloRotas.Autenticacao.Grupos_Editar}?id={grupo.Id}")" class="btn-editar">Configurar Permissões</a>
+                                @if (!grupo.EhAdministrador)
+                                {
+                                    <form method="post" asp-page-handler="DeletarFisico" asp-route-id="@grupo.Id" class="form-deletar-inline">
+                                        <app-button type="submit"
+                                                variant="danger"
+                                                size="sm"
+                                                class="btn-excluir"
+                                                data-confirmacao="Tem certeza que deseja excluir o grupo '@grupo.Nome'? Esta ação não pode ser desfeita."
+                                                data-confirmacao-tipo="perigo"
+                                                data-confirmacao-titulo="Excluir Grupo">
+                                            Excluir
+                                        </app-button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Autenticacao/js/grupos-index.js" asp-append-version="true"></script>
+}

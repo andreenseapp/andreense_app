@@ -1,0 +1,106 @@
+@page
+@model ModuloMonolitico.Web.Pages.Contatos.Cadastro.RelatorioModel
+@{
+    ViewData[ViewDataKeys.Title] = "Relatório de Contatos";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var filtrosAtivos = !string.IsNullOrEmpty(Model.FiltroNome) || !string.IsNullOrEmpty(Model.FiltroTipo);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Contatos/css/cadastro-relatorio.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            CRM
+        </div>
+        <h1 class="titulo-pagina">Relatório de Contatos</h1>
+        <p class="subtitulo-pagina">Exibindo @Model.Contatos.Count() registros encontrados.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Contatos.Index" class="botao botao-fantasma botao-voltar">← Contatos</a>
+        <form method="post" asp-page-handler="ExportarCsv" class="form-exportar">
+            <app-input type="hidden" asp-for="FiltroNome" />
+            <app-input type="hidden" asp-for="FiltroTipo" />
+            <app-button type="submit" variant="secondary" class="botao-exportarar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Exportar CSV
+            </app-button>
+        </form>
+    </div>
+</div>
+
+<form method="get" id="formularioFiltros" class="painel-filtro">
+    <app-input asp-for="FiltroNome"
+               label="Buscar por Nome"
+               type="text"
+               placeholder="Digite o nome..."
+               class="grupo-filtro mb-0" />
+    <app-select asp-for="FiltroTipo"
+                label="Tipo de Pessoa"
+                default-option="Todos"
+                class="grupo-filtro mb-0">
+        <option value="pf">Pessoa Física</option>
+        <option value="pj">Pessoa Jurídica</option>
+    </app-select>
+    <div class="acoes-filtro">
+        @if (filtrosAtivos)
+        {
+            <a href="@ModuloRotas.Contatos.Cadastro_Relatorio" class="botao-filtro-icone" title="Limpar filtros">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </a>
+        }
+        <app-button type="submit" variant="primary" class="botao-filtro">Aplicar Filtros</app-button>
+    </div>
+</form>
+
+@if (!Model.Contatos.Any())
+{
+    <div class="estado-vazio">
+        <p class="estado-vazio-texto">Nenhum contato encontrado com os filtros atuais.</p>
+    </div>
+}
+else
+{
+    <div class="table-container">
+        <table class="app-table" data-seletor-colunas="true">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Documento</th>
+                    <th>E-mail</th>
+                    <th>Telefone</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.Contatos)
+                {
+                    <tr>
+                        <td class="contato-nome">@(c.NomeCompleto ?? c.RazaoSocial)</td>
+                        <td>
+                            @if (c.TipoPessoa == "fisica")
+                            {
+                                <span class="badge-tipo badge-pf">Pessoa Física</span>
+                            }
+                            else
+                            {
+                                <span class="badge-tipo badge-pj">Pessoa Jurídica</span>
+                            }
+                        </td>
+                        <td class="contato-documento">@(c.TipoPessoa == "fisica" ? c.Cpf : c.Cnpj)</td>
+                        <td>@c.Email</td>
+                        <td>@c.Telefone</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Contatos/js/cadastro-relatorio.js" asp-append-version="true"></script>
+}

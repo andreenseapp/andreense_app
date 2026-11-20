@@ -1,0 +1,115 @@
+@page
+@using ModuloMonolitico.Dominio.Configuracoes
+@model ModuloMonolitico.Web.Pages.Imobiliaria.MeusAnuncios.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Meus Imóveis — Santo André";
+    Layout = "~/Pages/Shared/Layouts/_ImobiliariaLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/meus-anuncios.css" asp-append-version="true" />
+}
+
+<partial name="Partials/_LinkVoltar" model='new LinkVoltarModelo { Url = ModuloRotas.Imobiliaria.Index, TextoDestino = "Imóveis" }' />
+
+<div class="cabecalho-pagina">
+    <div class="cabecalho-pagina-esquerda">
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            Imóveis
+        </div>
+        <h1 class="titulo-pagina">Meus Imóveis</h1>
+    </div>
+    <a href="@ModuloRotas.Imobiliaria.MeusAnuncios_Novo" class="btn-novo-anuncio" id="btn-novo-anuncio">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Novo anúncio
+    </a>
+</div>
+
+
+
+@if (!Model.Anuncios.Any())
+{
+    <div class="imob-vazio">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <h2>Você ainda não tem anúncios</h2>
+        <p>Publique seu imóvel e alcance compradores e locatários de Santo André.</p>
+        <a href="@ModuloRotas.Imobiliaria.MeusAnuncios_Novo" class="btn-anunciar">Publicar meu primeiro imóvel</a>
+    </div>
+}
+else
+{
+    <div class="meus-anuncios-lista" id="meus-anuncios-lista">
+        @foreach (var anuncio in Model.Anuncios)
+        {
+            <div class="meu-anuncio-card" id="meu-anuncio-@anuncio.AnuncioId">
+                <div class="meu-anuncio-foto">
+                    @if (!string.IsNullOrEmpty(anuncio.FotoCapa))
+                    {
+                        <img src="@anuncio.FotoCapa" alt="@anuncio.Titulo" loading="lazy" />
+                    }
+                    else
+                    {
+                        <div class="anuncio-foto-placeholder anuncio-foto-placeholder--sm">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        </div>
+                    }
+                </div>
+                <div class="meu-anuncio-info">
+                    <div class="meu-anuncio-header">
+                        <h3 class="meu-anuncio-titulo">
+                            <a href="@ModuloRotas.Imobiliaria.Detalhes?id=@anuncio.AnuncioId">@anuncio.Titulo</a>
+                        </h3>
+                        <span class="selo-situacao selo-situacao--@anuncio.Situacao">@anuncio.Situacao</span>
+                        @if (anuncio.EhDestaque)
+                        {
+                            <span class="selo-destaque">@MensagensSistema.Imobiliaria.SeloDestaque</span>
+                        }
+                    </div>
+                    <p class="meu-anuncio-bairro">@anuncio.Bairro — R$ @anuncio.ValorPrincipal.ToString("N0")</p>
+                    <p class="meu-anuncio-data">Publicado em @anuncio.DataInclusao.ToLocalTime().ToString("dd/MM/yyyy")</p>
+                </div>
+                <div class="meu-anuncio-acoes">
+                    @if (anuncio.Situacao == "ativo")
+                    {
+                        <form method="post" asp-page-handler="AlternarDestaque" class="form-destaque">
+                            @Html.AntiForgeryToken()
+                            <app-input type="hidden" name="anuncioId" value="@anuncio.AnuncioId" />
+                            <app-button type="submit" variant="ghost" class="btn-acao @(anuncio.EhDestaque ? "btn-acao--destaque-ativo" : "btn-acao--destaque")" id="btn-destaque-@anuncio.AnuncioId">
+                                @(anuncio.EhDestaque ? "★ Em destaque" : "☆ Destacar")
+                            </app-button>
+                        </form>
+                    }
+                    <a href="@ModuloRotas.Imobiliaria.MeusAnuncios_Editar?id=@anuncio.AnuncioId" class="btn-acao btn-acao--editar" id="btn-editar-@anuncio.AnuncioId">
+                        Editar
+                    </a>
+                    <div class="situacao-menu" data-anuncio-id="@anuncio.AnuncioId">
+                        <app-button type="button" variant="ghost" class="btn-acao btn-acao--situacao" data-alternar-menu="true">Situação ▾</app-button>
+                        <div class="menu-suspenso" hidden>
+                            @if (anuncio.Situacao != "ativo")
+                            {
+                                <app-button type="button" variant="ghost" class="menu-suspenso-item" data-situacao="ativo" data-anuncio-id="@anuncio.AnuncioId">✅ Ativar</app-button>
+                            }
+                            @if (anuncio.Situacao == "ativo")
+                            {
+                                <app-button type="button" variant="ghost" class="menu-suspenso-item" data-situacao="pausado" data-anuncio-id="@anuncio.AnuncioId">⏸ Pausar</app-button>
+                            }
+                            <app-button type="button" variant="ghost" class="menu-suspenso-item" data-situacao="vendido" data-anuncio-id="@anuncio.AnuncioId">✔ Marcar como Vendido</app-button>
+                            <app-button type="button" variant="ghost" class="menu-suspenso-item" data-situacao="locado" data-anuncio-id="@anuncio.AnuncioId">✔ Marcar como Locado</app-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <form id="form-situacao" method="post" asp-page-handler="AtualizarSituacao" hidden>
+        @Html.AntiForgeryToken()
+        <app-input type="hidden" name="anuncioId" id="hidden-anuncio-id" />
+        <app-input type="hidden" name="novaSituacao" id="hidden-nova-situacao" />
+    </form>
+}
+
+@section Scripts {
+    <script src="~/Contextos/Imobiliaria/js/meus-anuncios.js" asp-append-version="true"></script>
+}

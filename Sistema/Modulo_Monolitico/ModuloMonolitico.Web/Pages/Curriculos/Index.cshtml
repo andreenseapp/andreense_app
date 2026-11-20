@@ -1,0 +1,219 @@
+@page
+@model ModuloMonolitico.Web.Pages.Curriculos.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Banco de Talentos";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Curriculos/index.css" asp-append-version="true" />
+}
+
+<div class="curriculos-hero">
+    <div class="curriculos-hero-content">
+        <div class="hero-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            Banco de Talentos
+        </div>
+        <h1 class="hero-titulo">Encontre o profissional ideal</h1>
+        <p class="hero-subtitulo">Conecte-se com talentos locais prontos para novas oportunidades.</p>
+        <div class="hero-busca-rapida">
+            <form method="get" class="busca-form">
+                <app-input type="text" name="Filtro.CargoDesejado" value="@Model.Filtro.CargoDesejado" placeholder="Cargo, área ou profissão..." class="busca-input mb-0" />
+                <app-button type="submit" variant="primary" class="busca-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    Buscar
+                </app-button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="curriculos-layout">
+    <aside class="filtros-sidebar">
+        <div class="filtros-header">
+            <span class="filtros-titulo">Filtros</span>
+            @if (Model.FiltrosAtivos)
+            {
+                <a href="/Curriculos" class="filtros-limpar">Limpar tudo</a>
+            }
+        </div>
+
+        <form method="get" id="form-filtros">
+            <app-input type="hidden" name="Filtro.CargoDesejado" value="@Model.Filtro.CargoDesejado" />
+
+            <div class="filtro-grupo">
+                <label class="filtro-label">Área de Atuação</label>
+                <app-select name="Filtro.AreaAtuacao" class="filtro-select" data-auto-submit>
+                    <option value="">Todas as áreas</option>
+                    @foreach (var area in new[] { "Tecnologia", "Administração", "Vendas", "Marketing", "Saúde", "Educação", "Engenharia", "Logística", "Financeiro", "RH", "Jurídico", "Construção Civil", "Gastronomia", "Arte e Design" })
+                    {
+                        <option value="@area" selected="@(Model.Filtro.AreaAtuacao == area ? "selected" : null)">@area</option>
+                    }
+                </app-select>
+            </div>
+
+            <div class="filtro-grupo">
+                <label class="filtro-label">Nível de Experiência</label>
+                <div class="filtro-opcoes">
+                    @foreach (var (valor, label) in new[] { ("estagiario","Estagiário"), ("junior","Júnior"), ("pleno","Pleno"), ("senior","Sênior"), ("especialista","Especialista") })
+                    {
+                        <label class="filtro-chip @(Model.Filtro.Nivel == valor ? "ativo" : "")">
+                            <app-input type="radio" name="Filtro.Nivel" value="@valor" checked="@(Model.Filtro.Nivel == valor ? "checked" : null)" data-auto-submit />
+                            @label
+                        </label>
+                    }
+                </div>
+            </div>
+
+            <div class="filtro-grupo">
+                <label class="filtro-label">Modalidade</label>
+                <div class="filtro-opcoes">
+                    @foreach (var (valor, label) in new[] { ("clt","CLT"), ("pj","PJ"), ("temporario","Temporário"), ("freelancer","Freelancer") })
+                    {
+                        <label class="filtro-chip @(Model.Filtro.Modalidade == valor ? "ativo" : "")">
+                            <app-input type="radio" name="Filtro.Modalidade" value="@valor" checked="@(Model.Filtro.Modalidade == valor ? "checked" : null)" data-auto-submit />
+                            @label
+                        </label>
+                    }
+                </div>
+            </div>
+
+            <div class="filtro-grupo">
+                <label class="filtro-label">Disponibilidade</label>
+                <app-select name="Filtro.Disponibilidade" class="filtro-select" data-auto-submit>
+                    <option value="">Qualquer</option>
+                    <option value="imediata" selected="@(Model.Filtro.Disponibilidade == "imediata" ? "selected" : null)">Imediata</option>
+                    <option value="15dias" selected="@(Model.Filtro.Disponibilidade == "15dias" ? "selected" : null)">Em até 15 dias</option>
+                    <option value="30dias" selected="@(Model.Filtro.Disponibilidade == "30dias" ? "selected" : null)">Em até 30 dias</option>
+                </app-select>
+            </div>
+
+            <div class="filtro-grupo">
+                <label class="filtro-label">Idioma</label>
+                <app-select name="Filtro.Idioma" class="filtro-select" data-auto-submit>
+                    <option value="">Qualquer</option>
+                    @foreach (var idioma in new[] { "Inglês", "Espanhol", "Francês", "Alemão", "Italiano", "Mandarim", "Japonês", "Português" })
+                    {
+                        <option value="@idioma" selected="@(Model.Filtro.Idioma == idioma ? "selected" : null)">@idioma</option>
+                    }
+                </app-select>
+            </div>
+
+            <div class="filtro-grupo">
+                <label class="filtro-label">Pretensão Salarial (R$)</label>
+                <div class="filtro-range">
+                    <app-input type="number" name="Filtro.PretensaoMinima" value="@Model.Filtro.PretensaoMinima" placeholder="Mínimo" class="filtro-valor mb-0" />
+                    <span>—</span>
+                    <app-input type="number" name="Filtro.PretensaoMaxima" value="@Model.Filtro.PretensaoMaxima" placeholder="Máximo" class="filtro-valor mb-0" />
+                </div>
+            </div>
+
+            <div class="filtro-grupo">
+                <label class="filtro-check">
+                    <app-checkbox name="Filtro.Pcd" value="true" checked="@(Model.Filtro.Pcd == true)" data-auto-submit />
+                    <span>Somente PCD</span>
+                </label>
+                <label class="filtro-check">
+                    <app-checkbox name="Filtro.AceitaViagem" value="true" checked="@(Model.Filtro.AceitaViagem == true)" data-auto-submit />
+                    <span>Aceita viagem</span>
+                </label>
+                <label class="filtro-check">
+                    <app-checkbox name="Filtro.AceitaMudanca" value="true" checked="@(Model.Filtro.AceitaMudanca == true)" data-auto-submit />
+                    <span>Aceita mudança</span>
+                </label>
+            </div>
+
+            <app-button type="submit" variant="primary" class="btn-aplicar-filtros">Aplicar Filtros</app-button>
+        </form>
+    </aside>
+
+    <main class="curriculos-main">
+        <div class="resultados-header">
+            <span class="resultados-count">
+                <strong>@Model.Resultado.TotalItens</strong> @(Model.Resultado.TotalItens == 1 ? "profissional encontrado" : "profissionais encontrados")
+            </span>
+            @if (Model.FiltrosAtivos)
+            {
+                <div class="chips-filtros-ativos">
+                    @if (!string.IsNullOrWhiteSpace(Model.Filtro.AreaAtuacao))
+                    {
+                        <span class="chip-ativo">@Model.Filtro.AreaAtuacao <a href="/Curriculos?@Model.QueryStringFiltros.Replace($"&Filtro.AreaAtuacao={Uri.EscapeDataString(Model.Filtro.AreaAtuacao)}", "")" class="chip-remover">×</a></span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Filtro.Nivel))
+                    {
+                        <span class="chip-ativo">@Model.Filtro.Nivel <a href="/Curriculos?@Model.QueryStringFiltros.Replace($"&Filtro.Nivel={Uri.EscapeDataString(Model.Filtro.Nivel)}", "")" class="chip-remover">×</a></span>
+                    }
+                </div>
+            }
+        </div>
+
+        @if (!Model.Resultado.Itens.Any())
+        {
+            <div class="curriculos-vazio">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <h2>Nenhum profissional encontrado</h2>
+                <p>Tente ajustar os filtros para ampliar sua busca.</p>
+            </div>
+        }
+        else
+        {
+            <div class="curriculos-grid">
+                @foreach (var curriculo in Model.Resultado.Itens)
+                {
+                    <a href="/Curriculos/Detalhes?id=@curriculo.Id" class="card-curriculo">
+                        <div class="card-curriculo-header">
+                            <div class="card-avatar">
+                                @if (!string.IsNullOrWhiteSpace(curriculo.UrlFotoPerfil))
+                                {
+                                    <img src="@curriculo.UrlFotoPerfil" alt="Foto de @curriculo.NomeCompleto" />
+                                }
+                                else
+                                {
+                                    <div class="card-avatar-inicial">@(curriculo.NomeCompleto.FirstOrDefault())</div>
+                                }
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-nome">@curriculo.NomeCompleto</h3>
+                                <p class="card-cargo">@curriculo.CargoDesejado</p>
+                                <p class="card-area">@curriculo.AreaAtuacao</p>
+                            </div>
+                        </div>
+                        <div class="card-tags">
+                            <span class="tag nivel">@curriculo.Nivel</span>
+                            <span class="tag modalidade">@curriculo.Modalidade.ToUpper()</span>
+                            @if (curriculo.Pcd) { <span class="tag pcd">PCD</span> }
+                            <span class="tag disponibilidade">@(curriculo.Disponibilidade == "imediata" ? "Disponível" : curriculo.Disponibilidade)</span>
+                        </div>
+                        <div class="card-curriculo-footer">
+                            @if (!string.IsNullOrWhiteSpace(curriculo.UltimaEmpresa))
+                            {
+                                <span class="card-ultima-exp">💼 @curriculo.UltimoCargoOcupado — @curriculo.UltimaEmpresa</span>
+                            }
+                            @if (curriculo.PretensaoSalarial.HasValue)
+                            {
+                                <span class="card-pretensao">@curriculo.PretensaoSalarial.Value.ToString("C0")</span>
+                            }
+                        </div>
+                    </a>
+                }
+            </div>
+
+            @if (Model.Resultado.TotalPaginas > 1)
+            {
+                <div class="paginacao">
+                    @if (Model.Resultado.PaginaAtual > 1)
+                    {
+                        <a href="/Curriculos?pagina=@(Model.Resultado.PaginaAtual - 1)@Model.QueryStringFiltros" class="pag-btn">← Anterior</a>
+                    }
+                    <span class="pag-info">Página @Model.Resultado.PaginaAtual de @Model.Resultado.TotalPaginas</span>
+                    @if (Model.Resultado.PaginaAtual < Model.Resultado.TotalPaginas)
+                    {
+                        <a href="/Curriculos?pagina=@(Model.Resultado.PaginaAtual + 1)@Model.QueryStringFiltros" class="pag-btn">Próxima →</a>
+                    }
+                </div>
+            }
+        }
+    </main>
+</div>
+
+<script src="~/Contextos/Curriculos/index.js" asp-append-version="true"></script>

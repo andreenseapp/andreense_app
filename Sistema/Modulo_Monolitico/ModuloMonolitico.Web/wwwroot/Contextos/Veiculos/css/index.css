@@ -1,0 +1,308 @@
+/* index.css — Vitrine pública de veículos */
+
+.veic-portal {
+    min-height: 100vh;
+}
+
+/* ---- Hero ---- */
+.veic-hero {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 0 0 32px;
+}
+
+.veic-faixa {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 24px 0;
+}
+
+.veic-hero-content {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.veic-hero-title {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    color: rgba(255,255,255,0.95);
+    margin: 0 0 10px;
+    letter-spacing: -0.02em;
+}
+
+.veic-hero-subtitle {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.55);
+    margin: 0;
+}
+
+/* ---- Busca simples ---- */
+.veic-busca-simples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.busca-simples-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 140px;
+    flex: 1;
+}
+
+.busca-simples-campo--grande {
+    flex: 2;
+}
+
+.filtro-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+}
+
+.filtro-input,
+.filtro-select {
+    width: 100%;
+}
+
+.busca-simples-acao {
+    flex-shrink: 0;
+}
+
+.btn-buscar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--clr-status-andamento);
+    border: none;
+    border-radius: 10px;
+    color: var(--clr-surface);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-buscar:hover {
+    background: #6d28d9;
+    transform: translateY(-1px);
+}
+
+/* ---- Layout conteúdo ---- */
+.veic-conteudo {
+    max-width: 1280px;
+    margin: 32px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+/* ---- Painel de filtros ---- */
+.filtros-panel {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 20px;
+    position: sticky;
+    top: 80px;
+}
+
+.filtros-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.filtros-titulo {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.8);
+    margin: 0;
+}
+
+.filtros-limpar {
+    font-size: 0.78rem;
+    color: var(--clr-status-andamento);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.filtro-grupo {
+    margin-bottom: 14px;
+}
+
+.filtro-range {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filtro-range-sep {
+    color: rgba(255,255,255,0.25);
+    font-size: 0.8rem;
+}
+
+.filtro-input-mini {
+    flex: 1;
+}
+
+.btn-aplicar-filtros {
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 10px;
+    color: var(--clr-status-andamento);
+    padding: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-aplicar-filtros:hover {
+    background: rgba(139, 92, 246, 0.25);
+}
+
+/* ---- Grid resultados ---- */
+.veic-resultados-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.veic-total {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+}
+
+.veic-paginas {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.35);
+}
+
+.veic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.veic-grid--destaque .veic-card {
+    border-color: rgba(251, 191, 36, 0.2);
+}
+
+.veic-destaque-section {
+    margin-bottom: 32px;
+}
+
+.section-header {
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.75);
+    margin: 0;
+}
+
+/* ---- Estado vazio ---- */
+.veic-vazio {
+    text-align: center;
+    padding: 60px 24px;
+    color: rgba(255,255,255,0.4);
+}
+
+.veic-vazio-icone {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.veic-vazio-titulo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    margin: 0 0 8px;
+}
+
+.veic-vazio-texto {
+    font-size: 0.9rem;
+    margin: 0 0 20px;
+}
+
+.btn-explorar {
+    display: inline-flex;
+    padding: 10px 22px;
+    background: rgba(139, 92, 246, 0.2);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 10px;
+    color: var(--clr-status-andamento);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.88rem;
+    transition: all 0.15s;
+}
+
+.btn-explorar:hover {
+    background: rgba(139, 92, 246, 0.35);
+}
+
+/* ---- Paginação ---- */
+.veic-paginacao {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+}
+
+.veic-pag-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+}
+
+.veic-pag-btn:hover {
+    border-color: rgba(139, 92, 246, 0.4);
+    color: var(--clr-status-andamento);
+}
+
+.veic-pag-btn--ativo {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.5);
+    color: var(--clr-status-andamento);
+    font-weight: 700;
+}
+
+@media (max-width: 900px) {
+    .veic-conteudo {
+        grid-template-columns: 1fr;
+    }
+    .filtros-panel {
+        position: static;
+    }
+}

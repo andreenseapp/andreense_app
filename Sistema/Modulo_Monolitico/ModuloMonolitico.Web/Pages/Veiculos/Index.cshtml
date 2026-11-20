@@ -1,0 +1,183 @@
+@page
+@model ModuloMonolitico.Web.Pages.Veiculos.IndexModel
+@{
+    ViewData["Title"] = "Veículos — Santo André";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Veiculos/css/comum.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Veiculos/css/index.css" asp-append-version="true" />
+}
+
+<form id="form-filtros" method="get" class="veic-portal"
+      data-url-favoritar="@ModuloRotas.Veiculos.Favoritar"
+      data-url-login="@ModuloRotas.Autenticacao.Login"
+      data-url-contexto-usuario="@Model.UrlContextoUsuario"
+      data-url-alternar-destaque="@Model.UrlAlternarDestaque"
+      data-usuario-logado="@(Model.UsuarioLogado ? "true" : "false")"
+      data-usuario-master="@(Model.UsuarioEhMaster ? "true" : "false")">
+
+    <div class="veic-hero">
+        <div class="veic-faixa">
+            <div class="veic-hero-content">
+                <div class="page-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3m-4 13H19a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 002 2z"></path></svg>
+                    Veículos
+                </div>
+                <h1 class="veic-hero-title">Veículos em Santo André</h1>
+                <p class="veic-hero-subtitle">Compre e venda veículos direto de quem está perto de você.</p>
+            </div>
+
+            <div class="veic-busca-simples">
+                <div class="busca-simples-campo busca-simples-campo--grande">
+                    <label class="filtro-label" for="filtro-marca">Marca</label>
+                    <app-input name="Filtro.Marca" id="filtro-marca" placeholder="Ex: Toyota, Honda..." value="@Model.Filtro.Marca" class="filtro-input" />
+                </div>
+                <div class="busca-simples-campo busca-simples-campo--grande">
+                    <label class="filtro-label" for="filtro-modelo">Modelo</label>
+                    <app-input name="Filtro.Modelo" id="filtro-modelo" placeholder="Ex: Corolla, Civic..." value="@Model.Filtro.Modelo" class="filtro-input" />
+                </div>
+                <div class="busca-simples-campo">
+                    <label class="filtro-label" for="filtro-tipo">Tipo</label>
+                    <app-select name="Filtro.TipoVeiculo" id="filtro-tipo" class="filtro-select">
+                        <option value="">Todos</option>
+                        <option value="carro" selected="@(Model.Filtro.TipoVeiculo == "carro")">Carro</option>
+                        <option value="moto" selected="@(Model.Filtro.TipoVeiculo == "moto")">Moto</option>
+                        <option value="caminhao" selected="@(Model.Filtro.TipoVeiculo == "caminhao")">Caminhão</option>
+                        <option value="utilitario" selected="@(Model.Filtro.TipoVeiculo == "utilitario")">Utilitário</option>
+                    </app-select>
+                </div>
+                <div class="busca-simples-acao">
+                    <app-button type="submit" class="btn-buscar">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        Buscar
+                    </app-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="veic-conteudo">
+        <div class="veic-filtros-coluna">
+            <div class="filtros-panel">
+                <div class="filtros-panel-header">
+                    <h2 class="filtros-titulo">Filtros</h2>
+                    @if (Model.FiltrosAtivos)
+                    {
+                        <a href="@ModuloRotas.Veiculos.Index" class="filtros-limpar">Limpar</a>
+                    }
+                </div>
+
+                <div class="filtro-grupo">
+                    <label class="filtro-label" for="filtro-combustivel">Combustível</label>
+                    <app-select name="Filtro.Combustivel" id="filtro-combustivel" class="filtro-select">
+                        <option value="">Todos</option>
+                        <option value="gasolina" selected="@(Model.Filtro.Combustivel == "gasolina")">Gasolina</option>
+                        <option value="etanol" selected="@(Model.Filtro.Combustivel == "etanol")">Etanol</option>
+                        <option value="flex" selected="@(Model.Filtro.Combustivel == "flex")">Flex</option>
+                        <option value="diesel" selected="@(Model.Filtro.Combustivel == "diesel")">Diesel</option>
+                        <option value="eletrico" selected="@(Model.Filtro.Combustivel == "eletrico")">Elétrico</option>
+                        <option value="hibrido" selected="@(Model.Filtro.Combustivel == "hibrido")">Híbrido</option>
+                    </app-select>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label class="filtro-label" for="filtro-cambio">Câmbio</label>
+                    <app-select name="Filtro.Cambio" id="filtro-cambio" class="filtro-select">
+                        <option value="">Todos</option>
+                        <option value="manual" selected="@(Model.Filtro.Cambio == "manual")">Manual</option>
+                        <option value="automatico" selected="@(Model.Filtro.Cambio == "automatico")">Automático</option>
+                        <option value="cvt" selected="@(Model.Filtro.Cambio == "cvt")">CVT</option>
+                        <option value="automatizado" selected="@(Model.Filtro.Cambio == "automatizado")">Automatizado</option>
+                    </app-select>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label class="filtro-label">Ano do Modelo</label>
+                    <div class="filtro-range">
+                        <app-input type="number" name="Filtro.AnoMinimo" placeholder="De" value="@Model.Filtro.AnoMinimo" class="filtro-input-mini" />
+                        <span class="filtro-range-sep">—</span>
+                        <app-input type="number" name="Filtro.AnoMaximo" placeholder="Até" value="@Model.Filtro.AnoMaximo" class="filtro-input-mini" />
+                    </div>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label class="filtro-label">Preço</label>
+                    <div class="filtro-range">
+                        <app-input type="number" name="Filtro.PrecoMinimo" placeholder="De" value="@Model.Filtro.PrecoMinimo" class="filtro-input-mini" />
+                        <span class="filtro-range-sep">—</span>
+                        <app-input type="number" name="Filtro.PrecoMaximo" placeholder="Até" value="@Model.Filtro.PrecoMaximo" class="filtro-input-mini" />
+                    </div>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label class="filtro-label" for="filtro-km">KM máximo</label>
+                    <app-input type="number" name="Filtro.KmMaximo" id="filtro-km" placeholder="Ex: 80000" value="@Model.Filtro.KmMaximo" class="filtro-input" />
+                </div>
+
+                <div class="filtro-grupo">
+                    <app-checkbox name="Filtro.AceitaTroca" label="Aceita troca" />
+                </div>
+
+                <app-button type="submit" class="btn-aplicar-filtros">Aplicar filtros</app-button>
+            </div>
+        </div>
+
+        <div class="veic-lista-coluna">
+            @if (Model.Resultado.TotalItens == 0)
+            {
+                <div class="veic-vazio">
+                    <div class="veic-vazio-icone">🚗</div>
+                    <h2 class="veic-vazio-titulo">Nenhum veículo encontrado</h2>
+                    <p class="veic-vazio-texto">Tente ajustar os filtros para encontrar o que você procura.</p>
+                    <a href="@ModuloRotas.Veiculos.Index" class="btn-explorar">Ver todos os veículos</a>
+                </div>
+            }
+            else
+            {
+                @if (Model.AnunciosDestaque.Any())
+                {
+                    <div class="veic-destaque-section">
+                        <div class="section-header">
+                            <h2 class="section-title">⭐ Destaques</h2>
+                        </div>
+                        <div class="veic-grid veic-grid--destaque">
+                            @foreach (var anuncio in Model.AnunciosDestaque)
+                            {
+                                <partial name="_CardVeiculo" model="anuncio" />
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div class="veic-resultados-header">
+                    <span class="veic-total">@Model.Resultado.TotalItens veículo(s) encontrado(s)</span>
+                    <div class="veic-paginas">Página @Model.Resultado.PaginaAtual de @Model.Resultado.TotalPaginas</div>
+                </div>
+
+                <div class="veic-grid">
+                    @foreach (var anuncio in Model.ItensGrade)
+                    {
+                        <partial name="_CardVeiculo" model="anuncio" />
+                    }
+                </div>
+
+                @if (Model.Resultado.TotalPaginas > 1)
+                {
+                    <div class="veic-paginacao">
+                        @for (var p = 1; p <= Model.Resultado.TotalPaginas; p++)
+                        {
+                            var classeAtiva = p == Model.Resultado.PaginaAtual ? "veic-pag-btn veic-pag-btn--ativo" : "veic-pag-btn";
+                            <a href="?pagina=@p" class="@classeAtiva">@p</a>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/Contextos/Veiculos/js/index.js" asp-append-version="true"></script>
+}

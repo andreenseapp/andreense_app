@@ -1,0 +1,76 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.GruposSaaS.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Grupos SaaS";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/grupossaas-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            Segurança
+        </div>
+        <h1 class="titulo-pagina">Grupos SaaS</h1>
+        <p class="subtitulo-pagina">Cargos internos da plataforma: Administrador, Moderador, Suporte e mais.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.InfraAdmin.GruposSaaS_Novo" class="botao botao-primario btn-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Grupo SaaS
+        </a>
+    </div>
+</div>
+
+<div class="info-banner">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <span>Os <strong>Grupos SaaS</strong> controlam o acesso dos <strong>colaboradores da plataforma</strong> (não dos clientes/tenants).
+        Use-os para definir quais telas e ações cada cargo interno pode acessar.</span>
+</div>
+
+@if (!Model.Grupos.Any())
+{
+    <div class="estado-vazio">
+        <p>Nenhum grupo SaaS cadastrado.</p>
+        <a href="@ModuloRotas.InfraAdmin.GruposSaaS_Novo" class="botao-novo botao-estado-vazio">Criar primeiro grupo</a>
+    </div>
+}
+else
+{
+    <div class="saas-grid">
+        @foreach (var grupo in Model.Grupos)
+        {
+            <div class="grupo-card">
+                <div class="grupo-card-header">
+                    <div>
+                        <h2 class="grupo-nome">@grupo.Nome</h2>
+                    </div>
+                    <span class="situacao-badge @(grupo.Ativo ? "situacao-ativo" : "situacao-inativo")">
+                        @(grupo.Ativo ? "Ativo" : "Inativo")
+                    </span>
+                </div>
+
+                <p class="grupo-descricao">@(string.IsNullOrEmpty(grupo.Descricao) ? "Sem descrição." : grupo.Descricao)</p>
+
+                <div class="grupo-actions">
+                    <a href="@($"{ModuloRotas.InfraAdmin.GruposSaaS_Editar}?id={grupo.Id}")" class="btn-acao">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        Permissões
+                    </a>
+                    <a href="@($"{ModuloRotas.InfraAdmin.GruposSaaS_Usuarios}?id={grupo.Id}")" class="btn-acao btn-usuarios">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                        Membros
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/grupossaas-index.js" asp-append-version="true"></script>
+}

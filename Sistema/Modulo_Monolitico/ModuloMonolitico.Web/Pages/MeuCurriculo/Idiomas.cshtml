@@ -1,0 +1,52 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.IdiomasModel
+@{
+    ViewData[ViewDataKeys.Title] = "Idiomas";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<link rel="stylesheet" href="~/Contextos/MeuCurriculo/idiomas.css" asp-append-version="true" />
+
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo" class="link-voltar-secao">← Meu Currículo</a>
+        <h1 class="titulo-pagina">🌍 Idiomas</h1>
+        <p class="subtitulo-pagina">Informe os idiomas que você domina e seu nível de proficiência.</p>
+    </div>
+</div>
+
+<form method="post" class="form-curriculo" id="form-idiomas">
+    <app-input type="hidden" asp-for="IdiomasJson" id="idiomas-json" />
+
+    <div class="idiomas-editor">
+        <div id="lista-idiomas" class="idiomas-lista">
+        </div>
+
+        <div class="adicionar-idioma">
+            <app-select id="sel-idioma" class="filtro-select">
+                <option value="">Selecione o idioma</option>
+                @foreach (var idioma in new[] { "Inglês", "Espanhol", "Francês", "Alemão", "Italiano", "Português", "Mandarim", "Japonês", "Árabe", "Russo", "Libras", "Outro" })
+                {
+                    <option>@idioma</option>
+                }
+            </app-select>
+            <app-select id="sel-nivel" class="filtro-select">
+                <option value="basico">Básico</option>
+                <option value="intermediario">Intermediário</option>
+                <option value="avancado">Avançado</option>
+                <option value="fluente">Fluente</option>
+                <option value="nativo">Nativo</option>
+            </app-select>
+            <app-button type="button" variant="secondary" id="btn-adicionar-idioma" class="btn btn-secondary">+ Adicionar</app-button>
+        </div>
+    </div>
+
+    <div class="form-acoes">
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo" class="btn btn-ghost">Cancelar</a>
+        <app-button type="submit" variant="primary">Salvar idiomas</app-button>
+    </div>
+</form>
+
+<script>
+    const idiomasIniciais = @Html.Raw(Model.IdiomasJson);
+</script>
+<script src="~/Contextos/MeuCurriculo/idiomas.js" asp-append-version="true"></script>

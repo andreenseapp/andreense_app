@@ -1,0 +1,362 @@
+@page
+@using ModuloMonolitico.Dominio.Constantes
+@model ModuloMonolitico.Web.Pages.Imoveis.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Imóveis — Santo André";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+    var amenidadesSelecionadas = new HashSet<string>(Model.Filtro.CodigosAmenidade ?? [], StringComparer.OrdinalIgnoreCase);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/comum.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/favoritos.css" asp-append-version="true" />
+}
+
+<form id="form-filtros" method="get" class="imob-portal"
+      data-url-favoritar="@ModuloRotas.Imoveis.Favoritar"
+      data-url-login="@ModuloRotas.Autenticacao.Login"
+      data-url-registrar-visualizacao="@Model.UrlRegistrarVisualizacao"
+      data-url-contexto-usuario="@Model.UrlContextoUsuario"
+      data-url-alternar-destaque="@Model.UrlAlternarDestaque"
+      data-storage-visualizados="@Model.ChaveStorageVisualizados"
+      data-usuario-logado="@(Model.UsuarioLogado ? "true" : "false")"
+      data-usuario-master="@(Model.UsuarioEhMaster ? "true" : "false")">
+    <div class="imob-hero">
+        <div class="imob-faixa">
+            <div class="imob-hero-content">
+                <div class="page-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                    Imóveis
+                </div>
+                <h1 class="imob-hero-title">Imóveis em Santo André</h1>
+                <p class="imob-hero-subtitle">Compre, venda ou alugue imóveis direto de quem mora aqui.</p>
+            </div>
+
+            <div class="imob-busca-simples">
+                <div class="busca-simples-campo">
+                    <label class="filtro-label" for="filtro-tipo-negocio">Finalidade</label>
+                    <app-select name="Filtro.TipoNegocio" id="filtro-tipo-negocio" class="filtro-select">
+                        @if (Model.Filtro.TipoNegocio == "venda")
+                        { <option value="venda" selected>Comprar</option> }
+                        else
+                        { <option value="venda">Comprar</option> }
+                        @if (Model.Filtro.TipoNegocio == "aluguel")
+                        { <option value="aluguel" selected>Alugar</option> }
+                        else
+                        { <option value="aluguel">Alugar</option> }
+                    </app-select>
+                </div>
+
+                <div class="busca-simples-campo">
+                    <label class="filtro-label" for="filtro-tipo-imovel">Tipo</label>
+                    <app-select name="Filtro.TipoImovel" id="filtro-tipo-imovel" class="filtro-select">
+                        <option value="">Todos</option>
+                        @foreach (var tipo in new[] { ("apartamento","Apartamento"), ("casa","Casa"), ("kitnet","Kitnet/Studio"), ("comercial","Comercial") })
+                        {
+                            if (Model.Filtro.TipoImovel == tipo.Item1)
+                            { <option value="@tipo.Item1" selected>@tipo.Item2</option> }
+                            else
+                            { <option value="@tipo.Item1">@tipo.Item2</option> }
+                        }
+                    </app-select>
+                </div>
+
+                <div class="busca-simples-campo busca-simples-campo--largo">
+                    <label class="filtro-label" for="filtro-bairro">Bairro</label>
+                    <app-input type="text" name="Filtro.Bairro" id="filtro-bairro" class="filtro-input mb-0"
+                           placeholder="Digite um bairro..." value="@Model.Filtro.Bairro" autocomplete="off" />
+                </div>
+
+                <app-button type="submit" variant="primary" class="btn-filtrar btn-filtrar--simples" id="btn-filtrar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <span>Buscar</span>
+                </app-button>
+            </div>
+        </div>
+    </div>
+
+    <div class="imob-faixa imob-faixa--atalhos">
+        <div class="imob-atalhos">
+            <a class="imob-atalho-titulo" href="@Model.UrlFavoritos">
+                <span class="imob-atalho-icone" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                </span>
+                @MensagensSistema.Imobiliaria.TituloMeusFavoritos
+            </a>
+        </div>
+    </div>
+
+    <div class="imob-faixa imob-faixa--buscas">
+        <div class="imob-buscas-recentes"
+             id="buscas-recentes"
+             data-modo="@(Model.UsuarioLogado ? "logado" : "anonimo")"
+             data-storage-key="@Model.ChaveStorageBuscasRecentes"
+             data-url-imoveis="@Model.UrlImoveis"
+             data-url-gestao="@Model.UrlBuscasRecentes"
+             data-url-registrar-busca="@(Model.UsuarioLogado ? Model.UrlContextoUsuario + "?handler=RegistrarBusca" : "")"
+             data-limite="8"
+             data-titulo="@MensagensSistema.Imobiliaria.TituloBuscasRecentes"
+             data-gerenciar="@MensagensSistema.Imobiliaria.GerenciarBuscasRecentes"
+             data-chave-filtro-atual="@Model.ChaveFiltroAtual"
+             data-rotulo-atual="@Model.RotuloBuscaAtual"
+             data-titulo-atual="@MensagensSistema.Imobiliaria.BuscaAtual"
+             @(Model.TemBuscaSalvavel ? null : "hidden")>
+            <div class="buscas-recentes-cabecalho">
+                <h2 class="buscas-recentes-titulo">@MensagensSistema.Imobiliaria.TituloBuscasRecentes</h2>
+                <a class="buscas-recentes-gerenciar" href="@Model.UrlBuscasRecentes">@MensagensSistema.Imobiliaria.GerenciarBuscasRecentes</a>
+            </div>
+            <div class="buscas-recentes-lista" id="buscas-recentes-lista" data-lista-buscas></div>
+        </div>
+    </div>
+
+    <div class="imob-faixa">
+    <div class="imob-corpo">
+        <app-button type="button" variant="secondary" class="btn-abrir-filtros" data-abrir-filtros="true" aria-expanded="false" aria-controls="filtros-lateral">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+            Filtros
+            @if (Model.FiltrosAtivos)
+            {
+                <span class="btn-abrir-filtros-badge">ativo</span>
+            }
+        </app-button>
+
+        <aside class="imob-filtros-lateral" id="filtros-lateral">
+            <div class="filtros-lateral-cabecalho">
+                <h2 class="filtros-lateral-titulo">Filtros</h2>
+                <app-button type="button" variant="ghost" class="btn-fechar-filtros" data-fechar-filtros="true" aria-label="Fechar filtros">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </app-button>
+            </div>
+
+            <div class="filtros-lateral-grupo">
+                <label class="filtro-label" for="filtro-quartos">Quartos</label>
+                <app-select name="Filtro.QuartosMinimo" id="filtro-quartos" class="filtro-select">
+                    <option value="">Qualquer</option>
+                    @foreach (var q in new[] { 1, 2, 3, 4 })
+                    {
+                        if (Model.Filtro.QuartosMinimo == q)
+                        { <option value="@q" selected>@q+</option> }
+                        else
+                        { <option value="@q">@q+</option> }
+                    }
+                </app-select>
+            </div>
+
+            <div class="filtros-lateral-grupo">
+                <label class="filtro-label" for="filtro-banheiros">Banheiros</label>
+                <app-select name="Filtro.BanheirosMinimo" id="filtro-banheiros" class="filtro-select">
+                    <option value="">Qualquer</option>
+                    @foreach (var q in new[] { 1, 2, 3, 4 })
+                    {
+                        if (Model.Filtro.BanheirosMinimo == q)
+                        { <option value="@q" selected>@q+</option> }
+                        else
+                        { <option value="@q">@q+</option> }
+                    }
+                </app-select>
+            </div>
+
+            <div class="filtros-lateral-grupo">
+                <label class="filtro-label" for="filtro-vagas">Vagas</label>
+                <app-select name="Filtro.VagasMinimo" id="filtro-vagas" class="filtro-select">
+                    <option value="">Qualquer</option>
+                    @foreach (var q in new[] { 1, 2, 3, 4 })
+                    {
+                        if (Model.Filtro.VagasMinimo == q)
+                        { <option value="@q" selected>@q+</option> }
+                        else
+                        { <option value="@q">@q+</option> }
+                    }
+                </app-select>
+            </div>
+
+            <div class="filtros-lateral-grupo">
+                <span class="filtro-label">Preço (R$)</span>
+                <div class="filtros-par">
+                    <app-input type="number" name="Filtro.ValorMinimo" id="filtro-valor-min" class="filtro-input mb-0" min="0" placeholder="Mín." value="@Model.Filtro.ValorMinimo" />
+                    <app-input type="number" name="Filtro.ValorMaximo" id="filtro-valor-max" class="filtro-input mb-0" min="0" placeholder="Máx." value="@Model.Filtro.ValorMaximo" />
+                </div>
+            </div>
+
+            <div class="filtros-lateral-grupo">
+                <span class="filtro-label">Condomínio (R$)</span>
+                <div class="filtros-par">
+                    <app-input type="number" name="Filtro.ValorCondominioMinimo" id="filtro-cond-min" class="filtro-input mb-0" min="0" placeholder="Mín." value="@Model.Filtro.ValorCondominioMinimo" />
+                    <app-input type="number" name="Filtro.ValorCondominioMaximo" id="filtro-cond-max" class="filtro-input mb-0" min="0" placeholder="Máx." value="@Model.Filtro.ValorCondominioMaximo" />
+                </div>
+            </div>
+
+            <div class="filtros-lateral-grupo">
+                <span class="filtro-label">Área (m²)</span>
+                <div class="filtros-par">
+                    <app-input type="number" name="Filtro.AreaMinima" id="filtro-area-min" class="filtro-input mb-0" min="0" step="0.01" placeholder="Mín." value="@Model.Filtro.AreaMinima" />
+                    <app-input type="number" name="Filtro.AreaMaxima" id="filtro-area-max" class="filtro-input mb-0" min="0" step="0.01" placeholder="Máx." value="@Model.Filtro.AreaMaxima" />
+                </div>
+            </div>
+
+            <div class="filtros-lateral-grupo">
+                <label class="filtro-label" for="filtro-situacao-obra">Situação da obra</label>
+                <app-select name="Filtro.SituacaoObra" id="filtro-situacao-obra" class="filtro-select">
+                    <option value="">Qualquer</option>
+                    @if (Model.Filtro.SituacaoObra == "pronto")
+                    { <option value="pronto" selected>Pronto para morar</option> }
+                    else
+                    { <option value="pronto">Pronto para morar</option> }
+                    @if (Model.Filtro.SituacaoObra == "em_construcao")
+                    { <option value="em_construcao" selected>Em construção</option> }
+                    else
+                    { <option value="em_construcao">Em construção</option> }
+                    @if (Model.Filtro.SituacaoObra == "na_planta")
+                    { <option value="na_planta" selected>Na planta</option> }
+                    else
+                    { <option value="na_planta">Na planta</option> }
+                </app-select>
+            </div>
+
+            <div class="filtros-lateral-grupo">
+                <label class="filtro-label" for="filtro-codigo">Código do anúncio</label>
+                <app-input type="text" name="Filtro.CodigoPublico" id="filtro-codigo" class="filtro-input mb-0"
+                       placeholder="Ex: SA-ABCD1234" value="@Model.Filtro.CodigoPublico" autocomplete="off" />
+            </div>
+
+            <div class="filtros-lateral-grupo">
+                <label class="filtro-checkbox-label">
+                    <app-checkbox name="Filtro.BuscarPorPacote" id="filtro-pacote" value="true" checked="@Model.Filtro.BuscarPorPacote" />
+                    <span class="checkbox-text">Incluir cond. + IPTU no valor</span>
+                </label>
+            </div>
+
+            @if (Model.CatalogoAmenidades.Count > 0)
+            {
+                <div class="filtros-lateral-grupo filtros-lateral-grupo--amenidades">
+                    <span class="filtro-label">Comodidades</span>
+                    @foreach (var grupo in Model.CatalogoAmenidades.GroupBy(a => a.Categoria))
+                    {
+                        @if (grupo.Any(a => amenidadesSelecionadas.Contains(a.Codigo)))
+                        {
+                            <details class="filtros-amenidade-bloco" open>
+                                <summary class="filtros-amenidade-titulo">@AmenidadesImobiliariaDefinicoes.NomeCategoria(grupo.Key)</summary>
+                                <div class="filtros-amenidade-lista">
+                                    @foreach (var am in grupo)
+                                    {
+                                        <label class="filtro-checkbox-label">
+                                            <app-checkbox name="Filtro.CodigosAmenidade" value="@am.Codigo" checked="@amenidadesSelecionadas.Contains(am.Codigo)" />
+                                            <span class="checkbox-text">@am.Nome</span>
+                                        </label>
+                                    }
+                                </div>
+                            </details>
+                        }
+                        else
+                        {
+                            <details class="filtros-amenidade-bloco">
+                                <summary class="filtros-amenidade-titulo">@AmenidadesImobiliariaDefinicoes.NomeCategoria(grupo.Key)</summary>
+                                <div class="filtros-amenidade-lista">
+                                    @foreach (var am in grupo)
+                                    {
+                                        <label class="filtro-checkbox-label">
+                                            <app-checkbox name="Filtro.CodigosAmenidade" value="@am.Codigo" checked="@false" />
+                                            <span class="checkbox-text">@am.Nome</span>
+                                        </label>
+                                    }
+                                </div>
+                            </details>
+                        }
+                    }
+                </div>
+            }
+
+            <div class="filtros-lateral-acoes">
+                @if (Model.FiltrosAtivos)
+                {
+                    <a href="@ModuloRotas.Imoveis.Index" class="btn-limpar-filtros">Limpar filtros</a>
+                }
+                <app-button type="submit" variant="primary" class="btn-filtrar btn-filtrar--lateral">
+                    Aplicar filtros
+                </app-button>
+            </div>
+        </aside>
+
+        <div class="imob-filtros-overlay" data-fechar-filtros hidden></div>
+
+        <main class="imob-resultados">
+            @if (Model.AnunciosDestaque.Count > 0)
+            {
+                <section class="imob-destaques" id="imob-destaques">
+                    <h2 class="imob-destaques-titulo">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        Destaques
+                    </h2>
+                    <div class="imob-destaques-grid" id="imob-destaques-grid">
+                        @{ ViewData[ViewDataKeys.UsuarioEhMaster] = Model.UsuarioEhMaster; }
+                        @foreach (var anuncio in Model.AnunciosDestaque)
+                        {
+                            <partial name="Components/_AnuncioCard" model="anuncio" />
+                        }
+                    </div>
+                </section>
+            }
+
+            @if (Model.Resultado.TotalItens > 0)
+            {
+                <div class="imob-resultado-info">
+                    <span><strong>@Model.Resultado.TotalItens</strong> imóvel(is) encontrado(s)</span>
+                </div>
+
+                <div class="imob-grid" id="anuncios-grid">
+                    @{ ViewData[ViewDataKeys.UsuarioEhMaster] = Model.UsuarioEhMaster; }
+                    @foreach (var anuncio in Model.ItensGrade)
+                    {
+                        <partial name="Components/_AnuncioCard" model="anuncio" />
+                    }
+                </div>
+
+                @if (Model.Resultado.TotalPaginas > 1)
+                {
+                    <div class="imob-paginacao">
+                        @for (int p = 1; p <= Model.Resultado.TotalPaginas; p++)
+                        {
+                            <a href="?pagina=@p@(Model.QueryStringFiltros)"
+                               class="paginacao-btn @(p == Model.Resultado.PaginaAtual ? "paginacao-btn--ativo" : "")">@p</a>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="imob-vazio">
+                    <div class="imob-vazio-icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    </div>
+                    <h2>Nenhum imóvel encontrado nesta busca</h2>
+                    <p>Tente ajustar os filtros laterais ou a busca acima.</p>
+                    <a href="@ModuloRotas.Imobiliaria.MeusAnuncios_Novo" class="btn-anunciar btn-anunciar--vazio">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Publicar Meu Imóvel Agora</span>
+                    </a>
+                </div>
+            }
+
+            <div class="imob-cta-anunciar">
+                <div class="cta-card">
+                    <h3>Quer anunciar seu imóvel?</h3>
+                    <p>Publique gratuitamente e alcance compradores e locatários da região.</p>
+                    <a href="@ModuloRotas.Imobiliaria.MeusAnuncios_Novo" class="btn-anunciar" id="btn-anunciar">
+                        Publicar meu imóvel
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/Contextos/Imobiliaria/js/comum.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Imobiliaria/js/index.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Imobiliaria/js/favoritos.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Imobiliaria/js/visualizacoes.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Imobiliaria/js/contexto-usuario.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Imobiliaria/js/destaques-admin.js" asp-append-version="true"></script>
+}

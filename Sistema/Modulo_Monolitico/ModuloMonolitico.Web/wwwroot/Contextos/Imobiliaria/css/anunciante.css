@@ -1,0 +1,249 @@
+/* ======================================================
+   anunciante.css — Estilos da página do anunciante
+   ====================================================== */
+
+.anunciante-header-container {
+  background: var(--imob-surface);
+  border-bottom: 1px solid var(--imob-border);
+  margin-bottom: 32px;
+}
+
+.anunciante-header {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.anunciante-perfil {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 300px;
+}
+
+.anunciante-foto-grande {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--imob-surface-alt);
+  box-shadow: var(--imob-shadow);
+  flex-shrink: 0;
+}
+
+.anunciante-foto-placeholder-grande {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--imob-surface-alt);
+  border: 3px solid var(--clr-surface);
+  box-shadow: var(--imob-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--imob-text-muted);
+  flex-shrink: 0;
+}
+
+.anunciante-info-principal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.anunciante-nome-titulo {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--imob-text);
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.anunciante-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  color: var(--imob-text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.anunciante-creci {
+  background: var(--imob-surface-alt);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.anunciante-bio {
+  color: var(--imob-text);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 8px 0 0;
+  max-width: 600px;
+}
+
+.anunciante-contatos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 200px;
+}
+
+.btn-contato {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  justify-content: center;
+}
+
+.btn-whatsapp {
+  background: #25D366;
+  color: var(--clr-surface);
+}
+.btn-whatsapp:hover {
+  background: #1eb956;
+  transform: translateY(-2px);
+}
+
+.btn-site {
+  background: var(--imob-surface-alt);
+  color: var(--imob-text);
+  border: 1px solid var(--imob-border);
+}
+.btn-site:hover {
+  background: var(--clr-surface);
+  border-color: var(--imob-text-muted);
+}
+
+.btn-instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: var(--clr-surface);
+}
+.btn-instagram:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.pt-0 {
+  padding-top: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .anunciante-header {
+    flex-direction: column;
+    padding: 32px 16px;
+    gap: 24px;
+  }
+  
+  .anunciante-perfil {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .anunciante-meta {
+    justify-content: center;
+  }
+  
+  .anunciante-contatos {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .btn-contato {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+
+/* ======================================================
+   Filtros Bar - Layout (Anunciante)
+   ====================================================== */
+.imob-filtros-container {
+    max-width: 1100px;
+    margin: -32px auto 32px;
+    padding: 0 16px;
+}
+
+.imob-filtros-card {
+    background: var(--clr-surface);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.18);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.filtros-grid-top {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.filtros-grid-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--imob-border);
+    padding-top: 20px;
+}
+
+.filtros-bottom-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.filtro-item--inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-direction: row;
+}
+
+.filtro-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--imob-text);
+}
+
+@media (max-width: 768px) {
+    .filtros-grid-top {
+        grid-template-columns: 1fr;
+    }
+    
+    .filtros-grid-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .filtros-bottom-right {
+        width: 100%;
+    }
+    
+    .btn-filtrar {
+        width: 100%;
+    }
+}

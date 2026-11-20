@@ -1,0 +1,132 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fidelizacao.MeusCartoesModel
+@{
+    ViewData[ViewDataKeys.Title] = "Meus Cartões Fidelidade";
+    Layout = "~/Pages/Shared/Layouts/_AreaClienteLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Fidelizacao/css/meus-cartoes.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div class="selo-pagina selo-pagina--fidelidade">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Fidelidade
+    </div>
+    <h1 class="titulo-pagina">Meus Cartões Fidelidade</h1>
+    <p class="subtitulo-pagina">Cartões de lojas que você já visitou e está acumulando selos.</p>
+</div>
+
+@if (Model.CartoesComProgresso.Any())
+{
+    <div class="barra-estatisticas">
+        <div class="caixa-estatistica">
+            <div class="numero-estatistica">@Model.CartoesComProgresso.Count</div>
+            <div class="rotulo-estatistica">Lojas Visitadas</div>
+        </div>
+        <div class="caixa-estatistica">
+            <div class="numero-estatistica">@Model.CartoesComProgresso.Sum(x => x.Saldo.PontosAcumulados)</div>
+            <div class="rotulo-estatistica">Selos Acumulados</div>
+        </div>
+        <div class="caixa-estatistica">
+            <div class="numero-estatistica numero-estatistica--success">@Model.CartoesComProgresso.Sum(x => x.Saldo.RecompensasAcumuladas)</div>
+            <div class="rotulo-estatistica">Prêmios Ganhos</div>
+        </div>
+    </div>
+
+    <div class="modulos-grid modulos-grid--cartoes">
+        @foreach (var item in Model.CartoesComProgresso)
+        {
+            var selosExibir = Math.Min(item.Cartao.PontosNecessarios, 10);
+            var selosExtras = item.Cartao.PontosNecessarios - 10;
+
+            <div class="cartao-fidelidade">
+                <div class="card-top">
+                    <div>
+                        <div class="card-titulo">@item.Cartao.Titulo</div>
+                        <div class="card-recompensa">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 12 20 22 4 22"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                            @item.Cartao.Recompensa
+                        </div>
+                    </div>
+                    @if (item.Saldo.RecompensasAcumuladas > 0)
+                    {
+                        <div class="card-badge-resgates">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            @item.Saldo.RecompensasAcumuladas x ganhou
+                        </div>
+                    }
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span>@item.Saldo.PontosAcumulados selos</span>
+                        <span>de @item.Cartao.PontosNecessarios para o prêmio</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="--progress-pct: @(item.PorcentagemProgresso)%;"></div>
+                    </div>
+                </div>
+
+                <div class="grade-selos">
+                    @for (int i = 0; i < selosExibir; i++)
+                    {
+                        if (i < item.Saldo.PontosAcumulados)
+                        {
+                            <div class="selo conquistado">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="selo"></div>
+                        }
+                    }
+                    @if (selosExtras > 0)
+                    {
+                        <div class="selo extra">+@selosExtras</div>
+                    }
+                </div>
+
+                <div class="card-meta">
+                    <div class="ultimo-selo">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Último: @item.Saldo.DataUltimaAtualizacao.ToLocalTime().ToString("dd/MM/yyyy")
+                    </div>
+                    @if (item.Cartao.DiasValidadeCarimbo.HasValue)
+                    {
+                        <span>Selo vence em @item.Cartao.DiasValidadeCarimbo dias</span>
+                    }
+                    else
+                    {
+                        <span class="card-meta-expira--ok">Sem expiração</span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="cta-escanear-wrap">
+        <a href="@ModuloRotas.Fidelizacao.LerQRCode" class="cta-escanear">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Escanear Novo QR Code
+        </a>
+    </div>
+}
+else
+{
+    <div class="estado-vazio-cliente">
+        <div class="estado-vazio-icone" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+        <h3 class="estado-vazio-titulo">Nenhum cartão fidelidade ainda</h3>
+        <p class="estado-vazio-texto">
+            Visite uma loja parceira e peça para o atendente gerar o QR Code. Escaneie para começar a acumular selos!
+        </p>
+        <a href="@ModuloRotas.Fidelizacao.LerQRCode" class="cta-escanear">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Escanear Meu Primeiro QR Code
+        </a>
+    </div>
+}

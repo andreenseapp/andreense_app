@@ -1,0 +1,71 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+using Npgsql;
+using Newtonsoft.Json.Linq;
+
+namespace DbSync
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            if (args.Length == 0)
+            {
+                Console.WriteLine("Uso: dotnet run -- \"SQL_COMMAND_HERE\"");
+                return;
+            }
+
+            string sql = args[0]; if (File.Exists(sql)) { sql = File.ReadAllText(sql); }
+            
+            var connections = new Dictionary<string, string>();
+            
+            // 1. Localhost (de appsettings.json)
+            string localPath = @"C:\Projeto\Projeto\Sistema\Modulo_Monolitico\ModuloMonolitico.Web\appsettings.json";
+            if (File.Exists(localPath))
+            {
+                var json = JObject.Parse(File.ReadAllText(localPath));
+                string conn = json["ConnectionStrings"]?["BancoPrincipal"]?.ToString();
+                if (!string.IsNullOrEmpty(conn)) connections["Localhost (erp_db)"] = conn;
+            }
+
+            // 2. Supabase (de appsettings.Development.json)
+            string supabasePath = @"C:\Projeto\Projeto\Sistema\Modulo_Monolitico\ModuloMonolitico.Web\appsettings.Development.json";
+            if (File.Exists(supabasePath))
+            {
+                var json = JObject.Parse(File.ReadAllText(supabasePath));
+                string conn = json["ConnectionStrings"]?["BancoPrincipal"]?.ToString();
+                if (!string.IsNullOrEmpty(conn)) connections["Supabase (postgres)"] = conn;
+            }
+
+            Console.WriteLine($"Executando SQL em {connections.Count} ambientes...");
+            Console.WriteLine($"Comando: {sql}");
+            Console.WriteLine("--------------------------------------------------");
+
+            foreach (var kvp in connections)
+            {
+                Console.Write($"Ambiente: {kvp.Key}... ");
+                try
+                {
+                    using (var conn = new NpgsqlConnection(kvp.Value))
+                    {
+                        conn.Open();
+                        using (var cmd = new NpgsqlCommand(sql, conn))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("SUCESSO!");
+                    Console.ResetColor();
+                }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"FALHA: {ex.Message}");
+                    Console.ResetColor();
+                }
+            }
+        }
+    }
+}

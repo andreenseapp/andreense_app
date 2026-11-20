@@ -1,0 +1,209 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.SaaS.ContasIndexModel
+@using ModuloMonolitico.Dominio.Entidades
+@{
+    ViewData[ViewDataKeys.Title] = "Contas & Assinaturas";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/saas-contas-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            SaaS
+        </div>
+        <h1 class="titulo-pagina">Contas & Assinaturas</h1>
+        <p class="subtitulo-pagina">Gerencie os planos e o status comercial de cada conta cliente.</p>
+    </div>
+</div>
+
+@{
+    var totalContas = Model.Contas.Count();
+    var totalAtivas = Model.Contas.Count(c => c.SituacaoAssinatura == SituacaoAssinatura.Ativo);
+    var totalBloqueadas = Model.Contas.Count(c => c.SituacaoAssinatura == SituacaoAssinatura.Bloqueado);
+    var totalSemPlano = Model.Contas.Count(c => string.IsNullOrEmpty(c.SituacaoAssinatura));
+}
+
+<div class="summary-strip">
+    <div class="indicador-box">
+        <p class="indicador-rotulo">Total de Contas</p>
+        <p class="indicador-valor">@totalContas</p>
+    </div>
+    <div class="indicador-box indicador-box-ativas">
+        <p class="indicador-rotulo">Ativas</p>
+        <p class="indicador-valor">@totalAtivas</p>
+    </div>
+    <div class="indicador-box indicador-box-bloqueadas">
+        <p class="indicador-rotulo">Bloqueadas</p>
+        <p class="indicador-valor">@totalBloqueadas</p>
+    </div>
+    <div class="indicador-box indicador-box-semplano">
+        <p class="indicador-rotulo">Sem Plano</p>
+        <p class="indicador-valor">@totalSemPlano</p>
+    </div>
+</div>
+
+@if (!Model.Contas.Any())
+{
+    <div class="estado-vazio">
+        <p class="estado-vazio-texto">Nenhuma conta cadastrada no sistema.</p>
+    </div>
+}
+else
+{
+<div class="tabela-responsiva">
+<table class="tabela-dados" data-seletor-colunas="true">
+    <thead>
+        <tr>
+            <th>Conta</th>
+            <th>E-mail Titular</th>
+            <th>Plano</th>
+            <th>Situação</th>
+            <th>Vencimento</th>
+            <th>Valor/mês</th>
+            <th data-coluna-fixa>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var conta in Model.Contas)
+        {
+            var statusCss = conta.SituacaoAssinatura switch {
+                SituacaoAssinatura.Ativo               => "ativo",
+                SituacaoAssinatura.Bloqueado           => "bloqueado",
+                SituacaoAssinatura.InadimpleteCarencia => "carencia",
+                SituacaoAssinatura.Trial               => "trial",
+                SituacaoAssinatura.Cancelado           => "cancelado",
+                _                                    => "sem-plano"
+            };
+            var statusLabel = string.IsNullOrEmpty(conta.SituacaoAssinatura) ? "Sem Plano" : conta.SituacaoAssinatura;
+            var vencendo = conta.DataVencimento.HasValue && conta.DataVencimento.Value < DateTime.UtcNow.AddDays(7);
+
+            <tr id="conta-@conta.ContaId">
+                <td>
+                    <div class="conta-nome">@conta.ContaNome</div>
+                    <small class="conta-id-subtle">@conta.ContaId</small>
+                </td>
+                <td class="titular-email">
+                    @if (!string.IsNullOrEmpty(conta.EmailTitular))
+                    {
+                        <span>@conta.EmailTitular</span>
+                    }
+                    else
+                    {
+                        <span class="titular-email-empty">— Sem e-mail —</span>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(conta.PlanoNome))
+                    {
+                        <span class="plano-nome-destaque">@conta.PlanoNome</span>
+                    }
+                    else
+                    {
+                        <span class="plano-nome-empty">Sem plano</span>
+                    }
+                </td>
+                <td><span class="situacao-pill @statusCss">@statusLabel</span></td>
+                <td>
+                    @if (conta.DataVencimento.HasValue)
+                    {
+                        <span class="@(vencendo && conta.SituacaoAssinatura == SituacaoAssinatura.Ativo ? "vencimento-alerta" : "")">
+                            @conta.DataVencimento.Value.ToLocalTime().ToString("dd/MM/yyyy")
+                            @if (vencendo && conta.SituacaoAssinatura == SituacaoAssinatura.Ativo)
+                            {
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="vencimento-icon" title="Vencimento próximo"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            }
+                        </span>
+                    }
+                    else { <span class="text-muted-subtle">—</span> }
+                </td>
+                <td>
+                    @if (conta.ValorContratado.HasValue)
+                    { <span>R$ @conta.ValorContratado.Value.ToString("N2")</span> }
+                    else { <span class="text-muted-subtle">—</span> }
+                </td>
+                <td class="actions-cell">
+                    <app-button type="button" variant="ghost" size="sm" class="btn-acao-linha btn-abrir-plano"
+                                data-conta-id="@conta.ContaId"
+                                data-conta-nome="@conta.ContaNome"
+                                data-valor="@(conta.ValorContratado?.ToString("F2", System.Globalization.CultureInfo.InvariantCulture) ?? "0")">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        Plano
+                    </app-button>
+                    @if (!string.IsNullOrEmpty(conta.SituacaoAssinatura))
+                    {
+                        if (conta.SituacaoAssinatura != SituacaoAssinatura.Bloqueado)
+                        {
+                            <form method="post" asp-page-handler="AtualizarSituacao">
+                                <app-input type="hidden" name="contaId" value="@conta.ContaId" />
+                                <app-input type="hidden" name="novaSituacao" value="@SituacaoAssinatura.Bloqueado" />
+                                <app-button type="submit" variant="danger" size="sm" class="btn-acao-linha danger"
+                                            data-confirmacao="Bloquear a conta '@conta.ContaNome'? O usuário não conseguirá mais acessar o sistema."
+                                            data-confirmacao-tipo="perigo"
+                                            data-confirmacao-titulo="Bloquear Conta">
+                                    Bloquear
+                                </app-button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post" asp-page-handler="AtualizarSituacao">
+                                <app-input type="hidden" name="contaId" value="@conta.ContaId" />
+                                <app-input type="hidden" name="novaSituacao" value="@SituacaoAssinatura.Ativo" />
+                                <app-button type="submit" variant="primary" size="sm" class="btn-acao-linha success"
+                                            data-confirmacao="Reativar a conta '@conta.ContaNome'? O acesso ao sistema será restabelecido."
+                                            data-confirmacao-tipo="warning"
+                                            data-confirmacao-titulo="Reativar Conta">
+                                    Reativar
+                                </app-button>
+                            </form>
+                        }
+                    }
+                    <a href="@($"{ModuloRotas.InfraAdmin.SaaS_Faturas}?contaId={conta.ContaId}")" class="btn-acao-linha">Faturas</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+}
+
+<!-- Modal: Atribuir Plano -->
+<div id="modal-plano" class="modal-fundo">
+    <div class="modal-cartao">
+        <div class="modal-cabecalho">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--clr-primary)" stroke-width="2" class="modal-cabecalho-icon"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            Atribuir / Alterar Plano — <span id="modal-conta-nome"></span>
+        </div>
+        <form method="post" asp-page-handler="AtribuirPlano" data-sem-carregamento>
+            <app-input type="hidden" name="contaId" id="modal-conta-id" />
+            <div class="modal-corpo">
+                <app-select name="planoId" label="Plano" required="required">
+                    @foreach (var plano in Model.Planos)
+                    {
+                        <option value="@plano.Id">@plano.Nome — R$ @plano.ValorMensal.ToString("N2")/mês</option>
+                    }
+                </app-select>
+                
+                <app-input type="number" name="valorContratado" id="modal-valor" label="Valor Contratado (R$)" step="0.01" placeholder="0,00" required="required" />
+                <span class="campo-mensagem-ajuda">Preço acordado com o cliente (pode diferir da tabela do plano).</span>
+
+                <app-input type="date" name="dataVencimento" label="Data de Vencimento" required="required" CssClass="mt-3 mb-0" />
+            </div>
+
+            <div class="modal-rodape">
+                <app-button type="button" variant="secondary" class="btn-acao-linha" id="modal-plano-cancelar">Cancelar</app-button>
+                <app-button type="submit" variant="primary" class="botao-salvar">Salvar</app-button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/InfraAdmin/js/saas-contas-index.js" asp-append-version="true"></script>
+}

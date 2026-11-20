@@ -1,0 +1,63 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.Documentos.NovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Novo Documento Legal";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/documentos-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.InfraAdmin.Documentos,
+    TextoVoltar = "Documentos",
+    Titulo = "Novo Documento"
+}' />
+
+<main class="main-content novo-container">
+    <div class="novo-card">
+        <form method="post">
+            <div class="input-grid-2">
+                <app-input asp-for="Formulario.Titulo"
+                           label="Título"
+                           type="text"
+                           placeholder="Ex: Termo de Uso Principal"
+                           required="required"
+                           autofocus="autofocus" />
+                <app-input asp-for="Formulario.Tipo"
+                           label="Tipo"
+                           type="text"
+                           placeholder="Ex: termo_de_uso, politica_privacidade"
+                           required="required" />
+            </div>
+
+            <div class="input-grid-2">
+                <app-input asp-for="Formulario.Versao"
+                           label="Versão"
+                           type="text"
+                           placeholder="Ex: 1.0"
+                           required="required" />
+
+                <app-select asp-for="Formulario.Situacao" label="Situação Inicial">
+                    <option value="ativo">Ativo (visível para os usuários)</option>
+                    <option value="inativo">Inativo (rascunho)</option>
+                </app-select>
+            </div>
+
+            <div class="campo-grupo-texto">
+                <app-textarea asp-for="Formulario.Texto"
+                              label="Texto do Documento (suporta quebra de linha)"
+                              rows="20"
+                              placeholder="Cole o texto do documento legal aqui..."
+                              required="required" />
+            </div>
+
+            <app-save-button type="submit" full-width="true" class="btn-salvar">Salvar Documento</app-save-button>
+        </form>
+    </div>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/documentos-novo.js" asp-append-version="true"></script>
+}

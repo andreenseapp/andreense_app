@@ -1,0 +1,81 @@
+@page
+@model ModuloMonolitico.Web.Pages.Gestao.TiposVendedor.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Tipos de Vendedor";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Gestao/css/tiposvendedor-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            CRM
+        </div>
+        <h1 class="titulo-pagina">Tipos de Vendedor</h1>
+        <p class="subtitulo-pagina">Configure as categorias e regras para os vendedores do seu negócio.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Gestao.TiposVendedor_Novo" class="botao botao-primario botao-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Tipo
+        </a>
+    </div>
+</div>
+
+@if (!Model.TiposVendedor.Any())
+{
+    <div class="estado-vazio">
+        <p class="estado-vazio-texto">Nenhum tipo de vendedor cadastrado.</p>
+        <a href="@ModuloRotas.Gestao.TiposVendedor_Novo" class="botao botao-primario botao-estado-vazio">Cadastrar agora</a>
+    </div>
+}
+else
+{
+    <div class="barra-listagem">
+        <div class="barra-listagem-contagem">
+            Total de <strong>@Model.TiposVendedor.Count()</strong> tipos cadastrados.
+        </div>
+    </div>
+
+    <div class="container-tabela">
+        <table class="app-table" data-seletor-colunas="true">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Situação</th>
+                    <th class="col-acoes" data-coluna-fixa>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tipo in Model.TiposVendedor)
+                {
+                    var urlEditar = $"{ModuloRotas.Gestao.TiposVendedor_Editar}?id={tipo.Id}";
+
+                    <tr>
+                        <td class="tipo-nome">@tipo.Nome</td>
+                        <td class="tipo-descricao">@(string.IsNullOrEmpty(tipo.Descricao) ? "—" : tipo.Descricao)</td>
+                        <td>
+                            <span class="badge-situacao @(tipo.Ativo ? "situacao-ativo" : "situacao-inativo")">
+                                @(tipo.Ativo ? "Ativo" : "Inativo")
+                            </span>
+                        </td>
+                        <td>
+                            <div class="acoes-celula">
+                                <a href="@urlEditar" class="btn-acao">Editar</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+}

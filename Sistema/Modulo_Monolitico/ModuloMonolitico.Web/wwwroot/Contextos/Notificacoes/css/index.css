@@ -1,0 +1,228 @@
+/* --- Layout geral -------------------------------------- */
+  .notif-wrapper {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+    width: 100%;
+  }
+
+  .notif-cabecalho-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .notif-cabecalho-pagina h1 {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    letter-spacing: -0.02em;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .notif-header-icon {
+    vertical-align: -4px;
+    stroke: var(--clr-primary-light);
+    flex-shrink: 0;
+  }
+
+  .notif-cabecalho-pagina p {
+    font-size: 0.875rem;
+    color: var(--clr-text-muted);
+    margin: 0.25rem 0 0;
+  }
+
+  /* --- Filtros / Tabs ------------------------------------ */
+  .notif-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .notif-tab {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid var(--glass-border);
+    color: var(--clr-text-muted);
+    background: var(--glass-bg);
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .notif-tab:hover { border-color: var(--glass-border-focus); color: var(--clr-text); }
+
+  .notif-tab.active {
+    background: var(--clr-primary);
+    border-color: var(--clr-primary);
+    color: var(--clr-surface);
+  }
+
+  /* --- Lista de notificações ----------------------------- */
+  .notif-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .notif-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.2s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .notif-card:hover { border-color: var(--glass-border-focus); }
+
+  .notif-card.nao-lida {
+    border-left: 3px solid var(--clr-primary);
+    background: var(--clr-primary-glow);
+  }
+
+  /* Faixa de tipo no card */
+  .notif-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    border-radius: 4px 0 0 4px;
+  }
+
+  .notif-card.nao-lida::before { display: none; } /* borda esquerda j? existe */
+  .notif-card.tipo-info::before   { background: #60a5fa; }
+  .notif-card.tipo-alerta::before  { background: var(--clr-status-pendente); }
+  .notif-card.tipo-sucesso::before  { background: var(--clr-success); }
+  .notif-card.tipo-erro::before   { background: var(--clr-status-cancelado); }
+
+  /* ?cone de tipo */
+  .notif-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .notif-icon.tipo-info  { background: rgba(96,165,250,0.15); color: #60a5fa; }
+  .notif-icon.tipo-alerta { background: rgba(251,191,36,0.15); color: var(--clr-status-pendente); }
+  .notif-icon.tipo-sucesso { background: rgba(52,211,153,0.15); color: var(--clr-success); }
+  .notif-icon.tipo-erro  { background: rgba(248,113,113,0.15); color: var(--clr-status-cancelado); }
+
+  .notif-body { flex: 1; min-width: 0; }
+
+  .notif-titulo {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin: 0 0 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .notif-badge-global {
+    font-size: 0.68rem;
+    font-weight: 600;
+    background: rgba(138,180,248,0.2);
+    color: var(--clr-primary-light);
+    padding: 0.1rem 0.45rem;
+    border-radius: 10px;
+    border: 1px solid rgba(138,180,248,0.3);
+  }
+
+  .notif-mensagem {
+    font-size: 0.875rem;
+    color: var(--clr-text-muted);
+    margin: 0 0 0.5rem;
+    line-height: 1.5;
+  }
+
+  .notif-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .notif-data {
+    font-size: 0.75rem;
+    color: var(--clr-text-muted);
+  }
+
+  .notif-link {
+    font-size: 0.8rem;
+    color: var(--clr-primary-light);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .notif-link:hover { color: var(--clr-text); }
+
+  /* Botão marcar lida */
+  .notif-actions { flex-shrink: 0; }
+
+  .btn-marcar-lida {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--clr-text-muted);
+    font-size: 0.78rem;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .btn-marcar-lida:hover {
+    border-color: var(--clr-primary);
+    color: var(--clr-primary-light);
+  }
+
+  /* --- Empty State --------------------------------------- */
+  .notif-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--clr-text-muted);
+  }
+
+  .notif-empty svg { opacity: 0.3; stroke: var(--clr-text-muted); }
+  .notif-empty h3 { font-family: var(--font-heading); font-size: 1.1rem; color: var(--clr-text); margin: 0; }
+  .notif-empty p { font-size: 0.875rem; margin: 0; }
+
+  @media (max-width: 600px) {
+    .notif-card { padding: 1rem; }
+    .notif-cabecalho-pagina { flex-direction: column; align-items: flex-start; }
+  }
+
+

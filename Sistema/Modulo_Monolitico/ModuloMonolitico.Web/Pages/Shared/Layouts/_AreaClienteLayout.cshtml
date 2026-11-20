@@ -1,0 +1,80 @@
+@using ModuloMonolitico.Web.Core
+@{
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+    var caminhoAtual = Context.Request.Path.Value ?? "";
+    var contextoPasta = ViewData[ViewDataKeys.ContextoPasta]?.ToString()
+        ?? MapeadorContextoAssets.ResolverPastaContexto(caminhoAtual);
+
+    bool IsActive(string path)
+    {
+        if (string.IsNullOrEmpty(path) || path == "#") return false;
+        return caminhoAtual.Equals(path, StringComparison.OrdinalIgnoreCase) ||
+               caminhoAtual.StartsWith(path + "/", StringComparison.OrdinalIgnoreCase);
+    }
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Shared/css/layout-area-cliente.css" asp-append-version="true" />
+    @if (!string.IsNullOrEmpty(contextoPasta))
+    {
+        <link rel="stylesheet" href="~/Contextos/@contextoPasta/css/comum.css" asp-append-version="true" />
+    }
+    @await RenderSectionAsync("Styles", required: false)
+}
+
+<div class="modulo-container">
+    <aside class="modulo-barra-lateral">
+        <div class="modulo-barra-titulo">Área do Cliente</div>
+        
+        <a href="@ModuloRotas.Fidelizacao.Index" class="modulo-nav-item @(IsActive("/Fidelizacao") || IsActive("/Fidelizacao/Index") ? "active" : "")">
+            <span class="modulo-nav-icone">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            </span>
+            Meus Benefícios
+        </a>
+
+        <div class="modulo-barra-titulo">Serviços e Fidelidade</div>
+
+        <a href="@ModuloRotas.Fidelizacao.MeuCashback" class="modulo-nav-item @(IsActive("/Fidelizacao/MeuCashback") ? "active" : "")">
+            <span class="modulo-nav-icone">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </span>
+            Meu Cashback
+        </a>
+
+        <a href="@ModuloRotas.Fidelizacao.MeusCartoes" class="modulo-nav-item @(IsActive("/Fidelizacao/MeusCartoes") ? "active" : "")">
+            <span class="modulo-nav-icone">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+            </span>
+            Cartões Fidelidade
+        </a>
+
+        <a href="@ModuloRotas.Fidelizacao.LerQRCode" class="modulo-nav-item @(IsActive("/Fidelizacao/LerQRCode") ? "active" : "")">
+            <span class="modulo-nav-icone">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            </span>
+            Escanear QR Code
+        </a>
+        
+        <div class="modulo-barra-titulo">Agendamentos</div>
+        
+        <a href="@ModuloRotas.Agendamentos.MeusAgendamentos" class="modulo-nav-item @(IsActive("/Agendamentos/MeusAgendamentos") ? "active" : "")">
+            <span class="modulo-nav-icone">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </span>
+            Meus Agendamentos
+        </a>
+    </aside>
+
+    <main class="modulo-conteudo">
+        @RenderBody()
+    </main>
+</div>
+
+@section Scripts {
+    @if (!string.IsNullOrEmpty(contextoPasta))
+    {
+        <script src="~/Contextos/@contextoPasta/js/comum.js" asp-append-version="true"></script>
+    }
+    @await RenderSectionAsync("Scripts", required: false)
+}

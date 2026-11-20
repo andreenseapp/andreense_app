@@ -1,0 +1,94 @@
+@model ModuloMonolitico.Web.Pages.Shared.Components.SeletorProdutoVariacao.SeletorProdutoVariacaoViewModel
+@{
+    var cid = Model.ComponentId;
+}
+
+<div id="wrap_@cid"
+     class="spv-wrap spv-wrap-component"
+     data-cid="@cid"
+     data-apenas-srvs="@Model.ApenasServicos.ToString().ToLowerInvariant()"
+     data-label="@Model.Label">
+
+    <label class="spv-label" for="nome_@cid">@Model.Label</label>
+
+    <input type="hidden"
+           id="val_@cid"
+           name="@Model.FieldName"
+           value="@(Model.ValorAtual?.ToString() ?? "")" />
+
+    <div class="spv-field">
+        <span id="icon_@cid" class="spv-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-4-4"></path>
+            </svg>
+        </span>
+
+        <button type="button"
+                id="nome_@cid"
+                class="spv-nome @(Model.ValorAtual.HasValue ? "selecionado" : "")"
+                data-action="abrir"
+                aria-haspopup="dialog">
+            @(Model.NomeAtual ?? "Selecionar serviço...")
+        </button>
+
+        <input type="hidden"
+               id="cod_@cid"
+               value="@(Model.CodigoAtual ?? "")" />
+
+        <button type="button"
+                class="spv-btn"
+                data-action="abrir"
+                aria-label="Buscar serviço">
+            <svg width="18" height="18" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-4-4"></path>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<div id="overlay_@cid" class="spv-overlay" data-action="fechar-overlay">
+    <section class="spv-modal"
+             role="dialog"
+             aria-modal="true"
+             aria-label="Selecionar serviço">
+
+        <header class="spv-modal-header">
+            <h2>Selecionar serviço</h2>
+            <button type="button"
+                    class="spv-btn"
+                    data-action="fechar"
+                    aria-label="Fechar">
+                &times;
+            </button>
+        </header>
+
+        <div class="spv-modal-search">
+            <input type="search"
+                   id="spv_q_@cid"
+                   class="spv-search-input"
+                   placeholder="Buscar serviço..."
+                   autocomplete="off" />
+            <span id="spv_icon_@cid" aria-hidden="true">⌕</span>
+            <span id="spv_spin_@cid" style="display:none" aria-hidden="true">Carregando...</span>
+        </div>
+
+        <div id="spv_body_@cid" class="spv-modal-body">
+            <div class="spv-empty">Carregando serviços...</div>
+        </div>
+
+        <footer class="spv-modal-footer">
+            <span id="spv_count_@cid">—</span>
+            <span>Use ↑ e ↓ para navegar, Enter para selecionar e Esc para fechar.</span>
+        </footer>
+    </section>
+</div>
+
+<link rel="stylesheet"
+      href="~/Contextos/Shared/css/seletor-produto-variacao-padrao.css"
+      asp-append-version="true" />
+<script src="~/Contextos/Shared/js/seletor-produto-variacao-padrao.js"
+        asp-append-version="true"></script>

@@ -1,0 +1,122 @@
+@page
+@model ModuloMonolitico.Web.Pages.Autenticacao.Grupos.EditarModel
+@using ModuloMonolitico.Dominio.Constantes
+@{
+    ViewData[ViewDataKeys.Title] = "Configurar Grupo e Permissões";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Autenticacao/css/grupos-editar.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.Autenticacao.Grupos,
+    TextoVoltar = "Grupos de Usuários",
+    Titulo = "Configurar Grupo e Permissões"
+}' />
+
+<main class="main-content editar-container">
+    <form method="post">
+        <app-input type="hidden" asp-for="Comando.Id" />
+        <app-input type="hidden" asp-for="Comando.EhAdministrador" />
+
+        <div class="form-panel">
+            <h2 class="form-section-title">Dados do Grupo</h2>
+
+            <app-input asp-for="Comando.Nome"
+                       label="Nome do Grupo"
+                       type="text"
+                       required="required" />
+
+            <div class="campo-grupo-descricao">
+                <app-textarea asp-for="Comando.Descricao"
+                              label="Descrição"
+                              rows="2" />
+            </div>
+
+            <app-toggle asp-for="Comando.Ativo" title="Ativo no sistema" label-on="Sim" label-off="Não" />
+        </div>
+
+        <div class="form-panel">
+            <h2 class="form-section-title">Recursos e Permissões</h2>
+
+            @if (Model.Comando.EhAdministrador)
+            {
+                <div class="admin-banner">
+                    <strong>Atenção:</strong> Este é um grupo de Administradores e já possui acesso total a todas as telas. Use esta seção apenas para configurar quais <strong>Atalhos</strong> aparecerão na tela inicial deles.
+                </div>
+            }
+            else
+            {
+                <p class="permissions-intro">Marque "Acesso" para permitir que o grupo veja a tela, e "Atalho" para exibir um botão de atalho na tela inicial.</p>
+            }
+
+            @foreach (var modulo in MenuSistemaDefinicoes.Modulos)
+            {
+                <div class="module-card">
+                    <div class="module-title">Módulo: @modulo.Nome</div>
+
+                    @foreach (var categoria in modulo.Categorias)
+                    {
+                        <div class="categoria-header">
+                            <span class="categoria-icon">@Html.Raw(categoria.SvgIcone)</span>
+                            @categoria.Nome
+                        </div>
+
+                        <div class="recursos-list">
+                            @foreach (var item in categoria.Itens)
+                            {
+                                var recursoDb = Model.TodosRecursos.FirstOrDefault(r => r.Chave == item.ChavePermissao);
+                                if (recursoDb == null)
+                                {
+                                    continue;
+                                }
+
+                                var hasAcesso = Model.Comando.EhAdministrador || Model.Comando.RecursosSelecionados.Contains(recursoDb.Id);
+                                var hasAtalho = Model.Comando.RecursosAtalhos.Contains(recursoDb.Id);
+
+                                <div class="recurso-item">
+                                    <div class="recurso-info">
+                                        <div class="recurso-icon">@Html.Raw(item.SvgIcone)</div>
+                                        <div>
+                                            <div class="recurso-titulo">@item.Titulo</div>
+                                            <div class="recurso-descricao">@item.Descricao</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="recurso-checks">
+                                        <label class="check-label @(Model.Comando.EhAdministrador ? "check-label--readonly" : "")">
+                                            <app-checkbox class="check-acesso mb-0"
+                                                   name="Comando.RecursosSelecionados"
+                                                   value="@recursoDb.Id"
+                                                   checked="@hasAcesso"
+                                                   disabled="@(Model.Comando.EhAdministrador ? "disabled" : null)" />
+                                            Acesso
+                                        </label>
+                                        <label class="check-label">
+                                            <app-checkbox class="check-atalho mb-0"
+                                                   name="Comando.RecursosAtalhos"
+                                                   value="@recursoDb.Id"
+                                                   checked="@hasAtalho" />
+                                            Atalho
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="form-actions">
+            <a href="@ModuloRotas.Autenticacao.Grupos" class="btn-cancelar">Cancelar</a>
+            <app-save-button type="submit">Salvar Configurações</app-save-button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Autenticacao/js/grupos-editar.js" asp-append-version="true"></script>
+}

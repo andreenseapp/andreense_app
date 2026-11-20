@@ -1,0 +1,162 @@
+@{
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+@using ModuloMonolitico.Dominio.Constantes
+@using ModuloMonolitico.Web.Core
+
+@{
+    var caminhoAtual = Context.Request.Path.Value ?? "";
+    var contextoPasta = ViewData[ViewDataKeys.ContextoPasta]?.ToString()
+        ?? MapeadorContextoAssets.ResolverPastaContexto(caminhoAtual);
+    var modeloPagina = ViewContext.ViewData.Model as ModuloMonolitico.Web.Pages.Shared.AppBasePageModel;
+
+    bool EstaAtivo(string caminho)
+    {
+        if (string.IsNullOrEmpty(caminho) || caminho == "#") return false;
+        return caminhoAtual.Equals(caminho, StringComparison.OrdinalIgnoreCase) ||
+               caminhoAtual.StartsWith(caminho + "/", StringComparison.OrdinalIgnoreCase);
+    }
+
+    var segmentos = caminhoAtual.Trim('/').Split('/');
+    var moduloRaiz = "ERP";
+    if (segmentos.Length > 0)
+    {
+        if (segmentos[0].Equals("Contextos", StringComparison.OrdinalIgnoreCase) && segmentos.Length > 1)
+            moduloRaiz = segmentos[1];
+        else
+            moduloRaiz = segmentos[0];
+    }
+
+    var urlHub = moduloRaiz switch {
+        "ERP"          => ModuloRotas.ERP.Index,
+        "AreaServicos" => ModuloRotas.AreaServicos.Index,
+        "Financeiro"   => ModuloRotas.Financeiro.Index,
+        "CRM"          => ModuloRotas.Contatos.Index,
+        "Logistica"    => ModuloRotas.Logistica.Index,
+        "HelpDesk"     => ModuloRotas.HelpDesk.Index,
+        "Fiscal"       => ModuloRotas.Fiscal.Index,
+        "Varejo"       => ModuloRotas.Varejo.Index,
+        "InfraAdmin"   => ModuloRotas.InfraAdmin.Index,
+        _              => $"/{moduloRaiz}/Index"
+    };
+
+    var nomeHub = moduloRaiz switch {
+        "ERP"          => "Dashboard",
+        "AreaServicos" => "Área de Serviços",
+        "Financeiro"   => "Financeiro",
+        "CRM"          => "CRM",
+        "Logistica"    => "Logística",
+        "HelpDesk"     => "HelpDesk",
+        "Fiscal"       => "Fiscal",
+        "Varejo"       => "Varejo",
+        "InfraAdmin"   => "Administração",
+        _              => "Início"
+    };
+
+    bool exibeInicio = moduloRaiz != "Configuracoes" && moduloRaiz != "Base" && moduloRaiz != "Auth";
+    bool semMenuLateral = ViewData["SemMenuLateral"] is true;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Shared/css/layout-modulo.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/SaaS/css/comunicados-pendentes.css" asp-append-version="true" />
+    @if (!string.IsNullOrEmpty(contextoPasta))
+    {
+        <link rel="stylesheet" href="~/Contextos/@contextoPasta/css/comum.css" asp-append-version="true" />
+    }
+    @await RenderSectionAsync("Styles", required: false)
+}
+ 
+@section SemRodape { }
+
+<div class="modulo-container @(semMenuLateral ? "modulo-container--sem-menu" : "")">
+    @if (!semMenuLateral)
+    {
+        <aside class="modulo-barra-lateral">
+
+       @if (exibeInicio)
+        {
+            <div class="modulo-barra-titulo">Geral</div>
+            <a href="@urlHub" class="modulo-nav-item @(EstaAtivo(urlHub) ? "active" : "")">
+                <span class="modulo-nav-icone"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
+                @nomeHub
+            </a>
+        }
+
+        @{
+            var modulosAtuais = MenuSistemaDefinicoes.Modulos
+                .Where(m => m.ModuloRaiz == moduloRaiz || m.ModuloRaiz == "*")
+                .ToList();
+
+            foreach (var modulo in modulosAtuais)
+            {
+                if (modulo.ModuloRaiz == "*")
+                {
+                    <div class="modulo-barra-titulo">@modulo.Nome</div>
+                }
+
+                foreach (var categoria in modulo.Categorias)
+                {
+                    var itensPermitidos = new List<MenuItemDefinicao>();
+                    foreach (var item in categoria.Itens)
+                    {
+                        if (modeloPagina == null || await modeloPagina.UsuarioPossuiPermissaoTenantAsync(item.ChavePermissao))
+                        {
+                            itensPermitidos.Add(item);
+                        }
+                    }
+
+                    if (itensPermitidos.Any())
+                    {
+                        bool categoriaAtiva = itensPermitidos.Any(i => EstaAtivo(i.Url));
+                        <details class="modulo-menu-detalhes" @(categoriaAtiva ? "open" : "")>
+                            <summary class="modulo-nav-item">
+                                <span class="modulo-nav-icone modulo-nav-icone--suave">@Html.Raw(categoria.SvgIcone)</span>
+                                @categoria.Nome
+                                <span class="modulo-detalhes-seta">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </span>
+                            </summary>
+                            <div class="modulo-nav-sub">
+                                @foreach (var item in itensPermitidos)
+                                {
+                                    <a href="@item.Url" class="modulo-nav-sub-item @(EstaAtivo(item.Url) ? "active" : "")">
+                                        @item.Titulo
+                                        @if (item.EmBreve)
+                                        {
+                                            <span class="modulo-selo-breve">Em Breve</span>
+                                        }
+                                    </a>
+                                }
+                            </div>
+                        </details>
+                    }
+                }
+            }
+        }
+    </aside>
+    }
+
+    <main class="modulo-conteudo">
+        @RenderBody()
+        <partial name="~/Pages/Shared/Partials/_Rodape.cshtml" />
+    </main>
+</div>
+
+<div id="saas-comunicados-loader"
+     data-url="@($"{ModuloRotas.SaaS.Comunicados_Pendentes}?moduloAtual={moduloRaiz}")"></div>
+
+<div id="layout-modulo-config"
+     data-preferencias-tabela="@(modeloPagina?.ColunasPreferidasJson ?? "")"
+     data-tela-identificador="@(ViewContext.ActionDescriptor.DisplayName?.Split(" ").FirstOrDefault() ?? Context.Request.Path.Value ?? "")"
+     hidden></div>
+
+@section Scripts {
+    @if (!string.IsNullOrEmpty(contextoPasta))
+    {
+        <script src="~/Contextos/@contextoPasta/js/comum.js" asp-append-version="true"></script>
+    }
+    <script src="~/Contextos/SaaS/js/comunicados-pendentes.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Shared/js/preferencias-tabela-config.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+}

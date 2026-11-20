@@ -1,0 +1,38 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fiscal.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Módulo Fiscal";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            Fiscal
+        </div>
+        <h1 class="titulo-pagina">Gestão Fiscal</h1>
+        <p class="subtitulo-pagina">Impostos, @TerminologiaErp.NomeNotaFiscalPlural.ToLower() e conformidade legal.</p>
+    </div>
+</div>
+
+<div class="modulos-grid">
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = ModuloRotas.Fiscal.Parametros,
+        nome = "Parâmetros de Emissão",
+        descricao = "Configure séries, ambientes SEFAZ, CSC e regras de emissão de NF-e e NFC-e.",
+        textoLink = "Gerenciar Séries",
+        corHexadecimal = "#10b981", corRgb = "16, 185, 129",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#10b981\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg>"
+    })
+
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = "#",
+        nome = "Mensageria " + TerminologiaErp.AbreviacaoNotaFiscalEletronica,
+        descricao = "Emissão e gerenciamento de " + TerminologiaErp.NomeNotaFiscalPlural + " Eletrônicas.",
+        textoLink = "Em breve",
+        corHexadecimal = "#94a3b8", corRgb = "148, 163, 184",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"></path><polyline points=\"14 2 14 8 20 8\"></polyline></svg>",
+        emBreve = true
+    })
+</div>

@@ -1,0 +1,233 @@
+@page
+@using ModuloMonolitico.Dominio.Constantes
+@model ModuloMonolitico.Web.Pages.Imobiliaria.MeusAnuncios.NovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Publicar Imóvel — Santo André";
+    Layout = "~/Pages/Shared/Layouts/_ImobiliariaLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/novo.css" asp-append-version="true" />
+}
+
+<partial name="Partials/_LinkVoltar" model='new LinkVoltarModelo { Url = ModuloRotas.Imobiliaria.MeusAnuncios, TextoDestino = "Meus Imóveis" }' />
+
+<div class="cabecalho-pagina">
+    <div class="cabecalho-pagina-esquerda">
+        <div class="page-badge">Imóveis</div>
+        <h1 class="titulo-pagina">Publicar Imóvel</h1>
+    </div>
+</div>
+
+
+
+<div class="assistente-container" id="assistente">
+    <div class="assistente-passos" id="assistente-passos" role="progressbar">
+        <div class="assistente-passo assistente-passo--ativo" data-passo="1">1. Tipo</div>
+        <div class="assistente-passo" data-passo="2">2. Características</div>
+        <div class="assistente-passo" data-passo="3">3. Localização</div>
+        <div class="assistente-passo" data-passo="4">4. Valores</div>
+        <div class="assistente-passo" data-passo="5">5. Fotos e Detalhes</div>
+    </div>
+
+    <form id="form-novo-anuncio" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+
+        <div class="assistente-etapa assistente-etapa--ativa" data-etapa="1">
+            <h2 class="assistente-titulo">Que tipo de negócio é este?</h2>
+            <div class="tipo-negocio-grid">
+                <label class="tipo-card" id="tipo-venda">
+                    <app-input type="radio" asp-for="TipoNegocio" value="venda" />
+                    <div class="tipo-card-icon">🏠</div>
+                    <span>Venda</span>
+                </label>
+                <label class="tipo-card" id="tipo-aluguel">
+                    <app-input type="radio" asp-for="TipoNegocio" value="aluguel" />
+                    <div class="tipo-card-icon">🔑</div>
+                    <span>Aluguel</span>
+                </label>
+            </div>
+
+            <h2 class="assistente-titulo assistente-titulo--separado">Qual é o tipo do imóvel?</h2>
+            <div class="tipo-imovel-grid">
+                <label class="tipo-card" id="tipo-apartamento">
+                    <app-input type="radio" asp-for="TipoImovel" value="apartamento" />
+                    <div class="tipo-card-icon">🏢</div>
+                    <span>Apartamento</span>
+                </label>
+                <label class="tipo-card" id="tipo-casa">
+                    <app-input type="radio" asp-for="TipoImovel" value="casa" />
+                    <div class="tipo-card-icon">🏡</div>
+                    <span>Casa</span>
+                </label>
+                <label class="tipo-card" id="tipo-kitnet">
+                    <app-input type="radio" asp-for="TipoImovel" value="kitnet" />
+                    <div class="tipo-card-icon">🛏</div>
+                    <span>Kitnet/Studio</span>
+                </label>
+                <label class="tipo-card" id="tipo-comercial">
+                    <app-input type="radio" asp-for="TipoImovel" value="comercial" />
+                    <div class="tipo-card-icon">🏪</div>
+                    <span>Comercial</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="assistente-etapa" data-etapa="2">
+            <h2 class="assistente-titulo">Características do imóvel</h2>
+            <div class="form-grid-2">
+                <div class="campo-grupo">
+                    <app-input asp-for="Quartos" label="Quartos" type="number" min="0" max="15" />
+                </div>
+                <div class="campo-grupo">
+                    <app-input asp-for="Banheiros" label="Banheiros" type="number" min="0" max="15" />
+                </div>
+                <div class="campo-grupo">
+                    <app-input asp-for="VagasGaragem" label="Vagas de Garagem" type="number" min="0" max="20" />
+                </div>
+                <div class="campo-grupo">
+                    <app-input asp-for="AreaTotal" label="Área Total (m²)" type="number" step="0.01" min="0" max="1000000" />
+                </div>
+                <div class="campo-grupo">
+                    <app-input asp-for="Andar" label="Andar" type="number" min="0" max="100" />
+                </div>
+                <div class="campo-grupo">
+                    <app-select asp-for="SituacaoObra" label="Situação da obra">
+                        <option value="pronto">Pronto para morar</option>
+                        <option value="em_construcao">Em construção</option>
+                        <option value="na_planta">Na planta</option>
+                    </app-select>
+                </div>
+            </div>
+            <h2 class="assistente-subtitulo">Diferenciais e Comodidades</h2>
+            @{
+                var selecionadasNovo = new HashSet<string>(Model.CodigosAmenidadeSelecionados ?? [], StringComparer.OrdinalIgnoreCase);
+            }
+            @foreach (var grupo in Model.CatalogoAmenidades.GroupBy(a => a.Categoria))
+            {
+                <div class="amenidades-grupo">
+                    <div class="campo-rotulo campo-rotulo--grupo">@AmenidadesImobiliariaDefinicoes.NomeCategoria(grupo.Key)</div>
+                    <div class="campo-checks-grade">
+                        @foreach (var am in grupo)
+                        {
+                            <label class="campo-check-amenidade">
+                                <app-checkbox name="CodigosAmenidadeSelecionados" value="@am.Codigo" checked="@selecionadasNovo.Contains(am.Codigo)" />
+                                <span>@am.Nome</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="assistente-etapa" data-etapa="3">
+            <h2 class="assistente-titulo">Onde fica o imóvel?</h2>
+            <app-input type="hidden" asp-for="Latitude" id="campo-latitude" />
+            <app-input type="hidden" asp-for="Longitude" id="campo-longitude" />
+            <div class="form-grid-2">
+                <div class="campo-grupo">
+                    <app-input asp-for="Cep" label="CEP *" type="text" id="campo-cep" data-mascara="cep" placeholder="00000-000" maxlength="9" required />
+                </div>
+                <div class="campo-grupo">
+                    <app-input asp-for="Bairro" label="Bairro *" type="text" id="campo-bairro" required autocomplete="off" />
+                </div>
+                <div class="campo-grupo">
+                    <app-input asp-for="Logradouro" label="Logradouro *" type="text" id="campo-logradouro" required autocomplete="off" />
+                </div>
+                <div class="campo-grupo">
+                    <app-input asp-for="Numero" label="Número *" type="text" id="campo-numero" required autocomplete="off" />
+                </div>
+                <div class="campo-grupo campo-grupo--completo">
+                    <app-input asp-for="Complemento" label="Complemento (opcional)" type="text" id="campo-complemento" autocomplete="off" placeholder="Ex: Casa 2, Fundos, Sala 101" />
+                    <div id="complemento-dica-box" class="campo-dica-box">
+                        <span id="complemento-texto-dica">ℹ️ Não é obrigatório informar.</span>
+                        <div id="botoes-padrao-apto" class="campo-dica-botoes" style="display: none;">
+                            <span class="campo-dica-label">Padrão Apto/Bloco:</span>
+                            <app-button type="button" variant="ghost" size="sm" class="btn-pill-complemento" data-adicionar="Apto ">+ Apto</app-button>
+                            <app-button type="button" variant="ghost" size="sm" class="btn-pill-complemento" data-adicionar="Bloco ">+ Bloco</app-button>
+                            <app-button type="button" variant="ghost" size="sm" class="btn-pill-complemento" data-adicionar="Bl ">+ Bl</app-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="campo-grupo">
+                <label class="campo-rotulo">Cidade</label>
+                <app-input type="text" class="campo-controle mb-0" value="Santo André" readonly />
+            </div>
+
+            <div class="privacidade-box">
+                <h3>Privacidade de endereço</h3>
+                <label class="campo-check-rotulo">
+                    <app-checkbox asp-for="MostrarLogradouro" />
+                    Mostrar rua/logradouro para visitantes
+                </label>
+                <label class="campo-check-rotulo">
+                    <app-checkbox asp-for="MostrarNumero" />
+                    Mostrar número para visitantes
+                </label>
+                <p class="privacidade-hint">Se desativado, o mapa mostrará apenas a região aproximada do bairro.</p>
+            </div>
+        </div>
+
+        <div class="assistente-etapa" data-etapa="4">
+            <h2 class="assistente-titulo">Qual é o valor?</h2>
+            <div class="form-grid-2">
+                <div class="campo-grupo campo-grupo--completo">
+                    <app-input asp-for="ValorPrincipal" label="Valor *" type="number" step="100" min="0" max="500000000" required />
+                </div>
+                <div class="campo-grupo" id="grupo-condominio">
+                    <app-input asp-for="ValorCondominio" label="Condomínio (R$/mês)" type="number" step="10" min="0" max="500000" />
+                </div>
+                <div class="campo-grupo" id="grupo-iptu">
+                    <app-input asp-for="ValorIptu" label="IPTU (R$/mês)" type="number" step="10" min="0" max="500000" />
+                </div>
+            </div>
+            <div id="previa-pacote" class="pacote-previa" hidden>
+                <span>Pacote total/mês:</span>
+                <strong id="pacote-total-valor">R$ 0</strong>
+            </div>
+        </div>
+
+        <div class="assistente-etapa" data-etapa="5">
+            <h2 class="assistente-titulo">Título e descrição</h2>
+            <div class="campo-grupo">
+                <app-input asp-for="Titulo" label="Título do anúncio *" type="text" maxlength="200" required
+                       placeholder="Ex: Apartamento 2 dorms com vaga no Centro" />
+                <div id="sugestao-titulo-box" class="sugestao-titulo-box" style="display: none;">
+                    💡 Sugestão automática: <a href="#" id="btn-usar-sugestao" class="sugestao-titulo-link"></a>
+                </div>
+            </div>
+            <div class="campo-grupo">
+                <app-textarea asp-for="Descricao" label="Descrição" rows="4"
+                          placeholder="Descreva o imóvel, diferenciais, estado de conservação..." />
+            </div>
+            <div class="campo-grupo">
+                <app-input asp-for="ContatoWhatsapp" label="WhatsApp para contato" type="tel" data-mascara="telefone" maxlength="15" placeholder="(11) 99999-9999" />
+            </div>
+
+            <div class="campo-grupo">
+                <label class="campo-rotulo">Fotos do imóvel</label>
+                <div class="foto-envio-area" id="foto-envio-area" data-maximo="15">
+                    <app-input type="file" name="Fotos" id="input-fotos" multiple accept="image/jpeg,image/png,image/webp" class="foto-input-hidden" />
+                    <div class="foto-envio-placeholder" id="foto-placeholder">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <p>Clique ou arraste fotos aqui</p>
+                        <span>Até 15 fotos · JPG, PNG, WEBP</span>
+                    </div>
+                    <div class="foto-previa-grade" id="foto-previa-grade"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="assistente-nav">
+            <app-button type="button" variant="secondary" class="btn-assistente-anterior" id="btn-anterior" hidden="true">← Anterior</app-button>
+            <app-button type="button" variant="primary" class="btn-assistente-proximo" id="btn-proximo">Próximo →</app-button>
+            <app-button type="submit" variant="primary" class="btn-assistente-enviar" id="btn-enviar" hidden="true">Publicar Imóvel</app-button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Imobiliaria/js/novo.js" asp-append-version="true"></script>
+}

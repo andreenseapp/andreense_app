@@ -1,0 +1,54 @@
+@page
+@model ModuloMonolitico.Web.Pages.Geral.SeletorDemo.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Demonstração: Seletor de Usuário";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Geral/css/seletordemo-index.css" asp-append-version="true" />
+}
+
+<main class="demo-main">
+    <div class="cabecalho-pagina">
+        <div>
+            <div class="page-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Demo
+            </div>
+            <h1 class="titulo-pagina">Seletor de Usuário / Vínculos</h1>
+            <p class="subtitulo-pagina">Teste interativo do componente de busca com toggle de vínculos.</p>
+        </div>
+    </div>
+
+    @if (TempData[TempDataKeys.MensagemDemo] != null)
+    {
+        <div class="demo-msg" role="status">@TempData[TempDataKeys.MensagemDemo]</div>
+    }
+
+    <div class="demo-card">
+        <form method="post">
+            <div class="demo-campo-grupo">
+                @await Component.InvokeAsync("SeletorUsuario", new {
+                    papel = "cliente",
+                    label = "Cliente",
+                    fieldName = "ClienteId",
+                    valorAtual = Model.ClienteId
+                })
+            </div>
+
+            <div class="demo-campo-grupo">
+                @await Component.InvokeAsync("SeletorUsuario", new {
+                    papel = "fornecedor",
+                    label = "Fornecedor da Mercadoria",
+                    fieldName = "FornecedorId",
+                    valorAtual = Model.FornecedorId
+                })
+            </div>
+
+            <div class="demo-formulario-acoes">
+                <app-button type="submit" variant="primary" class="demo-btn">Testar Submit do Form</app-button>
+            </div>
+        </form>
+    </div>
+</main>

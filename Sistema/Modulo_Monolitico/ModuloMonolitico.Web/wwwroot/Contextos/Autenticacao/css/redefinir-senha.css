@@ -1,0 +1,64 @@
+/* RedefinirSenha — /Autenticacao/RedefinirSenha */
+/* Estilos especificos desta tela. Shell em comum.css */
+
+.autenticacao-ajuda-inferior {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--clr-text-muted);
+}
+
+.btn-link-clean {
+  background: none;
+  border: none;
+  color: var(--clr-primary-light);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  transition: color var(--transition-fast);
+}
+
+.btn-link-clean:hover {
+  color: var(--clr-accent);
+}
+
+.btn-link-clean:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+#btn-validar-codigo {
+  margin-top: 1.5rem;
+}
+
+/* Transições das etapas de Nova Senha */
+.autenticacao-etapa {
+  transition: opacity var(--transition-base), transform var(--transition-base);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.autenticacao-etapa.hidden {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.autenticacao-etapa.entrada-fade-ativa {
+  animation: stepIn var(--transition-base) forwards;
+}
+
+@keyframes stepIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mensagens-servidor {
+  display: none;
+}

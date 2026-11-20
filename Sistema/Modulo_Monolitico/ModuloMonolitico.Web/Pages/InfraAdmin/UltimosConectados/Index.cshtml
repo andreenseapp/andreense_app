@@ -1,0 +1,90 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.UltimosConectados.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Últimos Conectados";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/ultimos-conectados-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Tempo Real
+        </div>
+        <h1 class="titulo-pagina">Últimos Conectados</h1>
+        <p class="subtitulo-pagina">Acessos mais recentes por usuário — últimos 50 registros únicos.</p>
+    </div>
+</div>
+
+@if (!Model.Conexoes.Any())
+{
+    <div class="conectados-vazio">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div>Nenhum registro de conexão recente.</div>
+    </div>
+}
+else
+{
+    <div class="conectados-grid">
+        @foreach (var item in Model.Conexoes)
+        {
+            var tempoAtras = DateTimeOffset.UtcNow - item.DataInclusao;
+            var tempoRelativo = tempoAtras.TotalMinutes < 60
+                ? $"Há {(int)tempoAtras.TotalMinutes} min"
+                : tempoAtras.TotalHours < 24
+                    ? $"Há {(int)tempoAtras.TotalHours}h"
+                    : $"Há {(int)tempoAtras.TotalDays}d";
+
+            <div class="conectado-card">
+                <div class="conectado-avatar">@(string.IsNullOrEmpty(item.Email) ? "?" : item.Email[..1].ToUpperInvariant())</div>
+
+                <div class="conectado-info">
+                    <div class="conectado-email">@item.Email</div>
+                    <div class="conectado-meta">
+                        <span class="conectado-meta-item">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            @item.DataInclusao.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                            <strong class="conectado-tempo">@tempoRelativo</strong>
+                        </span>
+                        <span class="conectado-meta-item">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            <span class="conectado-ip">@item.EnderecoIp</span>
+                            <span class="badge-provedor-sm">@item.Provedor</span>
+                        </span>
+                        @if (!string.IsNullOrWhiteSpace(item.AgenteUsuario))
+                        {
+                            <span class="conectado-ua" title="@item.AgenteUsuario">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                @item.AgenteUsuario
+                            </span>
+                        }
+                    </div>
+                </div>
+
+                <div class="conectado-acoes">
+                    @if (item.UsuarioId.HasValue)
+                    {
+                        <form method="post" asp-page-handler="RevogarAcesso" asp-route-usuarioId="@item.UsuarioId">
+                            @Html.AntiForgeryToken()
+                            <app-button type="submit" variant="danger" size="sm" class="btn-revogar"
+                                        data-confirmacao="Isso irá inativar o usuário e encerrar todas as sessões imediatamente. Deseja continuar?"
+                                        data-confirmacao-tipo="perigo"
+                                        data-confirmacao-titulo="Revogar Acesso">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+                                Revogar
+                            </app-button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="badge-na">N/A</span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}

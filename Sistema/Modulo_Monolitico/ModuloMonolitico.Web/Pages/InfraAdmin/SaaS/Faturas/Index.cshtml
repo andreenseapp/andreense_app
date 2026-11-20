@@ -1,0 +1,146 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.SaaS.FaturasIndexModel
+@using ModuloMonolitico.Dominio.Entidades
+@{
+    ViewData[ViewDataKeys.Title] = "Faturas & Cobranças";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var mesAtual = DateTime.Now.ToString("yyyy-MM");
+    var vencimentoPadrao = DateTime.Now.AddDays(30).ToString("yyyy-MM-dd");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/saas-faturas-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            SaaS
+        </div>
+        <h1 class="titulo-pagina">Faturas & Cobranças</h1>
+        <p class="subtitulo-pagina">
+            @if (Model.ContaIdFiltro != Guid.Empty && !string.IsNullOrEmpty(Model.ContaNomeFiltro))
+            {
+                @:Cobranças da conta <strong>@Model.ContaNomeFiltro</strong>.
+            }
+            else
+            {
+                @:Gerencie cobranças e dê baixa nos pagamentos da conta cliente.
+            }
+        </p>
+    </div>
+    @if (Model.ContaIdFiltro != Guid.Empty)
+    {
+        <div class="cabecalho-pagina-acoes">
+            <a href="@ModuloRotas.InfraAdmin.SaaS_Contas" class="botao botao-fantasma botao-voltar">← Voltar às Contas</a>
+        </div>
+    }
+</div>
+
+@if (Model.ContaIdFiltro == Guid.Empty)
+{
+    <div class="alert-banner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        Acesse as Faturas de uma conta específica a partir da tela de <a href="@ModuloRotas.InfraAdmin.SaaS_Contas" class="primary-link">Contas & Assinaturas</a>.
+    </div>
+}
+else
+{
+    <div class="nova-fatura-card">
+        <p class="fatura-card-titulo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Gerar Nova Fatura
+        </p>
+        <form method="post" asp-page-handler="Gerar">
+            <app-input type="hidden" name="contaId" value="@Model.ContaIdFiltro" />
+            <div class="nova-fatura-grid">
+                <app-input type="month" name="mesReferencia" label="Mês de Referência" value="@mesAtual" required="required" />
+                <app-input type="number" name="valorTotal" label="Valor (R$)" step="0.01" placeholder="0,00" required="required" />
+                <app-input type="date" name="dataVencimento" label="Vencimento" value="@vencimentoPadrao" required="required" />
+            </div>
+            <app-input type="text" name="observacoes" label="Observações (opcional)" placeholder="Ex: Renovação anual, Acerto de diferença..." />
+            <div class="acoes-formulario-gerar">
+                <app-button type="submit" variant="primary" class="botao-salvar">Gerar Fatura</app-button>
+            </div>
+        </form>
+
+    </div>
+
+    @if (!Model.Faturas.Any())
+    {
+        <div class="caixa-vazia">
+            <p class="caixa-vazia-texto">Nenhuma fatura encontrada para esta conta.</p>
+        </div>
+    }
+    else
+    {
+        <div class="log-table-wrapper">
+            <div class="tabela-responsiva">
+                <table class="tabela-dados" data-seletor-colunas="true">
+            <thead>
+                <tr>
+                    <th>Mês</th>
+                    <th>Valor</th>
+                    <th>Situação</th>
+                    <th>Vencimento</th>
+                    <th>Pagamento</th>
+                    <th>Observações</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.Faturas)
+                {
+                    var statusExibicao = f.Situacao;
+                    if (f.Situacao == SituacaoFatura.Pendente && f.DataVencimento < DateTime.UtcNow)
+                        statusExibicao = SituacaoFatura.Atrasado;
+
+                    var sCss = statusExibicao switch {
+                        SituacaoFatura.Pago     => "s-pago",
+                        SituacaoFatura.Atrasado => "s-atrasado",
+                        _                     => "s-pendente"
+                    };
+                    <tr>
+                        <td class="mes-ref-cell">@f.MesReferencia</td>
+                        <td>R$ @f.ValorTotal.ToString("N2")</td>
+                        <td><span class="situacao-pill @sCss">@statusExibicao</span></td>
+                        <td>@f.DataVencimento.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                        <td>@(f.DataPagamento.HasValue ? f.DataPagamento.Value.ToLocalTime().ToString("dd/MM/yyyy") : "—")</td>
+                        <td class="obs-cell">@(string.IsNullOrEmpty(f.Observacoes) ? "—" : f.Observacoes)</td>
+                        <td>
+                            @if (f.Situacao != SituacaoFatura.Pago)
+                            {
+                                <form method="post" asp-page-handler="Baixa">
+                                    <app-input type="hidden" name="faturaId" value="@f.Id" />
+                                    <app-input type="hidden" name="contaId" value="@Model.ContaIdFiltro" />
+                                    <app-button type="submit" variant="primary" size="sm" class="btn-acao-linha success"
+                                                data-confirmacao="Confirmar recebimento desta fatura de R$ @f.ValorTotal.ToString("N2") (@f.MesReferencia)?"
+                                                data-confirmacao-tipo="warning"
+                                                data-confirmacao-titulo="Confirmar Pagamento">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        Dar Baixa
+                                    </app-button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="situacao-quitada">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Quitada
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/InfraAdmin/js/saas-faturas-index.js" asp-append-version="true"></script>
+}

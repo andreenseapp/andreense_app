@@ -1,0 +1,190 @@
+/* Autenticacao — Grupos Index */
+
+.btn-header-novo {
+    height: 38px;
+    padding: 0 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.info-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: rgba(59, 130, 246, 0.07);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.info-banner svg {
+    flex-shrink: 0;
+    color: var(--clr-primary);
+    margin-top: 2px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.log-table-wrapper {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.log-table thead {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    border-bottom: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.log-table thead th {
+    padding: 0.875rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    white-space: nowrap;
+    text-align: left;
+}
+
+.log-table tbody tr {
+    border-bottom: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.log-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.log-table tbody tr:hover {
+    background: var(--clr-bg, var(--clr-surface-alt));
+}
+
+.log-table td {
+    padding: 0.875rem 1rem;
+    color: var(--clr-text, var(--clr-text-heading));
+    vertical-align: middle;
+}
+
+.grupo-nome-celula {
+    font-weight: 600;
+}
+
+.grupo-descricao-celula {
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.grupo-nivel-padrao {
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 0.85rem;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-ativo {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--clr-success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.status-inativo {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--clr-danger);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(251, 191, 36, 0.15);
+    color: var(--clr-warning);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.acoes-celula {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn-editar {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--clr-surface);
+    color: var(--clr-text, var(--clr-text-heading));
+    text-decoration: none;
+    transition: background 0.12s, border-color 0.12s;
+}
+
+.btn-editar:hover {
+    background: var(--clr-bg, var(--clr-surface-hover));
+    border-color: var(--clr-primary, var(--clr-primary));
+    color: var(--clr-primary, var(--clr-primary));
+}
+
+.form-deletar-inline {
+    display: contents;
+}
+
+.btn-excluir {
+    background: none;
+    border: none;
+    color: var(--clr-danger);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.875rem;
+    padding: 0;
+}
+
+.btn-excluir:hover {
+    text-decoration: underline;
+}
+
+.log-vazio {
+    text-align: center;
+    padding: 3rem;
+    color: var(--clr-text-muted, var(--clr-text-placeholder));
+}
+
+.log-vazio svg {
+    opacity: 0.3;
+    margin-bottom: 0.75rem;
+}
+
+.botao-estado-vazio {
+    margin-top: 1rem;
+    height: 38px;
+    padding: 0 1.25rem;
+    display: inline-flex;
+    align-items: center;
+}

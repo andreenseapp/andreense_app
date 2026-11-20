@@ -1,0 +1,214 @@
+/* InfraAdmin — Histórico de Logins */
+
+.filtro-card {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.filtro-card .filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 220px;
+    flex: 1;
+}
+
+.filtro-card label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.filtro-card input {
+    height: 38px;
+    padding: 0 0.75rem;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: var(--clr-bg, var(--clr-surface-alt));
+    color: var(--clr-text, var(--clr-text-heading));
+    transition: border-color 0.15s;
+}
+
+.filtro-card input:focus {
+    outline: none;
+    border-color: var(--clr-primary, var(--clr-primary));
+    background: var(--clr-surface);
+}
+
+.btn-filtro { height: 38px; padding: 0 1.25rem; }
+.botao-limpar { height: 38px; padding: 0 1rem; }
+.tabela-responsiva { overflow-x: auto; }
+
+.log-table-wrapper {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.log-table thead {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    border-bottom: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.log-table thead th {
+    padding: 0.875rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    white-space: nowrap;
+}
+
+.log-table tbody tr {
+    border-bottom: 1px solid var(--clr-border, var(--clr-border));
+    transition: background 0.12s;
+}
+
+.log-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.log-table tbody tr:hover {
+    background: var(--clr-bg, var(--clr-surface-alt));
+}
+
+.log-table td {
+    padding: 0.875rem 1rem;
+    color: var(--clr-text, var(--clr-text-heading));
+    vertical-align: middle;
+}
+
+.log-data-principal {
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.log-data-secundaria {
+    font-size: 0.75rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.log-ip {
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    background: var(--clr-bg, var(--clr-surface-alt));
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.badge-sucesso {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--clr-success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-falha {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--clr-danger);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.badge-provedor {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: var(--clr-bg, var(--clr-surface-hover));
+    color: var(--clr-text-muted, var(--clr-text-label));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    letter-spacing: 0.05em;
+}
+
+.log-ua {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.78rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.log-vazio {
+    text-align: center;
+    padding: 3rem;
+    color: var(--clr-text-muted, var(--clr-text-placeholder));
+}
+
+.log-vazio svg {
+    opacity: 0.3;
+    margin-bottom: 0.75rem;
+}
+
+.log-paginacao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.875rem 1.25rem;
+    border-top: 1px solid var(--clr-border, var(--clr-border));
+    background: var(--clr-bg, var(--clr-surface-alt));
+    font-size: 0.8rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.paginacao-nav {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.paginacao-btn {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--clr-surface);
+    color: var(--clr-text, var(--clr-text-heading));
+    text-decoration: none;
+    transition: background 0.12s, border-color 0.12s;
+    cursor: pointer;
+}
+
+.paginacao-btn:hover {
+    background: var(--clr-bg, var(--clr-surface-hover));
+    border-color: var(--clr-primary, var(--clr-primary));
+    color: var(--clr-primary, var(--clr-primary));
+}
+
+.paginacao-btn.desabilitado {
+    opacity: 0.4;
+    pointer-events: none;
+}

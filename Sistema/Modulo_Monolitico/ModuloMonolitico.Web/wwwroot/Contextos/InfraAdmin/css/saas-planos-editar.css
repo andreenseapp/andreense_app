@@ -1,0 +1,148 @@
+/* InfraAdmin — Planos SaaS Editar */
+
+.formulario-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.cartao-formulario {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.section-title {
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    margin: 1.75rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.field-hint {
+    display: block;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 0.78rem;
+    margin-top: 0.35rem;
+}
+
+.toggle-row {
+    margin-bottom: 0.5rem;
+}
+
+.lista-alternancia-recurso {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.item-alternancia-recurso {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+    background: var(--clr-bg, var(--clr-surface-alt));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 8px;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.item-alternancia-recurso:has(input[type=checkbox]:checked) {
+    border-color: var(--clr-primary, var(--clr-primary));
+    background: rgba(99, 102, 241, 0.07);
+}
+
+.feature-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--clr-primary, var(--clr-primary));
+    flex-shrink: 0;
+}
+
+.item-alternancia-recurso label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    cursor: pointer;
+}
+
+.feature-chave {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--clr-text, var(--clr-text-heading));
+    font-family: 'Courier New', monospace;
+}
+
+.feature-tipo-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--clr-status-andamento);
+}
+
+.feature-limite-label {
+    display: block;
+    text-align: center;
+    margin-bottom: 2px;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 0.72rem;
+}
+
+.feature-valor-input {
+    width: 80px;
+    text-align: center;
+    font-weight: 700;
+    padding: 0.35rem 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    background: var(--clr-surface, var(--clr-surface));
+    color: var(--clr-text, var(--clr-text-heading));
+    font-size: 0.875rem;
+}
+
+.acoes-formulario {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.acoes-formulario-right {
+    display: flex;
+    gap: 1rem;
+}
+
+.plano-meta-id {
+    font-size: 0.8rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.plano-meta-id code {
+    font-size: 0.75rem;
+    opacity: 0.75;
+}
+
+.btn-cancelar {
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    color: var(--clr-text, var(--clr-text-heading));
+    transition: background 0.12s;
+}
+
+.btn-cancelar:hover {
+    background: var(--clr-bg, var(--clr-surface-alt));
+}

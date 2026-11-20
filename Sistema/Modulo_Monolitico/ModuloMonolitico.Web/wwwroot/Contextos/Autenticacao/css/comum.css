@@ -1,0 +1,43 @@
+/* Compartilhado do contexto Auth — shell das Pages standalone */
+
+.autenticacao-principal {
+  position: relative;
+}
+
+.autenticacao-alternar-tema {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+}
+
+.autenticacao-alternar-tema .barra-superior-icone-btn {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  color: var(--clr-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+  box-shadow: var(--glass-shadow);
+}
+
+.autenticacao-marca-logo {
+  background: none;
+  border: none;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+}
+
+.autenticacao-marca-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.autenticacao-link--espacado {
+  margin-top: 1.5rem;
+}

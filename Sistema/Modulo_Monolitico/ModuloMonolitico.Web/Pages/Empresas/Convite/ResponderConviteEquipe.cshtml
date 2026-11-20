@@ -1,0 +1,57 @@
+@page
+@model ModuloMonolitico.Web.Pages.Empresas.Convite.ResponderConviteEquipeModel
+@{
+    ViewData[ViewDataKeys.Title] = "Responder Convite";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Empresas/css/convite-responder-equipe.css" asp-append-version="true" />
+}
+
+<div class="envoltorio-convite">
+    <div class="recipiente-convite">
+        @if (Model.ConviteInvalido)
+        {
+            <div class="cartao-convite">
+                <div class="avatar-empresa avatar-empresa--invalido" aria-hidden="true">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <h1 class="titulo-convite">Convite Inválido</h1>
+                <p class="descricao-convite">Este convite não foi encontrado, expirou ou já foi processado.</p>
+                <a href="@ModuloRotas.ERP.Index" class="botao-aceitar botao-aceitar-link">Voltar ao Dashboard</a>
+            </div>
+        }
+        else
+        {
+            <div class="cartao-convite">
+                <div class="avatar-empresa" aria-hidden="true">@Model.LetraEmpresa</div>
+                <h1 class="titulo-convite">@Model.EmpresaNome</h1>
+                <p class="descricao-convite">
+                    Você foi convidado para ingressar na equipe desta empresa.<br />
+                    Como você deseja prosseguir?
+                </p>
+
+                <div class="btn-group">
+                    <form method="post" asp-page-handler="Responder">
+                        <app-input type="hidden" name="empresaId" value="@Model.EmpresaId" />
+                        <app-input type="hidden" name="aceitar" value="false" />
+                        <app-button type="submit"
+                                variant="danger"
+                                class="botao-recusar"
+                                data-confirmacao="Recusar este convite? Será necessário um novo convite para ingressar na equipe."
+                                data-confirmacao-tipo="perigo">
+                            Recusar
+                        </app-button>
+                    </form>
+
+                    <form method="post" asp-page-handler="Responder">
+                        <app-input type="hidden" name="empresaId" value="@Model.EmpresaId" />
+                        <app-input type="hidden" name="aceitar" value="true" />
+                        <app-button type="submit" variant="primary" class="botao-aceitar">Aceitar Convite</app-button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,276 @@
+/* ======================================================
+   comum.css — Design tokens e componentes compartilhados
+   ====================================================== */
+
+:root {
+  --imob-primary: var(--clr-primary);
+  --imob-primary-light: #1a7abf;
+  --imob-primary-bg: #eff6ff;
+  --imob-venda: #0e7a45;
+  --imob-venda-bg: #ecfdf5;
+  --imob-aluguel: var(--clr-status-andamento);
+  --imob-aluguel-bg: #f5f3ff;
+  --imob-surface: var(--clr-surface);
+  --imob-surface-alt: var(--clr-surface-alt);
+  --imob-border: var(--clr-border);
+  --imob-text: var(--clr-text-heading);
+  --imob-text-muted: var(--clr-text-label);
+  --imob-radius: 12px;
+  --imob-radius-sm: 8px;
+  --imob-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --imob-shadow-hover: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+/* ── Cabeçalho de página ── */
+.cabecalho-pagina-voltar {
+  margin-bottom: 0.5rem;
+}
+
+.link-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--imob-text-muted);
+  text-decoration: none;
+  font-size: 0.825rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.link-voltar:hover {
+  color: var(--imob-primary);
+}
+
+.cabecalho-pagina {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--imob-border);
+}
+
+.cabecalho-pagina-esquerda {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cabecalho-pagina .subtitulo-pagina {
+  margin: 0;
+  color: var(--imob-text-muted);
+  font-size: 0.875rem;
+}
+
+/* ── Page Badge ── */
+.page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  border: 1px solid var(--imob-border);
+  color: var(--imob-text-muted);
+  background: var(--imob-surface-alt);
+  width: fit-content;
+}
+
+/* ── Badges de tipo/finalidade ── */
+.anuncio-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge--venda       { background: var(--imob-venda-bg);    color: var(--imob-venda);    }
+.badge--aluguel     { background: var(--imob-aluguel-bg);  color: var(--imob-aluguel);  }
+.badge--destaque    { background: #fef3c7;                  color: var(--clr-warning);              }
+.badge--visualizado { background: #e0e7ff;                  color: #3730a3;              }
+
+.anuncio-card--visualizado { opacity: 0.92; }
+
+.anuncio-card--visualizado .anuncio-card-foto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 60%, rgba(55, 48, 163, 0.06) 100%);
+}
+
+/* ── Tipo imóvel badge ── */
+.anuncio-tipo-imovel,
+.badge-tipo-imovel {
+  background: rgba(0,0,0,0.45);
+  color: var(--clr-surface);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-tipo-imovel {
+  background: var(--imob-surface-alt);
+  color: var(--imob-text-muted);
+}
+
+/* ── Status badges ── */
+.selo-situacao {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+
+.selo-situacao--ativo    { background: var(--imob-venda-bg); color: var(--imob-venda); }
+.selo-situacao--pausado  { background: #fef3c7; color: #92400e; }
+.selo-situacao--vendido,
+.selo-situacao--locado   { background: #e0e7ff; color: #3730a3; }
+
+/* ── Placeholder foto ── */
+.anuncio-foto-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  background: var(--imob-surface-alt);
+  color: var(--imob-text-muted);
+}
+
+/* ── Botão anunciar ── */
+.btn-anunciar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--imob-primary);
+  color: var(--clr-surface);
+  padding: 11px 22px;
+  border-radius: var(--imob-radius-sm);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.btn-anunciar:hover {
+  background: var(--imob-primary-light);
+  transform: translateY(-1px);
+  color: var(--clr-surface);
+}
+
+/* ── Estado vazio ── */
+.imob-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 72px 24px;
+  text-align: center;
+  color: var(--imob-text-muted);
+}
+
+.imob-vazio svg { opacity: 0.25; }
+.imob-vazio h2 { color: var(--imob-text); font-size: 1.35rem; margin: 0; }
+.imob-vazio p  { font-size: 0.925rem; margin: 0; }
+
+/* ── Paginação ── */
+.imob-paginacao {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  padding: 28px 0 12px;
+  flex-wrap: wrap;
+}
+
+.paginacao-btn {
+  min-width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--imob-radius-sm);
+  border: 1px solid var(--imob-border);
+  background: var(--imob-surface);
+  color: var(--imob-text);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.18s;
+  padding: 0 10px;
+}
+
+.paginacao-btn--ativo,
+.paginacao-btn:hover {
+  background: var(--imob-primary);
+  color: var(--clr-surface);
+  border-color: var(--imob-primary);
+}
+
+/* ── Rodapé do Card — Anunciante ── */
+.anuncio-card-footer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--imob-border);
+}
+
+.anunciante-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--imob-text);
+  transition: color 0.2s;
+}
+
+.anuncio-card:hover .anunciante-info {
+  color: var(--imob-primary);
+}
+
+.anunciante-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--imob-border);
+}
+
+.anunciante-avatar-placeholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--imob-surface-alt);
+  border: 1px solid var(--imob-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--imob-text-muted);
+  flex-shrink: 0;
+}
+
+.anunciante-nome {
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

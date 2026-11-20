@@ -1,0 +1,226 @@
+@page
+
+@model ModuloMonolitico.Web.Pages.Fidelizacao.Cashback.GerarModel
+
+@{
+
+    ViewData[ViewDataKeys.Title] = "Conceder Cashback";
+
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+
+    var semCampanha = Model.RegraAplicavel == null && string.IsNullOrEmpty(Model.QrCodeBase64);
+
+    var comCampanha = Model.RegraAplicavel != null && string.IsNullOrEmpty(Model.QrCodeBase64);
+
+}
+
+
+
+@section Styles {
+
+    <link rel="stylesheet" href="~/Contextos/Fidelizacao/css/cashback-gerar.css" asp-append-version="true" />
+
+}
+
+
+
+@section Scripts {
+
+    <script src="~/Contextos/Fidelizacao/js/cashback-gerar.js" asp-append-version="true"></script>
+
+}
+
+
+
+<div class="cabecalho-pagina">
+
+    <div class="selo-pagina selo-pagina--cashback">
+
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+
+        Conceder Benefício
+
+    </div>
+
+    <h1 class="titulo-pagina">Gerar QR Code de Cashback</h1>
+
+    <p class="subtitulo-pagina">Informe o valor da compra para gerar o código de crédito para o cliente.</p>
+
+</div>
+
+
+
+<div class="conteudo-principal cashback-gerar-container">
+
+
+
+    @if (semCampanha)
+
+    {
+
+        <div class="alerta-sem-campanha">
+
+            <div class="alerta-sem-campanha-icon" aria-hidden="true">
+
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+
+            </div>
+
+            <strong>Nenhuma campanha de cashback ativa!</strong>
+
+            <p class="alerta-sem-campanha-text">
+
+                Cadastre ou ative uma regra de cashback antes de gerar um QR Code.
+
+            </p>
+
+            <a href="@ModuloRotas.Fidelizacao.Cashback" class="alerta-sem-campanha-link">
+
+                Gerenciar Campanhas
+
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+
+            </a>
+
+        </div>
+
+    }
+
+    else if (comCampanha)
+
+    {
+
+        <div class="campanha-ativa-card">
+
+            <div class="campanha-ativa-icon" aria-hidden="true">
+
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+
+            </div>
+
+            <div class="campanha-ativa-body">
+
+                <div class="campanha-ativa-label">Campanha Ativa</div>
+
+                <div class="campanha-ativa-title">@Model.RegraAplicavel!.Titulo</div>
+
+                <div class="campanha-ativa-meta">
+
+                    @Model.RegraAplicavel.Percentual.ToString("N1")% de cashback
+
+                    @(Model.RegraAplicavel.DiasValidade.HasValue ? $" · Válido por {Model.RegraAplicavel.DiasValidade} dias" : "")
+
+                    @(Model.RegraAplicavel.TemReferencia ? " · Exige referência" : "")
+
+                </div>
+
+            </div>
+
+            <a href="@ModuloRotas.Fidelizacao.Cashback" title="Gerenciar campanhas" class="campaign-manage-link">
+
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>
+
+            </a>
+
+        </div>
+
+    }
+
+
+
+    <div class="qr-card">
+
+        @if (string.IsNullOrEmpty(Model.QrCodeBase64))
+
+        {
+
+            <form method="post">
+
+                <app-input asp-for="ValorCompra"
+
+                           label="Valor da Compra (R$)"
+
+                           type="number"
+
+                           step="0.01"
+
+                           placeholder="0,00"
+
+                           required="required"
+
+                           autofocus="autofocus"
+
+                           class="cashback-valor-field mb-0" />
+
+
+
+                @if (Model.RegraAplicavel != null)
+
+                {
+
+                    <app-save-button type="submit" full-width="true" class="botao-enviar-qr">Gerar QR Code</app-save-button>
+
+                }
+
+                else
+
+                {
+
+                    <app-button type="submit" variant="primary" class="botao-enviar-qr" disabled="true">Gerar QR Code</app-button>
+
+                }
+
+            </form>
+
+        }
+
+        else
+
+        {
+
+            <div id="qrcode-area" class="qrcode-area">
+
+                <div class="qrcode-frame">
+
+                    <img src="data:image/svg+xml;base64,@Model.QrCodeBase64" alt="QR Code de cashback" class="qrcode-image" />
+
+                </div>
+
+
+
+                <h3 class="qrcode-title">QR Code Gerado!</h3>
+
+                <p class="qrcode-desc">
+
+                    Peça para o cliente abrir o app Andreense e escanear este código para receber o cashback.
+
+                </p>
+
+
+
+                <div class="qrcode-actions">
+
+                    <a href="@ModuloRotas.Fidelizacao.Cashback_Gerar" class="botao botao-contorno">Novo QR Code</a>
+
+                    <app-button type="button" variant="secondary" class="botao-imprimir">Imprimir</app-button>
+
+                </div>
+
+
+
+                <div class="qrcode-expiry">
+
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+
+                    Este código expira em 90 segundos por segurança.
+
+                </div>
+
+            </div>
+
+        }
+
+    </div>
+
+</div>
+

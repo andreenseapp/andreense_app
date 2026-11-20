@@ -1,0 +1,55 @@
+@page
+@model ModuloMonolitico.Web.Pages.Autenticacao.RedefinirAdministradorModel
+@{
+    ViewData[ViewDataKeys.Title] = "Redefinir Administrador";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Autenticacao/css/redefinir-administrador.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge page-badge--restrito">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Infra
+        </div>
+        <h1 class="titulo-pagina">Redefinição de Administrador</h1>
+        <p class="subtitulo-pagina">Ferramenta restrita a usuários Master para redefinir senha e vínculos de um admin.</p>
+    </div>
+</div>
+
+<main class="redefinir-administrador-container">
+    <div class="redefinir-administrador-cartao">
+        <div class="redefinir-administrador-aviso">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <p>A senha será redefinida para <strong>123456</strong> e os vínculos administrativos serão recriados. Use apenas em ambientes de desenvolvimento ou recuperação controlada.</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.MensagemResultado))
+        {
+            <div class="alerta-formulario @(Model.Sucesso ? "alerta-formulario--sucesso" : "alerta-formulario--erro")" role="alerta">
+                @Model.MensagemResultado
+            </div>
+        }
+
+        <form method="post" novalidate>
+            @Html.AntiForgeryToken()
+            <app-input asp-for="EmailAdministrador"
+                       label="E-mail do administrador"
+                       type="email"
+                       placeholder="admin@empresa.com"
+                       required="required"
+                       autocomplete="email" />
+            <div class="redefinir-administrador-acoes">
+                <app-save-button type="submit"
+                                 data-confirmacao="Redefinir senha e vínculos deste administrador?"
+                                 data-confirmacao-tipo="perigo"
+                                 data-confirmacao-titulo="Confirmar redefinição">
+                    Executar redefinição
+                </app-save-button>
+            </div>
+        </form>
+    </div>
+</main>

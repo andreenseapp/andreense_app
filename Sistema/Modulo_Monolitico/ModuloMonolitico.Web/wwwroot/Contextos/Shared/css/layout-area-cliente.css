@@ -1,0 +1,76 @@
+.modulo-container {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: calc(100vh - 64px);
+            background-color: var(--clr-surface-alt);
+        }
+
+        .modulo-barra-lateral {
+            background-color: var(--clr-surface);
+            border-right: 1px solid var(--clr-border);
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .modulo-barra-titulo {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--clr-text-placeholder);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            margin-top: 1.5rem;
+            padding-left: 0.75rem;
+        }
+
+        .modulo-barra-titulo:first-child {
+            margin-top: 0;
+        }
+
+        .modulo-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            color: var(--clr-text-body);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .modulo-nav-item:hover {
+            background-color: var(--clr-surface-hover);
+            color: var(--clr-text-strong);
+        }
+
+        .modulo-nav-item.active {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--clr-primary);
+        }
+
+        .modulo-nav-icone {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: inherit;
+        }
+
+        .modulo-conteudo {
+            padding: 2rem;
+            overflow-y: auto;
+            max-width: 1200px;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .modulo-container {
+                grid-template-columns: 1fr;
+            }
+            .modulo-barra-lateral {
+                display: none;
+            }
+        }

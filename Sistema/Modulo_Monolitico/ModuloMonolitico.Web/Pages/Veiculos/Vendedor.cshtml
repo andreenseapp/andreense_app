@@ -1,0 +1,80 @@
+@page
+@model ModuloMonolitico.Web.Pages.Veiculos.VendedorModel
+@{
+    ViewData["Title"] = Model.Perfil is not null ? $"{Model.Perfil.NomeExibicao} — Vendedor" : "Perfil do Vendedor";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Veiculos/css/comum.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Veiculos/css/vendedor.css" asp-append-version="true" />
+}
+
+@if (Model.Perfil is null)
+{
+    <div class="veic-detalhe-erro">
+        <h1>Vendedor não encontrado</h1>
+        <a href="@ModuloRotas.Veiculos.Index">Voltar aos veículos</a>
+    </div>
+}
+else
+{
+    var p = Model.Perfil;
+    <div class="veic-vendedor">
+        <div class="veic-vendedor-header">
+            <div class="vendedor-perfil-topo">
+                @if (!string.IsNullOrEmpty(p.UrlFotoLogo))
+                {
+                    <img src="@p.UrlFotoLogo" alt="@p.NomeExibicao" class="vendedor-perfil-logo" />
+                }
+                <div class="vendedor-perfil-dados">
+                    <h1 class="vendedor-perfil-nome">@p.NomeExibicao</h1>
+                    @if (!string.IsNullOrEmpty(p.Descricao))
+                    {
+                        <p class="vendedor-perfil-descricao">@p.Descricao</p>
+                    }
+                    <div class="vendedor-perfil-links">
+                        @if (!string.IsNullOrEmpty(p.Whatsapp))
+                        {
+                            var numero = new string(p.Whatsapp.Where(char.IsDigit).ToArray());
+                            <a href="https://wa.me/55@(numero)" target="_blank" rel="noopener" class="link-contato link-contato--whatsapp">
+                                📱 WhatsApp
+                            </a>
+                        }
+                        @if (!string.IsNullOrEmpty(p.Instagram))
+                        {
+                            <a href="https://instagram.com/@(p.Instagram.TrimStart('@'))" target="_blank" rel="noopener" class="link-contato link-contato--instagram">
+                                📸 @p.Instagram
+                            </a>
+                        }
+                        @if (!string.IsNullOrEmpty(p.UrlSite))
+                        {
+                            <a href="@p.UrlSite" target="_blank" rel="noopener" class="link-contato">🌐 Site</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="veic-vendedor-anuncios">
+            <h2 class="section-title">Veículos do vendedor</h2>
+            @if (!Model.AnunciosDoVendedor.Any())
+            {
+                <p class="veic-vazio-texto">Nenhum veículo disponível no momento.</p>
+            }
+            else
+            {
+                <div class="veic-grid">
+                    @foreach (var anuncio in Model.AnunciosDoVendedor)
+                    {
+                        <partial name="_CardVeiculo" model="anuncio" />
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Contextos/Veiculos/js/vendedor.js" asp-append-version="true"></script>
+}

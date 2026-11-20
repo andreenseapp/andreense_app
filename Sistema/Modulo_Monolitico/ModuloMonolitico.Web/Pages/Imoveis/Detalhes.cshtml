@@ -1,0 +1,271 @@
+@page
+@using ModuloMonolitico.Dominio.Constantes
+@using ModuloMonolitico.Dominio.Configuracoes
+@model ModuloMonolitico.Web.Pages.Imoveis.DetalhesModel
+@{
+    ViewData[ViewDataKeys.Title] = Model.Anuncio is not null ? $"{Model.Anuncio.Titulo} — Imóveis Santo André" : "Anúncio — Imóveis";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/comum.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/detalhes.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/favoritos.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+}
+
+<div class="imob-detalhe-topo">
+    <partial name="Partials/_LinkVoltar" model='new LinkVoltarModelo { Url = ModuloRotas.Imoveis.Index, TextoDestino = "Imóveis" }' />
+</div>
+
+@if (Model.Anuncio is null)
+{
+    <div class="imob-vazio">
+        <h2>Anúncio não encontrado</h2>
+        <p>Este imóvel pode ter sido removido ou expirado.</p>
+        <a href="@ModuloRotas.Imoveis.Index" class="btn-anunciar">Ver outros imóveis</a>
+    </div>
+}
+else
+{
+    var anuncio = Model.Anuncio;
+
+    <div class="imob-detalhe-container"
+         data-url-favoritar="@ModuloRotas.Imoveis.Favoritar"
+         data-url-login="@ModuloRotas.Autenticacao.Login"
+         data-url-registrar-visualizacao="@Model.UrlRegistrarVisualizacao"
+         data-storage-visualizados="@Model.ChaveStorageVisualizados"
+         data-usuario-logado="@(Model.UsuarioLogado ? "true" : "false")"
+         data-anuncio-id="@anuncio.AnuncioId">
+        <div class="imob-detalhe-main">
+
+            <div class="imob-galeria" id="galeria">
+                @if (anuncio.Fotos.Any())
+                {
+                    <div class="galeria-foto-principal">
+                        <img src="@anuncio.Fotos[0]" alt="@anuncio.Titulo" id="foto-principal" loading="eager" />
+                        @if (anuncio.Fotos.Count > 1)
+                        {
+                            <span class="galeria-badge-count">📷 @anuncio.Fotos.Count fotos — clique para ver mais</span>
+                        }
+                    </div>
+                    @if (anuncio.Fotos.Count > 1)
+                    {
+                        <div class="galeria-miniaturas" id="galeria-miniaturas">
+                            @for (int i = 0; i < anuncio.Fotos.Count; i++)
+                            {
+                                <img src="@anuncio.Fotos[i]" alt="Foto @(i + 1)"
+                                     class="miniatura @(i == 0 ? "miniatura--ativa" : "")"
+                                     data-indice="@i"
+                                     data-origem="@anuncio.Fotos[i]" />
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="galeria-foto-placeholder">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <p>Sem fotos disponíveis</p>
+                    </div>
+                }
+            </div>
+
+            <div class="imob-detalhe-info">
+                <div class="detalhe-badges">
+                    <span class="anuncio-badge @(anuncio.TipoNegocio == "venda" ? "badge--venda" : "badge--aluguel")">
+                        @(anuncio.TipoNegocio == "venda" ? "Venda" : "Aluguel")
+                    </span>
+                    <span class="badge-tipo-imovel">@anuncio.TipoImovel</span>
+                    @if (!string.IsNullOrEmpty(anuncio.CodigoPublico))
+                    {
+                        <span class="badge-tipo-imovel">@anuncio.CodigoPublico</span>
+                    }
+                    @if (Model.EhVisualizado)
+                    {
+                        <span class="anuncio-badge badge--visualizado detalhe-selo-visualizado">@MensagensSistema.Imobiliaria.SeloVisualizado</span>
+                    }
+                    
+                    <app-button type="button" variant="ghost" class="btn-favoritar @(Model.EhFavorito ? "ativo" : "")" style="position:static; margin-left:auto; transform:none;" aria-label="Favoritar" data-imovel-id="@anuncio.ImovelId" data-favoritar-btn>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="icone-coracao">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </app-button>
+                </div>
+
+                <h1 class="detalhe-titulo">@anuncio.Titulo</h1>
+                @if (Model.EhVisualizado)
+                {
+                    <p class="detalhe-aviso-visualizado">@MensagensSistema.Imobiliaria.AvisoJaVisualizado</p>
+                }
+
+                <p class="detalhe-bairro">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    @if (!string.IsNullOrEmpty(anuncio.Logradouro))
+                    {
+                        @anuncio.Logradouro
+                        @if (!string.IsNullOrEmpty(anuncio.Numero)) { <text>, @anuncio.Numero</text> }
+                        @if (!string.IsNullOrEmpty(anuncio.Complemento)) { <text> — @anuncio.Complemento</text> }
+                        <text> — @anuncio.Bairro, Santo André</text>
+                    }
+                    else
+                    {
+                        <text>@anuncio.Bairro, Santo André</text>
+                    }
+                </p>
+
+                <div class="imob-resumo-grid">
+                    @if (anuncio.Quartos > 0) { <div class="resumo-card"><span class="resumo-icone">🛏️</span><span class="resumo-numero">@anuncio.Quartos</span><span class="resumo-label">quarto(s)</span></div> }
+                    @if (anuncio.Banheiros > 0) { <div class="resumo-card"><span class="resumo-icone">🚿</span><span class="resumo-numero">@anuncio.Banheiros</span><span class="resumo-label">banheiro(s)</span></div> }
+                    @if (anuncio.VagasGaragem > 0) { <div class="resumo-card"><span class="resumo-icone">🚗</span><span class="resumo-numero">@anuncio.VagasGaragem</span><span class="resumo-label">vaga(s)</span></div> }
+                    @if (anuncio.AreaTotal.HasValue) { <div class="resumo-card"><span class="resumo-icone">📐</span><span class="resumo-numero">@anuncio.AreaTotal</span><span class="resumo-label">m²</span></div> }
+                    @if (anuncio.Andar.HasValue) { <div class="resumo-card"><span class="resumo-icone">🏢</span><span class="resumo-numero">@anuncio.Andar°</span><span class="resumo-label">andar</span></div> }
+                </div>
+
+                @if (anuncio.Amenidades is { Count: > 0 })
+                {
+                    <div class="imob-diferenciais-secao">
+                        <h2 class="detalhe-secao-titulo">Diferenciais e Comodidades</h2>
+                        @foreach (var grupo in anuncio.Amenidades.GroupBy(a => a.Categoria))
+                        {
+                            <h3 class="detalhe-secao-titulo" style="font-size: 1rem; margin-top: 1rem;">@AmenidadesImobiliariaDefinicoes.NomeCategoria(grupo.Key)</h3>
+                            <div class="diferenciais-grid">
+                                @foreach (var am in grupo)
+                                {
+                                    <div class="dif-item"><span class="dif-icon">✓</span><span class="dif-label">@am.Nome</span></div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(anuncio.Descricao))
+                {
+                    <div class="detalhe-descricao">
+                        <h2 class="detalhe-secao-titulo">Descrição</h2>
+                        <p>@anuncio.Descricao</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="imob-detalhe-sidebar">
+            <div class="sidebar-valores-card">
+                <div class="valor-destaque">
+                    <span class="valor-destaque-label">@(anuncio.TipoNegocio == "venda" ? "Valor" : "Aluguel/mês")</span>
+                    <span class="valor-destaque-numero">R$ @anuncio.ValorPrincipal.ToString("N0")</span>
+                </div>
+
+                @if (anuncio.TipoNegocio == "aluguel" && (anuncio.ValorCondominio > 0 || anuncio.ValorIptu > 0))
+                {
+                    <div class="valor-breakdown">
+                        @if (anuncio.ValorCondominio > 0)
+                        {
+                            <div class="breakdown-linha">
+                                <span>Condomínio</span>
+                                <span>R$ @anuncio.ValorCondominio.ToString("N0")</span>
+                            </div>
+                        }
+                        @if (anuncio.ValorIptu > 0)
+                        {
+                            <div class="breakdown-linha">
+                                <span>IPTU</span>
+                                <span>R$ @anuncio.ValorIptu.ToString("N0")</span>
+                            </div>
+                        }
+                        <div class="breakdown-linha breakdown-linha--total">
+                            <span>Pacote total/mês</span>
+                            <span>R$ @anuncio.PacoteTotal.ToString("N0")</span>
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(anuncio.ContatoWhatsapp))
+                {
+                    var whatsappNumero = ChavesSistema.LimparNumeroWhatsapp(anuncio.ContatoWhatsapp);
+                    var whatsappMsg = Uri.EscapeDataString($"Olá! Vi seu anúncio \"{anuncio.Titulo}\" em Imóveis de Santo André e gostaria de mais informações.");
+                    <a href="https://wa.me/55@whatsappNumero?text=@whatsappMsg"
+                       target="_blank" rel="noopener noreferrer"
+                       class="btn-whatsapp" id="btn-whatsapp">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm.029 18.88a7.947 7.947 0 0 1-3.79-.965L4.5 19.5l1.618-3.663a7.92 7.92 0 0 1-1.043-3.92C5.075 7.859 8.134 5 12.029 5 15.922 5 19 8.059 19 11.951c0 3.892-3.078 6.929-6.971 6.929z"/></svg>
+                        Conversar no WhatsApp
+                    </a>
+                }
+            </div>
+
+            <div class="sidebar-anunciante-card">
+                <h3 class="sidebar-card-titulo">Sobre o Anunciante</h3>
+                <div class="anunciante-perfil-sidebar">
+                    <a href="@ModuloRotas.Imoveis.Anunciante?id=@anuncio.ContaId" class="anunciante-perfil-link">
+                        @if (!string.IsNullOrEmpty(anuncio.LogoAnunciante))
+                        {
+                            <img src="@anuncio.LogoAnunciante" alt="@anuncio.NomeAnunciante" class="anunciante-avatar-grande" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="anunciante-avatar-placeholder-grande">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            </div>
+                        }
+                        <div class="anunciante-perfil-info">
+                            <span class="anunciante-nome">@anuncio.NomeAnunciante</span>
+                            @if (!string.IsNullOrEmpty(anuncio.CreciAnunciante))
+                            {
+                                <span class="anunciante-creci">CRECI: @anuncio.CreciAnunciante</span>
+                            }
+                            <span class="anunciante-ver-perfil">Ver imóveis &rarr;</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="anunciante-links-sidebar">
+                    @if (!string.IsNullOrEmpty(anuncio.UrlSiteAnunciante))
+                    {
+                        <a href="@ChavesSistema.NormalizarUrlSite(anuncio.UrlSiteAnunciante)" target="_blank" class="anunciante-link-externo">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            Visitar Site
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(anuncio.InstagramAnunciante))
+                    {
+                        var insta = anuncio.InstagramAnunciante.Trim('@');
+                        <a href="https://instagram.com/@insta" target="_blank" class="anunciante-link-externo">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                            @@@insta
+                        </a>
+                    }
+                </div>
+            </div>
+
+            @if (anuncio.Latitude.HasValue && anuncio.Longitude.HasValue)
+            {
+                <div class="sidebar-mapa-card">
+                    <h3 class="sidebar-card-titulo">Localização</h3>
+                    @if (anuncio.Logradouro is null)
+                    {
+                        <p class="mapa-aviso">O endereço exato está oculto. O mapa mostra a região aproximada.</p>
+                    }
+                    <div id="mapa-anuncio"
+                         class="mapa-container"
+                         data-latitude="@anuncio.Latitude?.ToString("F8", System.Globalization.CultureInfo.InvariantCulture)"
+                         data-longitude="@anuncio.Longitude?.ToString("F8", System.Globalization.CultureInfo.InvariantCulture)"
+                         data-titulo="@anuncio.Titulo"
+                         data-bairro="@anuncio.Bairro">
+                    </div>
+                </div>
+            }
+
+            <div class="sidebar-info-card">
+                <p class="publicado-em">Publicado em @anuncio.DataInclusao.ToLocalTime().ToString("dd/MM/yyyy")</p>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="~/Contextos/Imobiliaria/js/comum.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Imobiliaria/js/detalhes.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Imobiliaria/js/favoritos.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Imobiliaria/js/visualizacoes.js" asp-append-version="true"></script>
+}

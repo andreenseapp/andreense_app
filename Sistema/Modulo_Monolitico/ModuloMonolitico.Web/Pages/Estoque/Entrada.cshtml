@@ -1,0 +1,148 @@
+@page
+@model ModuloMonolitico.Web.Pages.Estoque.EntradaModel
+@{
+    ViewData[ViewDataKeys.Title] = "Entrada de Estoque";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var urlVoltar = Model.Formulario.EmpresaId != Guid.Empty
+        ? $"{ModuloRotas.Estoque.Index}?empresaId={Model.Formulario.EmpresaId}"
+        : ModuloRotas.Estoque.Index;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Estoque/css/entrada.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = urlVoltar,
+    TextoVoltar = "Posição de Estoque",
+    Titulo = "Entrada de Estoque",
+    Subtitulo = "Registre a chegada de mercadorias. Lote ou validade diferente gera linhas separadas (FIFO)."
+}' />
+
+<main class="conteudo-principal estoque-entrada-container">
+    <form method="post"
+          id="formularioEntrada"
+          data-variacao-id="@Model.Formulario.ProdutoVariacaoId"
+          data-entrada-url="@ModuloRotas.Estoque.Entrada">
+
+        <div class="secao-formulario">
+            <p class="titulo-secao">Destino</p>
+            <div class="grade-formulario">
+                <app-select asp-for="Formulario.EmpresaId"
+                            label="Empresa *"
+                            required="required"
+                            class="mb-0">
+                    @foreach (var emp in Model.Empresas)
+                    {
+                        <option value="@emp.Id">@(emp.RazaoSocial ?? emp.Nome)</option>
+                    }
+                </app-select>
+
+                <app-select asp-for="Formulario.LocalEstoqueId"
+                            label="Local de Estoque *"
+                            required="required"
+                            default-option="Selecione o local"
+                            class="mb-0">
+                    @foreach (var loc in Model.Locais)
+                    {
+                        <option value="@loc.Id">@loc.Nome @(!string.IsNullOrEmpty(loc.AreaNome) ? $"({loc.AreaNome})" : "")</option>
+                    }
+                </app-select>
+            </div>
+        </div>
+
+        <div class="secao-formulario">
+            <p class="titulo-secao">Produto</p>
+            <div class="grade-formulario">
+                <app-select id="seletorProduto" label="Produto *" required="required" default-option="Selecione o produto" class="mb-0">
+                    @foreach (var p in Model.Produtos)
+                    {
+                        <option value="@p.Id"
+                                data-variacoes='@System.Text.Json.JsonSerializer.Serialize(p.Variacoes.Select(v => new { id = v.Id, desc = v.Descricao }))'>
+                            @p.Descricao @(!string.IsNullOrEmpty(p.Codigo) ? $"[{p.Codigo}]" : "")
+                        </option>
+                    }
+                </app-select>
+
+                <app-select asp-for="Formulario.ProdutoVariacaoId"
+                            label="Variação *"
+                            required="required"
+                            default-option="Selecione primeiro o produto"
+                            class="mb-0">
+                    @if (Model.Formulario.ProdutoVariacaoId != Guid.Empty)
+                    {
+                        <option value="@Model.Formulario.ProdutoVariacaoId" selected>Variação pré-selecionada</option>
+                    }
+                </app-select>
+            </div>
+        </div>
+
+        <div class="secao-formulario">
+            <p class="titulo-secao">Quantidade e Rastreabilidade</p>
+            <div class="grade-formulario">
+                <app-input asp-for="Formulario.Quantidade"
+                           label="Quantidade *"
+                           type="number"
+                           step="0.001"
+                           min="0.001"
+                           required="required"
+                           class="mb-0" />
+
+                <app-input asp-for="Formulario.Lote"
+                           label="Nº do Lote"
+                           type="text"
+                           placeholder="Ex: LOT-2024-001"
+                           class="mb-0" />
+
+                <div class="campo-grupo mb-0">
+                    <label for="Formulario_DataValidade" class="campo-rotulo">Data de Validade</label>
+                    <div class="envoltorio-data">
+                        <app-input asp-for="Formulario.DataValidade"
+                                   type="date"
+                                   class="campo-data mb-0" />
+                        <app-button type="button"
+                                class="botao-hoje"
+                                data-data-hoje="Formulario_DataValidade"
+                                title="Hoje">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            Hoje
+                        </app-button>
+                    </div>
+                </div>
+
+                <div class="campo-grupo mb-0">
+                    <label for="Formulario_DataFabricacao" class="campo-rotulo">Data de Fabricação</label>
+                    <div class="envoltorio-data">
+                        <app-input asp-for="Formulario.DataFabricacao"
+                                   type="date"
+                                   class="campo-data mb-0" />
+                        <app-button type="button"
+                                class="botao-hoje"
+                                data-data-hoje="Formulario_DataFabricacao"
+                                title="Hoje">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            Hoje
+                        </app-button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bloco-formulario">
+                <app-input asp-for="Formulario.Motivo"
+                           label="Motivo / Observação"
+                           type="text"
+                           placeholder="Ex: Compra NF 1234, Devolução cliente..."
+                           class="mb-0" />
+            </div>
+        </div>
+
+        <div class="acoes-formulario">
+            <a href="@urlVoltar" class="botao-cancelar">Cancelar</a>
+            <app-save-button type="submit" id="btnSalvar">Confirmar Entrada</app-save-button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Estoque/js/entrada.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,106 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fidelizacao.Fidelidade.EditarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Editar Cartão Fidelidade";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var ativo = Model.Cartao.Situacao == "ativo";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Fidelizacao/css/fidelidade-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.Fidelizacao.Fidelidade,
+    TextoVoltar = "Cartões",
+    Titulo = "Editar Cartão Fidelidade",
+    Subtitulo = $"Atualize os dados de {Model.Cartao.Titulo}"
+}' />
+
+<main class="conteudo-principal fidelidade-novo-container">
+    <form method="post" id="formCartaoFidelidade" class="cartao-formulario">
+        <app-input type="hidden" asp-for="Cartao.Id" />
+        <app-input type="hidden" asp-for="Cartao.EmpresaId" />
+        <app-input type="hidden" asp-for="Cartao.Situacao" />
+
+        <h2 class="titulo-secao-formulario">Identidade da Campanha</h2>
+
+        <div class="grade-formulario">
+            <app-input asp-for="Cartao.Titulo"
+                       label="Título do Cartão *"
+                       type="text"
+                       required="required"
+                       class="campo-formulario-full mb-0" />
+
+            <app-textarea asp-for="Cartao.Descricao"
+                          label="Descrição / Regras Curtas"
+                          rows="2"
+                          class="campo-formulario-full campo-formulario-spaced mb-0" />
+
+            <app-input asp-for="Cartao.PontosNecessarios"
+                       label="Selos Necessários para Ganhar *"
+                       type="number"
+                       required="required"
+                       class="campo-formulario-spaced mb-0" />
+
+            <app-input asp-for="Cartao.Recompensa"
+                       label="Recompensa (O que o cliente ganha?) *"
+                       type="text"
+                       required="required"
+                       class="campo-formulario-spaced mb-0" />
+        </div>
+
+        <h2 class="titulo-secao-formulario">Vigência e Expiração</h2>
+
+        <div class="grade-formulario">
+            <app-input asp-for="Cartao.DiasValidadeCarimbo"
+                       label="Validade de cada Selo (Dias)"
+                       type="number"
+                       class="mb-0" />
+
+            <app-input asp-for="Cartao.DiasInatividadeCartao"
+                       label="Zerar cartão se inativo por (Dias)"
+                       type="number"
+                       class="campo-formulario-spaced mb-0" />
+
+            <app-input asp-for="Cartao.DataInicioVigencia"
+                       label="Início da Campanha"
+                       type="date"
+                       class="campo-formulario-spaced mb-0" />
+
+            <app-input asp-for="Cartao.DataFimVigencia"
+                       label="Término da Campanha"
+                       type="date"
+                       class="campo-formulario-spaced mb-0" />
+
+            <app-checkbox asp-for="Cartao.TemReferencia" class="campo-formulario-full checkbox-card mb-0">
+                <span class="checkbox-titulo-cartao">Exigir Código de Venda</span>
+                <span class="checkbox-card-desc">Obrigatório informar o número do cupom ao carimbar.</span>
+            </app-checkbox>
+        </div>
+
+        <div class="acoes-formulario-bar">
+            @if (ativo)
+            {
+                <app-button type="submit"
+                        variant="danger"
+                        asp-page-handler="Inativar"
+                        asp-route-id="@Model.Cartao.Id"
+                        class="botao-inativar"
+                        data-confirmacao="Inativar esta campanha de fidelidade? Clientes não poderão mais acumular selos."
+                        data-confirmacao-tipo="perigo">
+                    Inativar Campanha
+                </app-button>
+            }
+            else
+            {
+                <span class="selo-situacao situacao-inativo">Campanha inativa</span>
+            }
+
+            <div class="acoes-formulario-right">
+                <a href="@ModuloRotas.Fidelizacao.Fidelidade" class="botao-cancelar">Descartar</a>
+                <app-save-button type="submit">Salvar Alterações</app-save-button>
+            </div>
+        </div>
+    </form>
+</main>

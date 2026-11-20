@@ -1,0 +1,93 @@
+@model ModuloMonolitico.Web.Pages.Shared.Components.SeletorUsuario.SeletorUsuarioViewModel
+@{
+    var cid = Model.ComponentId;
+    var papelLabel = Model.Papel switch {
+        "fornecedor" => "Fornecedor",
+        "transportador" => "Transportador",
+        _ => "Cliente"
+    };
+}
+
+<input type="hidden" id="val_@cid" name="@Model.FieldName" value="@(Model.ValorAtual?.ToString() ?? "")" @(Model.Desabilitado ? "disabled" : "") />
+
+<div class="seu-wrap seu-wrap-component" id="wrap_@cid" data-cid="@cid" data-papel="@Model.Papel" data-label="@papelLabel">
+    <label class="seu-label">@Model.Label</label>
+
+    <div class="seu-field" data-action="abrir">
+        <div class="seu-icon-field" id="seu_icon_field_@cid">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        </div>
+        <div class="seu-avatar" id="seu_avatar_@cid">@(Model.NomeAtual?.Length > 0 ? Model.NomeAtual.Substring(0, 1).ToUpper() : "")</div>
+
+        <span class="seu-input @(Model.ValorAtual == null ? "vazio" : "preenchido")" id="nome_@cid">
+            @(Model.NomeAtual ?? $"Selecionar {papelLabel.ToLower()}...")
+        </span>
+
+        @if (Model.ValorAtual != null)
+        {
+            <app-button type="button" variant="ghost" size="sm" class="seu-clear" id="clear_@cid" data-action="limpar" title="Remover seleção">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </app-button>
+        }
+
+        <app-button type="button" variant="ghost" size="sm" class="seu-btn" title="Buscar @papelLabel.ToLower()" data-action="abrir" disabled="@Model.Desabilitado">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </app-button>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="seu-overlay" id="overlay_@cid" data-action="fechar-overlay">
+    <div class="seu-modal" role="dialog" aria-modal="true" aria-label="Buscar @papelLabel">
+        <!-- Header -->
+        <div class="seu-modal-header">
+            <span class="seu-modal-title">@Model.Label</span>
+            <div class="seu-search-wrap">
+                <svg id="seu_icon_@cid" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="seu-search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <div class="seu-search-spinner" id="seu_spin_@cid"></div>
+                <input type="text"
+                       class="campo-controle seu-search-input"
+                       id="seu_q_@cid"
+                       placeholder="Buscar por nome, documento ou e-mail..."
+                       autocomplete="off" />
+            </div>
+            @if (!string.IsNullOrEmpty(Model.UrlNovo))
+            {
+                <a href="@Model.UrlNovo" target="_blank" class="seu-add-btn" title="Cadastrar novo">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Novo
+                </a>
+            }
+            <app-button type="button" variant="ghost" size="sm" class="seu-close" data-action="fechar" title="Fechar (ESC)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </app-button>
+        </div>
+
+        <!-- Toggle: Meus Contatos | Vínculos -->
+        <div class="seu-toggle">
+            <app-button type="button" variant="ghost" size="sm" class="seu-toggle-pill active" id="pill_contatos_@cid" data-action="modo" data-modo="contatos">
+                Meus Contatos
+            </app-button>
+            <app-button type="button" variant="ghost" size="sm" class="seu-toggle-pill" id="pill_vinculos_@cid" data-action="modo" data-modo="vinculos">
+                🔗 Vínculos
+            </app-button>
+        </div>
+
+        <!-- Lista -->
+        <div class="seu-list" id="seu_list_@cid">
+            <div class="seu-empty">Carregando...</div>
+        </div>
+
+        <!-- Footer -->
+        <div class="seu-modal-footer">
+            <span id="seu_count_@cid">—</span>
+            <span>↑↓ navegar &nbsp;·&nbsp; Enter selecionar &nbsp;·&nbsp; ESC fechar</span>
+        </div>
+    </div>
+</div>
+
+<link href="~/Contextos/Shared/css/seletor-usuario-padrao.css" rel="stylesheet" asp-append-version="true" />
+<script src="~/Contextos/Shared/js/seletor-usuario-padrao.js" asp-append-version="true"></script>

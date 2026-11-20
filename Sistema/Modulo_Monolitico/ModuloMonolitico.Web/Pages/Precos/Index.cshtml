@@ -1,0 +1,115 @@
+@page
+@model ModuloMonolitico.Web.Pages.Precos.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Contextos de Preço";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var urlNovo = $"{ModuloRotas.Precos.Editar}?empresaId={Model.EmpresaIdSelecionada}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Precos/css/precos-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            ERP
+        </div>
+        <h1 class="titulo-pagina">Contextos de Preço</h1>
+        <p class="subtitulo-pagina">Configure os canais de precificação: varejo, atacado, promoção, etc.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@urlNovo" class="botao botao-primario btn-header-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Contexto
+        </a>
+    </div>
+</div>
+
+@if (Model.Empresas.Count > 1)
+{
+    <div class="empresa-selector">
+        <app-select id="selEmpresa"
+                    label="Empresa"
+                    class="campo-controle empresa-select"
+                    data-index-url="@ModuloRotas.Precos.Index">
+
+            @foreach (var emp in Model.Empresas)
+            {
+                <option value="@emp.Id" selected="@(emp.Id == Model.EmpresaIdSelecionada)">
+                    @(emp.RazaoSocial ?? emp.Nome)
+                </option>
+            }
+        </app-select>
+    </div>
+}
+
+@if (!Model.Contextos.Any())
+{
+    <div class="estado-vazio">
+        <svg class="estado-vazio-icone" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        <p class="estado-vazio-texto">Nenhum contexto de preço cadastrado para esta empresa.</p>
+        <a href="@urlNovo" class="botao botao-primario botao-estado-vazio">Criar primeiro contexto</a>
+    </div>
+}
+else
+{
+    <div class="list-toolbar">
+        <div class="list-toolbar-count">
+            Total de <strong>@Model.Contextos.Count</strong> contextos nesta empresa.
+        </div>
+    </div>
+
+    <div class="contextos-grid">
+        @foreach (var ctx in Model.Contextos)
+        {
+            var inicial = ctx.Nome.Length > 0 ? ctx.Nome[..1].ToUpper() : "C";
+            var urlEditar = $"{ModuloRotas.Precos.Editar}?id={ctx.Id}&empresaId={Model.EmpresaIdSelecionada}";
+
+            <article class="contexto-card">
+                @if (ctx.EhPadrao)
+                {
+                    <span class="badge-contexto badge-padrao">Padrão</span>
+                }
+                else if (!ctx.Ativo)
+                {
+                    <span class="badge-contexto badge-inativo">Inativo</span>
+                }
+
+                <div class="contexto-header">
+                    <div class="contexto-avatar" aria-hidden="true">@inicial</div>
+                    <div class="contexto-info">
+                        <div class="contexto-name">@ctx.Nome</div>
+                        @if (!string.IsNullOrEmpty(ctx.Descricao))
+                        {
+                            <div class="contexto-desc">@ctx.Descricao</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="contexto-actions">
+                    <a href="@urlEditar" class="btn-acao">Editar</a>
+                    <form method="post"
+                          asp-page-handler="DeletarSeguro"
+                          asp-route-id="@ctx.Id"
+                          asp-route-empresaId="@Model.EmpresaIdSelecionada"
+                          class="contexto-delete-form">
+                        @Html.AntiForgeryToken()
+                        <app-button type="submit"
+                                variant="danger"
+                                class="btn-acao btn-acao-danger"
+                                data-confirmacao="Excluir contexto @ctx.Nome? Preços vinculados também serão excluídos."
+                                data-confirmacao-tipo="perigo">
+                            Excluir
+                        </app-button>
+                    </form>
+                </div>
+            </article>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Contextos/Precos/js/precos-index.js" asp-append-version="true"></script>
+}

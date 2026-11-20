@@ -1,0 +1,33 @@
+@model ModuloMonolitico.Web.Pages.Contatos.Cadastro.ContatoFormularioModelo
+
+<div class="painel-papel">
+    <h3 class="titulo-painel-papel">Configurações de Cliente</h3>
+    <p class="descricao-painel-papel">Defina os limites de crédito, descontos e preferências comerciais deste cliente.</p>
+
+    <div class="grade-painel-papel">
+        <app-input asp-for="LimiteCreditoCliente"
+                   label="Limite de crédito (R$)"
+                   type="number"
+                   placeholder="0,00"
+                   min="0"
+                   step="0.01" />
+
+        <app-input asp-for="DescontoPadraoCliente"
+                   label="Desconto padrão (%)"
+                   type="number"
+                   placeholder="0"
+                   min="0"
+                   max="100"
+                   step="0.1" />
+    </div>
+
+    <app-textarea asp-for="ObservacaoCliente"
+                  label="Observações do Cliente"
+                  rows="3"
+                  placeholder="Preferências, restrições, horários de entrega..." />
+
+    <div class="app-checkbox-row">
+        <app-checkbox asp-for="EnviaEmailAgendamento"
+                      label="Enviar confirmação de agendamento por e-mail" />
+    </div>
+</div>

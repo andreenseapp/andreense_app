@@ -1,0 +1,157 @@
+@page
+@model ModuloMonolitico.Web.Pages.Contatos.Cadastro.EditarModel
+@{
+    var papelLabel = Model.Papel switch
+    {
+        "cliente" => "Cliente",
+        "fornecedor" => "Fornecedor",
+        "funcionario" => "Funcionário",
+        "transportador" => "Transportadora",
+        "lead" => "Lead",
+        "prospect" => "Prospect",
+        _ => "Contato"
+    };
+
+    var papelLista = Model.Papel switch
+    {
+        "cliente" => "Clientes",
+        "fornecedor" => "Fornecedores",
+        "funcionario" => "Funcionários",
+        "transportador" => "Transportadoras",
+        "lead" => "Leads",
+        "prospect" => "Prospects",
+        _ => "Contatos"
+    };
+
+    var tipoAtivo = Model.Form.TipoPessoa ?? "fisica";
+    var nomeExibicao = tipoAtivo == "fisica" ? Model.Form.NomeCompleto : Model.Form.RazaoSocial;
+
+    ViewData[ViewDataKeys.Title] = $"Editar {papelLabel}";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+
+    var urlVoltar = string.IsNullOrEmpty(Model.Papel)
+        ? ModuloRotas.Contatos.Cadastro
+        : $"{ModuloRotas.Contatos.Cadastro}?Papel={Model.Papel}";
+    var textoVoltar = string.IsNullOrEmpty(Model.Papel) ? "Contatos" : $"Meus {papelLista}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Contatos/css/cadastro-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = urlVoltar,
+    TextoVoltar = textoVoltar,
+    Titulo = $"Editar {papelLabel}",
+    Subtitulo = $"Atualize os dados de {nomeExibicao}",
+    Tabela = "contatos",
+    RegistroId = Model.Form.Id.ToString()
+}' />
+
+<main class="main-content contato-novo-container">
+    <form method="post"
+          id="formulario-contato"
+          novalidate
+          data-papel-forcado="@(Model.Papel ?? "")">
+
+        <app-input type="hidden" asp-for="Form.Id" />
+        <app-input type="hidden" id="tipo-Contato" asp-for="Form.TipoPessoa" />
+
+        <div class="form-card">
+            <nav class="aba-nav" role="tablist" aria-label="Seções do cadastro">
+                @if (tipoAtivo == "fisica")
+                {
+                    <app-button type="button"
+                                id="tab-fisica"
+                                class="botao-aba active"
+                                data-aba="fisica"
+                                role="tab"
+                                aria-selected="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        Pessoa Física
+                    </app-button>
+                }
+                else
+                {
+                    <app-button type="button"
+                                id="tab-juridica"
+                                class="botao-aba active"
+                                data-aba="juridica"
+                                role="tab"
+                                aria-selected="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                        Pessoa Jurídica
+                    </app-button>
+                }
+                <app-button type="button"
+                            id="tab-enderecos"
+                            class="botao-aba"
+                            data-aba="enderecos"
+                            role="tab"
+                            aria-selected="false">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    Endereços
+                </app-button>
+                @if (string.IsNullOrEmpty(Model.Papel))
+                {
+                    <app-button type="button"
+                                id="tab-papeis"
+                                class="botao-aba"
+                                data-aba="papeis"
+                                role="tab"
+                                aria-selected="false">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        Papéis
+                    </app-button>
+                }
+                <app-button type="button" id="tab-cliente" class="botao-aba aba-papel-dinamica" data-aba="cliente" role="tab" aria-selected="false">Cliente</app-button>
+                <app-button type="button" id="tab-fornecedor" class="botao-aba aba-papel-dinamica" data-aba="fornecedor" role="tab" aria-selected="false">Fornecedor</app-button>
+                <app-button type="button" id="tab-transportador" class="botao-aba aba-papel-dinamica" data-aba="transportador" role="tab" aria-selected="false">Transportador</app-button>
+                <app-button type="button" id="tab-lead" class="botao-aba aba-papel-dinamica" data-aba="lead" role="tab" aria-selected="false">Lead</app-button>
+                <app-button type="button" id="tab-prospect" class="botao-aba aba-papel-dinamica" data-aba="prospect" role="tab" aria-selected="false">Prospect</app-button>
+                <app-button type="button" id="tab-funcionario" class="botao-aba aba-papel-dinamica" data-aba="funcionario" role="tab" aria-selected="false">Funcionário</app-button>
+            </nav>
+
+            <div id="painel-fisica" class="painel-aba @(tipoAtivo == "fisica" ? "active" : "")" role="tabpanel">
+                <partial name="_FormularioFisica" for="Form" view-data="ViewData" />
+            </div>
+            <div id="painel-juridica" class="painel-aba @(tipoAtivo == "juridica" ? "active" : "")" role="tabpanel">
+                <partial name="_FormularioJuridica" for="Form" view-data="ViewData" />
+            </div>
+            <div id="painel-enderecos" class="painel-aba" role="tabpanel">
+                <partial name="_FormularioEnderecos" for="Form" />
+            </div>
+            <div id="painel-papeis" class="painel-aba" role="tabpanel">
+                <partial name="_FormularioPapeis" for="Form" />
+            </div>
+            <div id="painel-cliente" class="painel-aba" role="tabpanel">
+                <partial name="_FormularioCliente" for="Form" />
+            </div>
+            <div id="painel-fornecedor" class="painel-aba" role="tabpanel">
+                <partial name="_FormularioFornecedor" for="Form" />
+            </div>
+            <div id="painel-transportador" class="painel-aba" role="tabpanel">
+                <partial name="_FormularioTransportador" for="Form" />
+            </div>
+            <div id="painel-lead" class="painel-aba" role="tabpanel">
+                <partial name="_FormularioLead" for="Form" />
+            </div>
+            <div id="painel-prospect" class="painel-aba" role="tabpanel">
+                <partial name="_FormularioProspect" for="Form" />
+            </div>
+            <div id="painel-funcionario" class="painel-aba" role="tabpanel">
+                <partial name="_FormularioFuncionario" for="Form" />
+            </div>
+
+            <div class="form-footer">
+                <a href="@urlVoltar" class="botao-cancelar">Cancelar</a>
+                <app-save-button type="submit">Salvar Alterações</app-save-button>
+            </div>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Contatos/js/formulario-enderecos.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Contatos/js/cadastro-editar.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,62 @@
+.precos-editar-container {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.formulario-cartao {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.75rem;
+}
+
+.formulario-grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+}
+
+.formulario-campo-espacado {
+    margin-top: 0;
+}
+
+.formulario-campo-completo {
+    grid-column: 1 / -1;
+}
+
+.grupo-alternancia {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 0.25rem;
+}
+
+.formulario-acoes {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.btn-cancelar {
+    display: inline-flex;
+    align-items: center;
+    height: 38px;
+    padding: 0 1.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background 0.12s, color 0.12s;
+}
+
+.btn-cancelar:hover {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    color: var(--clr-text, var(--clr-text-heading));
+}

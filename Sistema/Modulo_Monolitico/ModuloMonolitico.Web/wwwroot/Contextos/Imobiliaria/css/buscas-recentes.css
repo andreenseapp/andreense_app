@@ -1,0 +1,126 @@
+.buscas-gestao {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 16px 64px;
+}
+
+.buscas-gestao-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.buscas-gestao-voltar {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--imob-primary, var(--clr-primary));
+  text-decoration: none;
+}
+
+.buscas-gestao-titulo {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 1.85rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--clr-text-strong);
+}
+
+.buscas-gestao-acoes {
+  flex-shrink: 0;
+}
+
+.btn-limpar-buscas,
+.btn-excluir-busca {
+  border: 1px solid var(--clr-border-soft);
+  border-radius: 10px;
+  background: var(--clr-surface);
+  color: var(--clr-text-strong);
+  font-weight: 700;
+  font-size: 0.84rem;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.btn-limpar-buscas:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-excluir-busca {
+  color: #b91c1c;
+  border-color: #fecaca;
+  background: #fff5f5;
+}
+
+.buscas-gestao-alerta {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.buscas-gestao-alerta--ok {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.buscas-gestao-alerta--erro {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.buscas-gestao-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.busca-gestao-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--clr-border);
+  border-radius: 12px;
+  background: var(--clr-surface);
+}
+
+.busca-gestao-link {
+  flex: 1;
+  min-width: 0;
+  color: var(--clr-text-strong);
+  font-weight: 600;
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.busca-gestao-link:hover {
+  color: var(--imob-primary, var(--clr-primary));
+}
+
+.buscas-gestao-vazio {
+  margin: 24px 0 0;
+  padding: 28px 20px;
+  border: 1px dashed var(--clr-border-soft);
+  border-radius: 12px;
+  text-align: center;
+  color: var(--clr-text-label);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .buscas-gestao-topo {
+    flex-direction: column;
+  }
+
+  .busca-gestao-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

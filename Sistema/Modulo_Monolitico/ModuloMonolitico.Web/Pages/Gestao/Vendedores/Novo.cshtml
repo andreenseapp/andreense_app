@@ -1,0 +1,68 @@
+@page
+@model ModuloMonolitico.Web.Pages.Gestao.Vendedores.NovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Novo Vendedor";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Gestao/css/vendedores-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.Gestao.Vendedores,
+    TextoVoltar = "Vendedores",
+    Titulo = "Cadastrar Vendedor",
+    Subtitulo = "Preencha os dados do vendedor e vincule ao tipo comercial."
+}' />
+
+<main class="main-content vendedores-novo-container">
+    <form method="post" id="formVendedor">
+        <div class="cartao-formulario">
+            <app-input asp-for="Comando.NomeFantasia"
+                       label="Nome Fantasia *"
+                       type="text"
+                       placeholder="Nome ou fantasia do vendedor"
+                       required="required"
+                       class="mb-0" />
+
+            <app-select asp-for="Comando.UsuarioId"
+                        label="Usuário Vinculado (Opcional)"
+                        default-option="Sem vínculo de acesso"
+                        class="campo-formulario-espacado mb-0">
+                @foreach (var item in Model.ListaUsuarios)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </app-select>
+
+            <app-select asp-for="Comando.TipoVendedorId"
+                        label="Tipo de Vendedor *"
+                        required="required"
+                        default-option="Selecione um tipo"
+                        class="campo-formulario-espacado mb-0">
+                @foreach (var item in Model.ListaTiposVendedor)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </app-select>
+
+            <app-textarea asp-for="Comando.Observacao"
+                          label="Observação (Opcional)"
+                          rows="3"
+                          class="campo-formulario-espacado mb-0" />
+
+            <div class="campo-alternancia">
+                <app-toggle asp-for="Comando.Ativo"
+                            title="Ativo"
+                            label-on="Ativo no sistema"
+                            label-off="Inativo" />
+            </div>
+
+            <div class="acoes-formulario">
+                <a href="@ModuloRotas.Gestao.Vendedores" class="botao-cancelar">Cancelar</a>
+                <app-save-button type="submit">Salvar Cadastro</app-save-button>
+            </div>
+        </div>
+    </form>
+</main>

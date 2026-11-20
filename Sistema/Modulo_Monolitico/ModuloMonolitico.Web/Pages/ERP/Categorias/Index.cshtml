@@ -1,0 +1,51 @@
+@page
+@model ModuloMonolitico.Web.Pages.ERP.Categorias.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Grupos e Categorias";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/ERP/css/categorias-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            Catálogo
+        </div>
+        <h1 class="titulo-pagina">Grupos e Categorias</h1>
+        <p class="subtitulo-pagina">Organize produtos em grupos e categorias para facilitar a catalogação.</p>
+    </div>
+</div>
+
+@if (!Model.Categorias.Any())
+{
+    <div class="estado-vazio">
+        <div class="estado-vazio-icone" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </div>
+        <p class="estado-vazio-texto">Nenhum grupo ou categoria cadastrado.</p>
+        <p class="estado-vazio-dica">Cadastre categorias ao editar um produto ou pelo cadastro rápido no formulário de produtos.</p>
+    </div>
+}
+else
+{
+    <div class="categorias-grid">
+        @foreach (var cat in Model.Categorias)
+        {
+            var inicial = !string.IsNullOrEmpty(cat.Nome) ? cat.Nome[..1].ToUpperInvariant() : "C";
+            <div class="categoria-card">
+                <div class="categoria-header">
+                    <div class="categoria-avatar">@inicial</div>
+                    <div class="categoria-name">@cat.Nome</div>
+                </div>
+                @if (!string.IsNullOrEmpty(cat.Descricao))
+                {
+                    <div class="categoria-desc">@cat.Descricao</div>
+                }
+            </div>
+        }
+    </div>
+}

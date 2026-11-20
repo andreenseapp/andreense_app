@@ -1,0 +1,104 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fidelizacao.Fidelidade.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Cartões Fidelidade";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+
+    string UrlPagina(int pagina) => $"?PaginaAtual={pagina}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Fidelizacao/css/fidelidade-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7h-9l-1-1H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"></path><polyline points="16 11 18 13 22 9"></polyline></svg>
+            Fidelização
+        </div>
+        <h1 class="titulo-pagina">Cartões Fidelidade</h1>
+        <p class="subtitulo-pagina">Gerencie campanhas de fidelidade e recompense clientes frequentes.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Fidelizacao.Fidelidade_Novo" class="botao botao-primario botao-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Cartão
+        </a>
+    </div>
+</div>
+
+@if (!Model.Itens.Any())
+{
+    <div class="estado-vazio">
+        <svg class="estado-vazio-icone" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 12v10H4V12"></path><path d="M2 7h20v5H2z"></path><path d="M12 22V7"></path><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+        <h3 class="estado-vazio-titulo">Nenhuma campanha cadastrada</h3>
+        <p class="estado-vazio-texto">Crie o primeiro cartão fidelidade da sua empresa e comece a fidelizar seus clientes.</p>
+        <a href="@ModuloRotas.Fidelizacao.Fidelidade_Novo" class="botao botao-primario botao-estado-vazio">Criar Campanha Fidelidade</a>
+    </div>
+}
+else
+{
+    <div class="barra-listagem">
+        <div class="barra-listagem-contagem">
+            Total de <strong>@Model.TotalItens</strong> campanhas encontradas.
+        </div>
+    </div>
+
+    <div class="grade-cartoes">
+        @foreach (var cartao in Model.Itens)
+        {
+            var urlEditar = $"{ModuloRotas.Fidelizacao.Fidelidade_Editar}?id={cartao.Id}";
+            var ativo = cartao.Situacao == "ativo";
+
+            <article class="fidelidade-card">
+                <div class="selos-cartao">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle></svg>
+                    @cartao.PontosNecessarios Selos
+                </div>
+
+                <span class="selo-situacao @(ativo ? "situacao-ativo" : "situacao-inativo")">
+                    @(ativo ? "Ativo" : "Inativo")
+                </span>
+
+                <h3 class="titulo-cartao">@cartao.Titulo</h3>
+
+                <div class="recompensa-cartao">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7h-9l-1-1H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"></path></svg>
+                    @cartao.Recompensa
+                </div>
+
+                <div class="stamp-preview" aria-hidden="true">
+                    @for (var i = 0; i < Math.Min(cartao.PontosNecessarios, 10); i++)
+                    {
+                        <div class="stamp-dot"></div>
+                    }
+                    @if (cartao.PontosNecessarios > 10)
+                    {
+                        <span class="stamp-extra">+ @(cartao.PontosNecessarios - 10)</span>
+                    }
+                </div>
+
+                <div class="rodape-cartao">
+                    <a href="@urlEditar" class="link-editar-cartao">Editar Cartão</a>
+                    <span class="card-validade">
+                        @(cartao.DiasValidadeCarimbo.HasValue ? $"Vence em {cartao.DiasValidadeCarimbo} dias" : "Sem expiração")
+                    </span>
+                </div>
+            </article>
+        }
+    </div>
+
+    @if (Model.TotalPaginas > 1)
+    {
+        <div class="log-paginacao">
+            <span>Página @Model.PaginaAtual de @Model.TotalPaginas — @Model.TotalItens campanhas</span>
+            <div class="paginacao-nav">
+                <a href="@UrlPagina(Model.PaginaAtual - 1)"
+                   class="paginacao-btn @(Model.PaginaAtual == 1 ? "desabilitado" : "")">← Anterior</a>
+                <a href="@UrlPagina(Model.PaginaAtual + 1)"
+                   class="paginacao-btn @(Model.PaginaAtual == Model.TotalPaginas ? "desabilitado" : "")">Próxima →</a>
+            </div>
+        </div>
+    }
+}

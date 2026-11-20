@@ -1,0 +1,74 @@
+@model ModuloMonolitico.Web.Pages.Contatos.Cadastro.ContatoFormularioModelo
+
+<div class="conteudo-aba">
+
+  <div class="form-section">
+    <p class="form-section-title">Dados Pessoais</p>
+    <div class="form-grid form-grid-2">
+      <app-input asp-for="NomeCompleto"
+            type="text"
+            placeholder="Ex: João da Silva"
+            maxlength="200"
+            autocomplete="name"
+            class="field-span-2" />
+
+      <app-input asp-for="Cpf"
+            type="text"
+            placeholder="000.000.000-00"
+            maxlength="14"
+            data-mascara="cpf"
+            inputmode="numeric" />
+
+      <app-input asp-for="Rg"
+            type="text"
+            placeholder="00.000.000-0"
+            maxlength="20" />
+
+      <app-input asp-for="DataNascimento"
+            label="Data de Nascimento"
+            type="date"
+            max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
+      <app-select asp-for="Genero">
+        <option value="">Selecione...</option>
+        <option value="M">Masculino</option>
+        <option value="F">Feminino</option>
+        <option value="O">Outro / Prefiro não dizer</option>
+      </app-select>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <p class="form-section-title">Contato</p>
+    <div class="form-grid form-grid-2">
+      <app-input asp-for="Email"
+            label="E-mail"
+            type="email"
+            placeholder="joao@email.com"
+            autocomplete="email" />
+
+      <app-input asp-for="Telefone"
+            label="Telefone / WhatsApp"
+            type="tel"
+            placeholder="(00) 00000-0000"
+            data-mascara="telefone"
+            inputmode="tel" />
+    </div>
+  </div>
+
+  <div class="form-section">
+    <p class="form-section-title">Carteira / Vendedores</p>
+    <div class="form-grid form-grid-2">
+      <app-select asp-for="Vendedor1Id"
+                  label="Vendedor Titular"
+                  asp-items="@(ViewData[ViewDataKeys.ListaVendedores] as SelectList)"
+                  default-option="-- Sem vínculo --" />
+
+      <app-select asp-for="Vendedor2Id"
+                  label="Vendedor Secundário"
+                  asp-items="@(ViewData[ViewDataKeys.ListaVendedores] as SelectList)"
+                  default-option="-- Sem vínculo --" />
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,57 @@
+@page
+@model ModuloMonolitico.Web.Pages.Estoque.UnidadesMedida.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Unidades de Medida";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Estoque/css/unidadesmedida-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            Catálogo
+        </div>
+        <h1 class="titulo-pagina">Unidades de Medida</h1>
+        <p class="subtitulo-pagina">Consulte as unidades globais do sistema e as personalizadas da sua conta.</p>
+    </div>
+</div>
+
+@if (!Model.Unidades.Any())
+{
+    <div class="estado-vazio">
+        <div class="estado-vazio-icone" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        </div>
+        <p class="estado-vazio-texto">Nenhuma unidade de medida encontrada.</p>
+        <p class="estado-vazio-dica">Cadastre unidades personalizadas ao editar um produto ou pelo cadastro rápido no formulário de produtos.</p>
+    </div>
+}
+else
+{
+    <div class="unidades-grade">
+        @foreach (var un in Model.Unidades)
+        {
+            <div class="unidade-item">
+                @if (un.ContaId == null)
+                {
+                    <span class="etiqueta-origem etiqueta-sistema">Sistema</span>
+                }
+                else
+                {
+                    <span class="etiqueta-origem etiqueta-personalizada">Personalizada</span>
+                }
+                <div class="unidade-cabecalho">
+                    <div class="unidade-avatar">@un.Sigla</div>
+                    <div class="unidade-principal">
+                        <div class="unidade-nome">@un.Nome</div>
+                        <div class="unidade-sigla">Sigla: @un.Sigla</div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

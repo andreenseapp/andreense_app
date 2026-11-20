@@ -1,0 +1,126 @@
+/* Cadastro — /Autenticacao/Cadastro */
+
+.cartao-autenticacao--largo {
+  max-width: 480px;
+}
+
+.autenticacao-campo-grupo {
+  margin-bottom: 1rem;
+}
+
+.autenticacao-termos {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.autenticacao-termos label {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.autenticacao-termos input[type="checkbox"] {
+  margin-top: 0.25rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--clr-primary);
+}
+
+.autenticacao-termos-texto {
+  font-size: 0.9rem;
+  color: var(--clr-text-muted);
+  line-height: 1.4;
+}
+
+.autenticacao-termos-docs {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.autenticacao-msg-validacao {
+  font-size: 0.8rem;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.autenticacao-termos-docs a {
+  color: var(--clr-primary);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.autenticacao-modal-doc {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.autenticacao-modal-doc.esta-aberto {
+  display: flex;
+}
+
+.autenticacao-modal-doc-dialogo {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.autenticacao-modal-doc-cabecalho {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.autenticacao-modal-doc-titulo {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.autenticacao-modal-doc-fechar {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--clr-text);
+}
+
+.autenticacao-modal-doc-corpo {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  color: var(--clr-text);
+  line-height: 1.6;
+}
+
+.autenticacao-modal-doc-rodape {
+  padding: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+  text-align: right;
+}
+
+.autenticacao-alerta-botao-login {
+  background-color: var(--clr-danger);
+  border-color: var(--clr-danger);
+}
+
+.mensagens-servidor {
+  display: none;
+}

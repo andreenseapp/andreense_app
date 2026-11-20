@@ -1,0 +1,161 @@
+@page
+@model ModuloMonolitico.Web.Pages.Gestao.Vendedores.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Vendedores";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var filtrosAtivos = !string.IsNullOrEmpty(Model.Filtros.Busca);
+
+    string UrlPagina(int pagina)
+    {
+        var qs = new List<string> { $"PaginaAtual={pagina}" };
+        if (!string.IsNullOrEmpty(Model.Filtros.Busca))
+            qs.Add($"Filtros.Busca={Uri.EscapeDataString(Model.Filtros.Busca)}");
+        if (!string.IsNullOrEmpty(Model.OrdenarPor))
+            qs.Add($"OrdenarPor={Uri.EscapeDataString(Model.OrdenarPor)}");
+        if (!string.IsNullOrEmpty(Model.OrdenarDirecao))
+            qs.Add($"OrdenarDirecao={Uri.EscapeDataString(Model.OrdenarDirecao)}");
+        return "?" + string.Join("&", qs);
+    }
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Gestao/css/vendedores-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            CRM
+        </div>
+        <h1 class="titulo-pagina">Vendedores</h1>
+        <p class="subtitulo-pagina">Gerencie vendedores e representantes vinculados à conta.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Gestao.Vendedores_Novo" class="botao botao-primario botao-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Vendedor
+        </a>
+    </div>
+</div>
+
+<form method="get" id="formularioFiltros" class="painel-filtro">
+    <app-input asp-for="Filtros.Busca"
+               label="Buscar Vendedor"
+               type="text"
+               placeholder="Nome do vendedor ou tipo..."
+               class="grupo-filtro grupo-filtro--largo mb-0" />
+    <div class="acoes-filtro">
+        @if (filtrosAtivos)
+        {
+            <a href="@ModuloRotas.Gestao.Vendedores" class="botao-filtro-icone" title="Limpar filtros">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </a>
+        }
+        <app-button type="submit" variant="primary" class="botao-filtro">Filtrar</app-button>
+    </div>
+</form>
+
+@if (!Model.Vendedores.Any())
+{
+    <div class="estado-vazio">
+        <p class="estado-vazio-texto">
+            @(filtrosAtivos
+                ? "Nenhum vendedor encontrado para a busca informada."
+                : "Nenhum vendedor cadastrado.")
+        </p>
+        <a href="@ModuloRotas.Gestao.Vendedores_Novo" class="botao botao-primario botao-estado-vazio">Cadastrar agora</a>
+    </div>
+}
+else
+{
+    <div class="barra-listagem">
+        <div class="barra-listagem-contagem">
+            Total de <strong>@Model.TotalItens</strong> vendedores encontrados.
+        </div>
+        <app-button type="button" variant="secondary" size="sm" class="botao-modo-selecao" id="btnAlternarSelecao" data-selecao-toggle>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="9 11 12 14 22 4"></polyline></svg>
+            Selecionar
+        </app-button>
+    </div>
+
+    <form method="post" id="formSelecaoLote" class="form-selecao-lote">
+        @Html.AntiForgeryToken()
+        <div class="container-tabela">
+            <table class="app-table" data-selecao-tabela data-seletor-colunas="true">
+                <thead>
+                    <tr>
+                        <th class="col-selecao" data-coluna-fixa>
+                            <app-checkbox id="chkSelecionarTodos" class="app-checkbox" data-selecao-mestre />
+                        </th>
+                        <th class="ordenavel" data-ordenar="nome">
+                            Nome / Fantasia @Html.Raw(Model.RenderizarIconeOrdenacao("nome"))
+                        </th>
+                        <th class="ordenavel" data-ordenar="tipo">
+                            Tipo @Html.Raw(Model.RenderizarIconeOrdenacao("tipo"))
+                        </th>
+                        <th class="ordenavel" data-ordenar="ativo">
+                            Situação @Html.Raw(Model.RenderizarIconeOrdenacao("ativo"))
+                        </th>
+                        <th class="col-acoes" data-coluna-fixa>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var vendedor in Model.Vendedores)
+                    {
+                        var urlDetalhes = $"{ModuloRotas.Gestao.Vendedores_Detalhes}?id={vendedor.Id}";
+                        var urlEditar = $"{ModuloRotas.Gestao.Vendedores_Editar}?id={vendedor.Id}";
+
+                        <tr>
+                            <td class="col-selecao">
+                                <app-checkbox name="IdsSelecionados" value="@vendedor.Id" class="app-checkbox" data-selecao-item />
+                            </td>
+                            <td>
+                                <a href="@urlDetalhes" class="vendedor-link">@vendedor.NomeFantasia</a>
+                            </td>
+                            <td>
+                                <span class="badge-tipo">@(vendedor.TipoVendedor?.Nome ?? "Indefinido")</span>
+                            </td>
+                            <td>
+                                <span class="badge-situacao @(vendedor.Ativo ? "situacao-ativo" : "situacao-inativo")">
+                                    @(vendedor.Ativo ? "Ativo" : "Inativo")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="acoes-celula">
+                                    <a href="@urlDetalhes" class="btn-acao">Visualizar</a>
+                                    <a href="@urlEditar" class="btn-acao">Editar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    @if (Model.TotalPaginas > 1)
+    {
+        <div class="log-paginacao">
+            <span>Página @Model.PaginaAtual de @Model.TotalPaginas — @Model.TotalItens vendedores</span>
+            <div class="paginacao-nav">
+                <a href="@UrlPagina(Model.PaginaAtual - 1)"
+                   class="paginacao-btn @(Model.PaginaAtual == 1 ? "desabilitado" : "")">← Anterior</a>
+                <a href="@UrlPagina(Model.PaginaAtual + 1)"
+                   class="paginacao-btn @(Model.PaginaAtual == Model.TotalPaginas ? "desabilitado" : "")">Próxima →</a>
+            </div>
+        </div>
+    }
+
+    <partial name="~/Pages/Shared/Partials/_FloatingBulkActions.cshtml" model='new ModuloMonolitico.Web.Pages.Shared.FloatingBulkActionsViewModel {
+        FormId = "formSelecaoLote",
+        Handler = "DeletarSeguroEmLote",
+        MensagemConfirmacao = "Deseja realmente excluir todos os vendedores selecionados? Esta ação não poderá ser desfeita."
+    }' />
+}
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/ordenar-lista.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Gestao/js/vendedores-index.js" asp-append-version="true"></script>
+}

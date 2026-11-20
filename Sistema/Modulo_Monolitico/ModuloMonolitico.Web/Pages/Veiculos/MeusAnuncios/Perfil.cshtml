@@ -1,0 +1,77 @@
+@page "/Contextos/Veiculos/MeusAnuncios/Perfil"
+@model ModuloMonolitico.Web.Pages.Veiculos.MeusAnuncios.PerfilModel
+@{
+    ViewData["Title"] = "Perfil do Vendedor";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Veiculos/css/comum.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Veiculos/css/perfil.css" asp-append-version="true" />
+}
+
+<div class="veic-form-page">
+    <div class="veic-form-header">
+        <a href="@ModuloRotas.VeiculosSaaS.MeusAnuncios" class="btn-voltar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Meus Veículos
+        </a>
+        <h1 class="veic-form-titulo">@MensagensSistema.Veiculos.TituloPerfilVendedor</h1>
+        <p class="veic-form-subtitulo">@MensagensSistema.Veiculos.SubtituloPerfilVendedor</p>
+    </div>
+
+    <form method="post" class="veic-form" id="form-perfil-vendedor">
+        @Html.AntiForgeryToken()
+
+        <div class="veic-form-secao">
+            <h2 class="veic-form-secao-titulo">Identificação</h2>
+            <div class="form-row">
+                <div class="form-col form-col--wide">
+                    <app-input asp-for="NomeExibicao"
+                               label="@MensagensSistema.Veiculos.LabelNomeExibicao"
+                               placeholder="@MensagensSistema.Veiculos.PlaceholderNomeExibicao" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-col form-col--wide">
+                    <app-textarea asp-for="Descricao"
+                                  label="@MensagensSistema.Veiculos.LabelDescricaoPerfil"
+                                  placeholder="@MensagensSistema.Veiculos.PlaceholderDescricaoPerfil"
+                                  rows="4" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-col form-col--wide">
+                    <app-input asp-for="UrlFotoLogo"
+                               label="@MensagensSistema.Veiculos.LabelUrlFotoLogo"
+                               placeholder="@MensagensSistema.Veiculos.PlaceholderUrlFotoLogo" />
+                </div>
+            </div>
+        </div>
+
+        <div class="veic-form-secao">
+            <h2 class="veic-form-secao-titulo">Contatos e redes sociais</h2>
+            <div class="form-row">
+                <div class="form-col">
+                    <app-input asp-for="Whatsapp"
+                               label="@MensagensSistema.Veiculos.LabelWhatsapp"
+                               placeholder="@MensagensSistema.Veiculos.PlaceholderWhatsapp" />
+                </div>
+                <div class="form-col">
+                    <app-input asp-for="Instagram"
+                               label="@MensagensSistema.Veiculos.LabelInstagram"
+                               placeholder="@MensagensSistema.Veiculos.PlaceholderInstagram" />
+                </div>
+                <div class="form-col">
+                    <app-input asp-for="UrlSite"
+                               label="@MensagensSistema.Veiculos.LabelSite"
+                               placeholder="@MensagensSistema.Veiculos.PlaceholderSite" />
+                </div>
+            </div>
+        </div>
+
+        <div class="veic-form-acoes">
+            <app-button type="submit">@MensagensSistema.Veiculos.BotaoSalvarPerfil</app-button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,173 @@
+/* ======================================================
+   perfil.css — Perfil do anunciante
+   ====================================================== */
+
+/* ── Container ── */
+.perfil-container {
+  max-width: 860px;
+  width: 100%;
+}
+
+/* ── Cartão principal ── */
+.cartao-formulario {
+  background: var(--imob-surface);
+  border: 1px solid var(--imob-border);
+  border-radius: var(--imob-radius);
+  padding: 2rem 2.25rem;
+  box-shadow: var(--imob-shadow);
+}
+
+/* ── Títulos de seção ── */
+.titulo-secao-formulario {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--imob-primary);
+  margin: 0 0 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  border-bottom: 1px solid var(--imob-border);
+  padding-bottom: 0.625rem;
+}
+
+.titulo-secao-formulario + .grade-formulario,
+.titulo-secao-formulario + .perfil-logo-bloco {
+  margin-bottom: 2rem;
+}
+
+/* ── Grade de campos ── */
+.grade-formulario {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.grade-formulario--tres {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.campo-formulario-full {
+  grid-column: 1 / -1;
+}
+
+/* ── Bloco de logo ── */
+.perfil-logo-bloco {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--imob-surface-alt);
+  border-radius: var(--imob-radius-sm);
+  border: 1px solid var(--imob-border);
+}
+
+.perfil-logo-previa {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  border: 2px solid var(--imob-border);
+  background: var(--imob-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: var(--imob-shadow);
+}
+
+.perfil-logo-previa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.perfil-logo-previa svg {
+  color: var(--imob-text-muted);
+  opacity: 0.35;
+}
+
+.perfil-logo-campos {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  justify-content: center;
+}
+
+.perfil-logo-dica {
+  font-size: 0.78rem;
+  color: var(--imob-text-muted);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* ── Ações do formulário ── */
+.acoes-formulario {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--imob-border);
+}
+
+/* ── Botão cancelar ── */
+.botao-cancelar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 1.375rem;
+  border-radius: var(--imob-radius-sm);
+  border: 1px solid var(--imob-border);
+  color: var(--imob-text-muted);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  white-space: nowrap;
+}
+
+.botao-cancelar:hover {
+  background: var(--imob-surface-alt);
+  color: var(--imob-text);
+  border-color: var(--clr-border-soft);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .cartao-formulario {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .grade-formulario,
+  .grade-formulario--tres {
+    grid-template-columns: 1fr;
+  }
+
+  .perfil-logo-bloco {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .perfil-logo-campos {
+    width: 100%;
+  }
+
+  .acoes-formulario {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .acoes-formulario .botao-cancelar,
+  .acoes-formulario .botao-salvar-unificado {
+    width: 100%;
+    justify-content: center;
+  }
+}

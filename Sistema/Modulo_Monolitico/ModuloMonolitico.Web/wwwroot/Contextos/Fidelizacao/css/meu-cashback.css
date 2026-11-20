@@ -1,0 +1,200 @@
+.selo-pagina--cashback {
+    color: var(--clr-status-concluido);
+    border-color: var(--clr-status-concluido);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.rotulo-secao {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--clr-text-muted);
+    margin-bottom: 1rem;
+}
+
+.empresa-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 0;
+}
+
+.credito-ref {
+    font-size: 0.7rem;
+    color: var(--clr-text-muted);
+    font-weight: 400;
+}
+
+.credito-expira {
+    color: var(--clr-warning);
+}
+
+.credito-restante {
+    font-size: 0.7rem;
+    color: var(--clr-text-muted);
+}
+
+.cta-escanear-wrap {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.estado-vazio-icone {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--clr-text-muted);
+    opacity: 0.6;
+}
+
+.estado-vazio-titulo {
+    color: var(--clr-text);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.estado-vazio-texto {
+    color: var(--clr-text-muted);
+    margin-bottom: 2rem;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.credito-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Hero de saldo total */
+    .cashback-hero {
+        background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(5,150,105,0.06));
+        border: 1px solid rgba(16,185,129,0.25);
+        border-radius: var(--radius-lg);
+        padding: 2.5rem;
+        text-align: center;
+        margin-bottom: 2.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .cashback-hero::before {
+        content: '💚';
+        position: absolute; top: -20px; right: -10px;
+        font-size: 8rem; opacity: 0.06; transform: rotate(15deg);
+        pointer-events: none;
+    }
+    .cashback-hero-label {
+        font-size: 0.85rem; font-weight: 600;
+        color: var(--clr-status-concluido); text-transform: uppercase;
+        letter-spacing: 0.08em; margin-bottom: 0.5rem;
+    }
+    .cashback-hero-value {
+        font-size: 3.5rem; font-weight: 800;
+        color: var(--clr-text); font-family: var(--font-heading);
+        letter-spacing: -0.04em; line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+    .cashback-hero-value span { color: var(--clr-status-concluido); }
+    .cashback-hero-sub { font-size: 0.9rem; color: var(--clr-text-muted); }
+
+    /* Cards de saldo por empresa */
+    .empresa-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 1.25rem 1.5rem;
+        display: flex; align-items: center; justify-content: space-between;
+        transition: all 0.25s; box-shadow: var(--glass-shadow);
+        position: relative; overflow: hidden;
+    }
+    .empresa-card::before {
+        content: '';
+        position: absolute; left: 0; top: 0; bottom: 0;
+        width: 4px;
+        background: linear-gradient(180deg, var(--clr-status-concluido), var(--clr-success));
+        border-radius: 4px 0 0 4px;
+    }
+    .empresa-card:hover { transform: translateX(3px); border-color: var(--clr-status-concluido); }
+
+    .empresa-info { display: flex; align-items: center; gap: 1rem; }
+    .empresa-avatar {
+        width: 44px; height: 44px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--clr-status-concluido), var(--clr-success));
+        display: flex; align-items: center; justify-content: center;
+        font-family: var(--font-heading); font-size: 1.1rem; font-weight: 800; color: var(--clr-surface);
+        flex-shrink: 0;
+    }
+    .empresa-nome { font-weight: 700; color: var(--clr-text); font-size: 0.95rem; }
+    .empresa-atualizado { font-size: 0.75rem; color: var(--clr-text-muted); margin-top: 0.15rem; }
+
+    .empresa-saldo {
+        text-align: right;
+    }
+    .saldo-valor {
+        font-size: 1.5rem; font-weight: 800;
+        color: var(--clr-status-concluido); font-family: var(--font-heading);
+    }
+    .saldo-label { font-size: 0.7rem; color: var(--clr-text-muted); font-weight: 600; }
+
+    /* Histórico de créditos */
+    .historico-title {
+        font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--clr-text-muted);
+        margin: 2.5rem 0 1rem;
+    }
+
+    .credito-item {
+        display: flex; align-items: center; gap: 1rem;
+        padding: 1rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        margin-bottom: 0.6rem;
+        transition: all 0.2s;
+    }
+    .credito-item:hover { border-color: var(--glass-border); background: rgba(16,185,129,0.03); }
+
+    .credito-icon {
+        width: 36px; height: 36px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0; font-size: 1rem;
+    }
+    .credito-icon.disponivel { background: rgba(16,185,129,0.12); color: var(--clr-status-concluido); }
+    .credito-icon.esgotado   { background: rgba(100,116,139,0.1); color: var(--clr-text-muted); }
+    .credito-icon.expirado   { background: rgba(234,67,53,0.1); color: var(--clr-danger); }
+
+    .credito-body { flex: 1; min-width: 0; }
+    .credito-desc { font-size: 0.875rem; font-weight: 600; color: var(--clr-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .credito-data { font-size: 0.75rem; color: var(--clr-text-muted); margin-top: 0.1rem; }
+
+    .credito-valores { text-align: right; flex-shrink: 0; }
+    .credito-valor-principal {
+        font-size: 1rem; font-weight: 800;
+        font-family: var(--font-heading);
+    }
+    .credito-valor-principal.disponivel { color: var(--clr-status-concluido); }
+    .credito-valor-principal.esgotado   { color: var(--clr-text-muted); text-decoration: line-through; }
+    .credito-valor-principal.expirado   { color: var(--clr-danger); }
+    .credito-selo-situacao {
+        font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+        padding: 0.1rem 0.4rem; border-radius: 4px; margin-top: 0.2rem; display: inline-block;
+    }
+    .badge-disponivel { background: rgba(16,185,129,0.12); color: var(--clr-status-concluido); }
+    .badge-esgotado   { background: rgba(100,116,139,0.1); color: var(--clr-text-muted); }
+    .badge-expirado   { background: rgba(234,67,53,0.1); color: var(--clr-danger); }
+
+    .estado-vazio-cliente {
+        text-align: center; padding: 5rem 2rem;
+        background: var(--glass-bg); border: 2px dashed var(--glass-border);
+        border-radius: var(--radius-lg);
+    }
+    .cta-escanear {
+        display: inline-flex; align-items: center; gap: 0.6rem;
+        background: var(--clr-primary); color: var(--clr-bg-dark);
+        padding: 0.75rem 1.5rem; border-radius: var(--radius-sm);
+        font-weight: 700; text-decoration: none;
+        box-shadow: 0 0 20px var(--clr-primary-glow);
+        transition: all 0.2s;
+    }
+    .cta-escanear:hover { transform: translateY(-2px); box-shadow: 0 0 30px var(--clr-primary-glow); }

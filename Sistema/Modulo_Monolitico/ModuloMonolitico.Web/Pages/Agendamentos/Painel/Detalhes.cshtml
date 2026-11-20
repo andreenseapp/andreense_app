@@ -1,0 +1,156 @@
+@page
+@model ModuloMonolitico.Web.Pages.Agendamentos.Painel.DetalhesModel
+@using System.Globalization
+@{
+    ViewData[ViewDataKeys.Title] = "Detalhes do Agendamento";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var ag = Model.Agendamento!;
+    var cultura = new CultureInfo("pt-BR");
+    var corServico = ag.CorHexadecimalServico ?? "#6366f1";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Agendamentos/css/painel-detalhes.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Agendamento
+        </div>
+        <h1 class="titulo-pagina">@ag.NomeTipoServico</h1>
+        <p class="subtitulo-pagina">
+            @ag.DataHoraInicio.ToString("dddd, dd 'de' MMMM 'de' yyyy 'às' HH:mm", cultura)
+            – @ag.DataHoraFim.ToString("HH:mm")
+        </p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Agendamentos.Painel" class="botao botao-fantasma botao-voltar">← Voltar ao Calendário</a>
+    </div>
+</div>
+
+<main class="main-content painel-detalhes-container">
+    <div class="painel-vidro">
+        <div class="barra-servico">
+            <div class="ponto-servico" style="--cor-servico: @corServico"></div>
+            <div class="info-servico">
+                <span class="etiqueta situacao-@ag.Situacao">@ag.RotuloSituacao</span>
+            </div>
+        </div>
+
+        <div class="lista-detalhe">
+            <div class="linha-detalhe">
+                <span class="rotulo-detalhe">Profissional</span>
+                <span class="valor-detalhe">@ag.NomeProfissional</span>
+            </div>
+            <div class="linha-detalhe">
+                <span class="rotulo-detalhe">Cliente</span>
+                <span class="valor-detalhe">@(ag.ClienteNome ?? "—")</span>
+            </div>
+            @if (!string.IsNullOrEmpty(ag.ClienteEmail))
+            {
+                <div class="linha-detalhe">
+                    <span class="rotulo-detalhe">E-mail</span>
+                    <span class="valor-detalhe">
+                        <a href="mailto:@ag.ClienteEmail" class="link-detalhe">@ag.ClienteEmail</a>
+                    </span>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(ag.ClienteTelefone))
+            {
+                <div class="linha-detalhe">
+                    <span class="rotulo-detalhe">Telefone</span>
+                    <span class="valor-detalhe">
+                        <a href="tel:@ag.ClienteTelefone" class="link-detalhe">@ag.ClienteTelefone</a>
+                    </span>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(ag.Observacoes))
+            {
+                <div class="linha-detalhe linha-detalhe--stack">
+                    <span class="rotulo-detalhe">Observações</span>
+                    <span class="valor-detalhe valor-detalhe--obs">@ag.Observacoes</span>
+                </div>
+            }
+            @if (ag.PrecoCobrado.HasValue)
+            {
+                <div class="linha-detalhe">
+                    <span class="rotulo-detalhe">Valor Cobrado</span>
+                    <span class="valor-detalhe">@ag.PrecoCobrado?.ToString("C2", cultura)</span>
+                </div>
+            }
+            @if (ag.Situacao == "cancelado")
+            {
+                <div class="linha-detalhe">
+                    <span class="rotulo-detalhe">Cancelado por</span>
+                    <span class="valor-detalhe">@ag.CanceladoPor</span>
+                </div>
+                @if (!string.IsNullOrEmpty(ag.MotivoCancelamento))
+                {
+                    <div class="linha-detalhe linha-detalhe--stack">
+                        <span class="rotulo-detalhe">Motivo</span>
+                        <span class="valor-detalhe valor-detalhe--obs">@ag.MotivoCancelamento</span>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    @if (ag.Situacao != "cancelado" && ag.Situacao != "concluido")
+    {
+        <div class="painel-vidro">
+            <div class="titulo-secao">Alterar Situação</div>
+            <div class="acoes-situacao">
+                @if (ag.Situacao == "pendente")
+                {
+                    <form method="post" asp-page-handler="AtualizarSituacao" class="formulario-situacao">
+                        <app-input type="hidden" name="id" value="@ag.Id" />
+                        <app-input type="hidden" name="novaSituacao" value="confirmado" />
+                        <app-button type="submit" variant="primary" class="botao-situacao">Confirmar</app-button>
+                    </form>
+                }
+                @if (ag.Situacao == "confirmado")
+                {
+                    <form method="post" asp-page-handler="AtualizarSituacao" class="formulario-situacao">
+                        <app-input type="hidden" name="id" value="@ag.Id" />
+                        <app-input type="hidden" name="novaSituacao" value="concluido" />
+                        <app-button type="submit" variant="primary" class="botao-situacao">Marcar Concluído</app-button>
+                    </form>
+                    <form method="post" asp-page-handler="AtualizarSituacao" class="formulario-situacao">
+                        <app-input type="hidden" name="id" value="@ag.Id" />
+                        <app-input type="hidden" name="novaSituacao" value="faltou" />
+                        <app-button type="submit" variant="secondary" class="botao-situacao botao-situacao--muted">Cliente Faltou</app-button>
+                    </form>
+                }
+                <app-button type="button" variant="danger" class="botao-situacao btn-abrir-cancelar">Cancelar Agendamento</app-button>
+            </div>
+        </div>
+    }
+</main>
+
+<div id="modalCancelar" class="modal-fundo">
+    <div class="modal-cartao">
+        <div class="modal-cabecalho">
+            <span>Cancelar Agendamento</span>
+            <app-button type="button" variant="ghost" size="sm" class="modal-fechar btn-fechar-cancelar" aria-label="Fechar">&times;</app-button>
+        </div>
+        <form method="post" asp-page-handler="Cancelar">
+            <app-input type="hidden" name="id" value="@ag.Id" />
+            <div class="modal-corpo">
+                <app-textarea asp-for="MotivoCancelamento"
+                              label="Motivo do cancelamento"
+                              rows="3"
+                              placeholder="Informe o motivo..." />
+            </div>
+            <div class="modal-rodape">
+                <app-button type="button" class="btn-modal-cancelar btn-fechar-cancelar">Voltar</app-button>
+                <app-button type="submit" variant="danger">Confirmar Cancelamento</app-button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Agendamentos/js/painel-detalhes.js" asp-append-version="true"></script>
+}

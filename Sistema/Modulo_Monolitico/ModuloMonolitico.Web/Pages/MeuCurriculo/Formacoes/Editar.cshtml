@@ -1,0 +1,47 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.Formacoes.EditarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Editar Formação";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Formacoes" class="link-voltar-secao">← Formação Acadêmica</a>
+        <h1 class="titulo-pagina">Editar Formação</h1>
+    </div>
+</div>
+<form method="post" class="form-curriculo">
+    <app-input type="hidden" asp-for="FormacaoId" />
+    <app-input type="hidden" asp-for="CurriculoId" />
+    <div class="form-grid-duplo">
+        <app-input asp-for="Curso" label="Curso / Graduação *" />
+        <app-input asp-for="Instituicao" label="Instituição *" />
+        <app-select asp-for="Grau" label="Grau de Formação *">
+            @foreach (var (val, lbl) in new[] { ("fundamental","Ensino Fundamental"), ("medio","Ensino Médio"), ("tecnico","Técnico"), ("graduacao","Graduação"), ("pos","Pós-Graduação"), ("mba","MBA"), ("mestrado","Mestrado"), ("doutorado","Doutorado") })
+            {
+                <option value="@val" selected="@(Model.Grau == val ? "selected" : null)">@lbl</option>
+            }
+        </app-select>
+        <div></div>
+        <app-input asp-for="DataInicio" label="Início *" type="month" />
+        <div id="grupo-data-fim-fmr">
+            <app-input asp-for="DataFim" label="Término" type="month" />
+        </div>
+    </div>
+    <label class="form-check-label">
+        <app-checkbox asp-for="EmAndamento" id="check-em-andamento-fmr" />
+        <span>Cursando atualmente</span>
+    </label>
+    <div class="form-acoes form-acoes-com-delete">
+        <form method="post" asp-page-handler="Deletar" class="form-delete" onsubmit="return confirm('Remover esta formação?')">
+            <app-input type="hidden" name="formacaoId" value="@Model.FormacaoId" />
+            <app-input type="hidden" name="curriculoId" value="@Model.CurriculoId" />
+            <app-button type="submit" variant="danger" class="btn btn-danger-ghost">Remover</app-button>
+        </form>
+        <div class="form-acoes-direita">
+            <a href="@ModuloRotas.Curriculos.MeuCurriculo_Formacoes" class="btn btn-ghost">Cancelar</a>
+            <app-button type="submit" variant="primary">Salvar</app-button>
+        </div>
+    </div>
+</form>
+<script src="~/Contextos/MeuCurriculo/experiencias.js" asp-append-version="true"></script>

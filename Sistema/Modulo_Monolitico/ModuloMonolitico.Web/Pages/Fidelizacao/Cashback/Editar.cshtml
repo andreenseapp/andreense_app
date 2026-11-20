@@ -1,0 +1,184 @@
+@page
+
+@model ModuloMonolitico.Web.Pages.Fidelizacao.Cashback.EditarModel
+
+@{
+
+    ViewData[ViewDataKeys.Title] = "Editar Regra de Cashback";
+
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+
+    var ativo = Model.Regra.Situacao == "ativo";
+
+}
+
+
+
+@section Styles {
+
+    <link rel="stylesheet" href="~/Contextos/Fidelizacao/css/cashback-novo.css" asp-append-version="true" />
+
+}
+
+
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+
+    UrlVoltar = ModuloRotas.Fidelizacao.Cashback,
+
+    TextoVoltar = "Campanhas",
+
+    Titulo = "Editar Regra de Cashback",
+
+    Subtitulo = $"Atualize os dados de {Model.Regra.Titulo}"
+
+}' />
+
+
+
+<main class="conteudo-principal cashback-novo-container">
+
+    <form method="post" id="formRegraCashback" class="cartao-formulario">
+
+        <app-input type="hidden" asp-for="Regra.Id" />
+
+        <app-input type="hidden" asp-for="Regra.EmpresaId" />
+
+        <app-input type="hidden" asp-for="Regra.Situacao" />
+
+
+
+        <h2 class="titulo-secao-formulario">Informações Básicas</h2>
+
+
+
+        <div class="grade-formulario">
+
+            <app-input asp-for="Regra.Titulo"
+
+                       label="Título da Campanha *"
+
+                       type="text"
+
+                       required="required"
+
+                       class="campo-formulario-full mb-0" />
+
+
+
+            <app-textarea asp-for="Regra.Descricao"
+
+                          label="Descrição (Opcional)"
+
+                          rows="3"
+
+                          class="campo-formulario-full campo-formulario-spaced mb-0" />
+
+
+
+            <app-input asp-for="Regra.Percentual"
+
+                       label="Percentual de Cashback (%) *"
+
+                       type="number"
+
+                       step="0.1"
+
+                       required="required"
+
+                       class="campo-formulario-spaced mb-0" />
+
+
+
+            <app-input asp-for="Regra.DiasValidade"
+
+                       label="Validade dos Créditos (Dias)"
+
+                       type="number"
+
+                       class="campo-formulario-spaced mb-0" />
+
+        </div>
+
+
+
+        <h2 class="titulo-secao-formulario">Configurações Avançadas</h2>
+
+
+
+        <div class="grade-formulario">
+
+            <app-input asp-for="Regra.DataInicioVigencia"
+
+                       label="Data Início (Vigência)"
+
+                       type="date"
+
+                       class="mb-0" />
+
+
+
+            <app-input asp-for="Regra.DataFimVigencia"
+
+                       label="Data Fim (Vigência)"
+
+                       type="date"
+
+                       class="campo-formulario-spaced mb-0" />
+
+
+
+            <app-checkbox asp-for="Regra.TemReferencia" class="campo-formulario-full checkbox-card mb-0">
+
+                <span class="checkbox-titulo-cartao">Exigir Código de Referência</span>
+
+                <span class="checkbox-card-desc">Obrigatório informar número da nota ou venda ao creditar.</span>
+
+            </app-checkbox>
+
+        </div>
+
+
+
+        <div class="acoes-formulario-bar">
+
+            @if (ativo)
+
+            {
+
+                <app-button type="submit"
+                        variant="danger"
+                        asp-page-handler="Inativar"
+                        asp-route-id="@Model.Regra.Id"
+                        class="botao-inativar"
+                        data-confirmacao="Inativar esta regra de cashback? Clientes não receberão mais créditos nesta campanha."
+                        data-confirmacao-tipo="perigo">
+                    Inativar Regra
+                </app-button>
+
+            }
+
+            else
+
+            {
+
+                <span class="selo-situacao situacao-inativo">Regra inativa</span>
+
+            }
+
+
+
+            <div class="acoes-formulario-right">
+
+                <a href="@ModuloRotas.Fidelizacao.Cashback" class="botao-cancelar">Descartar</a>
+
+                <app-save-button type="submit">Salvar Alterações</app-save-button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</main>
+

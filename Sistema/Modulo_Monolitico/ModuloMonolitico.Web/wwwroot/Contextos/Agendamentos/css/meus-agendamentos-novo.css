@@ -1,0 +1,347 @@
+/* Agendamentos — Meus Agendamentos Novo (wizard) */
+
+.assistente-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+}
+
+.botao-voltar {
+    white-space: nowrap;
+}
+
+.passos {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 2.5rem;
+}
+
+.passo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.passo-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+    border: 2px solid var(--glass-border);
+    color: var(--clr-text-muted);
+    flex-shrink: 0;
+}
+
+.step.ativo .passo-num {
+    background: var(--clr-primary);
+    border-color: var(--clr-primary);
+    color: var(--clr-botao-primario-texto, var(--clr-bg-dark));
+}
+
+.step.concluido .passo-num {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: var(--clr-status-concluido);
+    color: var(--clr-status-concluido);
+}
+
+.passo-rotulo {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--clr-text-muted);
+}
+
+.step.ativo .passo-rotulo {
+    color: var(--clr-text);
+}
+
+.passo-linha {
+    flex: 1;
+    height: 1px;
+    background: var(--glass-border);
+    margin: 0 0.5rem;
+}
+
+.painel-vidro {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--glass-shadow-lg);
+    margin-bottom: 1.5rem;
+}
+
+.painel-titulo {
+    font-weight: 700;
+    color: var(--clr-text);
+    margin-bottom: 0.5rem;
+}
+
+.painel-dica {
+    color: var(--clr-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.empresa-selecionada {
+    font-size: 0.8rem;
+    color: var(--clr-primary);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.select-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.select-grid-servicos {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.cartao-selecao {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+    font: inherit;
+    color: inherit;
+}
+
+.cartao-selecao:hover {
+    border-color: var(--clr-primary);
+    background: rgba(99, 102, 241, 0.06);
+}
+
+.cartao-selecao.selecionado {
+    border-color: var(--clr-primary);
+    background: rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+}
+
+.cartao-nome {
+    font-weight: 700;
+    color: var(--clr-text);
+    margin-bottom: 4px;
+}
+
+.cartao-desc {
+    font-size: 0.8rem;
+    color: var(--clr-text-muted);
+}
+
+.cor-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+    background: var(--cor-servico, var(--clr-primary));
+}
+
+.campo-rotulo {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--clr-text);
+    display: block;
+    margin-bottom: 0.4rem;
+}
+
+.campo-controle {
+    padding: 0.7rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--clr-text);
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.campo-controle:focus {
+    outline: none;
+    border-color: var(--clr-primary);
+}
+
+.grade-formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.secao-formulario {
+    margin-bottom: 1.5rem;
+}
+
+.campo-grupo {
+    display: flex;
+    flex-direction: column;
+}
+
+.envoltorio-data {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+}
+
+.envoltorio-data .campo-controle {
+    flex: 1;
+    min-width: 0;
+}
+
+.botao-hoje {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0 0.75rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--clr-text-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 150ms ease;
+}
+
+.botao-hoje:hover {
+    border-color: var(--clr-primary);
+    color: var(--clr-primary);
+}
+
+.grade-horarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.botao-horario {
+    padding: 0.5rem;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    color: var(--clr-text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.botao-horario:hover,
+.botao-horario.sel {
+    background: var(--clr-primary);
+    color: var(--clr-botao-primario-texto, var(--clr-bg-dark));
+    border-color: var(--clr-primary);
+}
+
+.horarios-carregando {
+    color: var(--clr-text-muted);
+    font-size: 0.875rem;
+    padding: 1rem 0;
+}
+
+.nav-btns {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.botao-voltar {
+    padding: 0.65rem 1.25rem;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--clr-text);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.confirmacao-titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin: 0 0 1.5rem;
+}
+
+.confirmacao-linha {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--glass-border);
+    font-size: 0.9rem;
+    gap: 1rem;
+}
+
+.confirmacao-linha:last-child {
+    border-bottom: none;
+}
+
+.confirmacao-rotulo {
+    color: var(--clr-text-muted);
+}
+
+.confirmacao-valor {
+    font-weight: 600;
+    color: var(--clr-text);
+    text-align: right;
+}
+
+.aviso-cancelamento {
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    font-size: 0.875rem;
+    color: var(--clr-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.estado-vazio {
+    text-align: center;
+    padding: 2rem;
+    color: var(--clr-text-muted);
+}
+
+.estado-vazio-texto {
+    margin-bottom: 1rem;
+}
+
+.botao-acao-vazio {
+    display: inline-flex;
+}
+
+.btn-confirmar {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-status-andamento)) !important;
+}
+
+@media (max-width: 640px) {
+    .grade-formulario {
+        grid-template-columns: 1fr;
+    }
+
+    .passo-rotulo {
+        display: none;
+    }
+}

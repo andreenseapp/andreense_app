@@ -1,0 +1,88 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.GruposSaaS.NovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Novo Grupo SaaS";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/grupossaas-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.InfraAdmin.GruposSaaS,
+    TextoVoltar = "Grupos SaaS",
+    Titulo = "Novo Grupo SaaS",
+    Subtitulo = "Defina o cargo e selecione as permissões de acesso à plataforma."
+}' />
+
+<main class="main-content formulario-container">
+    <form method="post">
+        <div class="cartao-formulario">
+            <p class="titulo-secao-formulario">Dados do Grupo</p>
+            <div class="grade-formulario">
+                <app-input asp-for="Nome"
+                           label="Nome do Grupo"
+                           type="text"
+                           placeholder="ex: Moderador de Conteúdo"
+                           required="required"
+                           maxlength="100"
+                           autofocus="autofocus" />
+
+                <div class="campo-grupo-descricao">
+                    <app-textarea asp-for="Descricao"
+                                  label="Descrição"
+                                  rows="2"
+                                  placeholder="Descreva brevemente o propósito deste grupo..." />
+                </div>
+
+                <app-toggle asp-for="Ativo" title="Grupo ativo" label-on="Sim" label-off="Não" />
+            </div>
+        </div>
+
+        <div class="cartao-formulario">
+            <p class="titulo-secao-formulario">Permissões de Acesso à Plataforma SaaS</p>
+
+            @foreach (var modulo in Model.RecursosPorModulo)
+            {
+                <div class="modulo-block">
+                    <div class="modulo-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                        @modulo.Key
+                        <span class="modulo-label-badge">@modulo.Count() recurso(s)</span>
+                        <app-button type="button" variant="ghost" size="sm" class="btn-marcar-todos" data-modulo="@modulo.Key">marcar todos</app-button>
+                    </div>
+                    <div class="recursos-grid" data-modulo-grid="@modulo.Key">
+                        @foreach (var recurso in modulo)
+                        {
+                            <label class="recurso-check" for="rec_@recurso.Id">
+                                <app-checkbox id="rec_@recurso.Id"
+                                       name="RecursosSelecionados"
+                                       value="@recurso.Id"
+                                       data-modulo="@modulo.Key"
+                                       class="mb-0" />
+                                <div class="recurso-info">
+                                    <span class="recurso-nome">@recurso.Nome</span>
+                                    @if (!string.IsNullOrEmpty(recurso.Descricao))
+                                    {
+                                        <span class="recurso-desc">@recurso.Descricao</span>
+                                    }
+                                    <span class="recurso-tipo @(recurso.Tipo == "tela" ? "tipo-tela" : "tipo-acao")">@recurso.Tipo</span>
+                                </div>
+                            </label>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="acoes-formulario">
+            <a href="@ModuloRotas.InfraAdmin.GruposSaaS" class="btn-cancelar">Cancelar</a>
+            <app-save-button type="submit">Criar Grupo SaaS</app-save-button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/grupossaas-novo.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,42 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.Formacoes.NovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Nova Formação";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Formacoes" class="link-voltar-secao">← Formação Acadêmica</a>
+        <h1 class="titulo-pagina">Nova Formação</h1>
+    </div>
+</div>
+<form method="post" class="form-curriculo">
+    <div class="form-grid-duplo">
+        <app-input asp-for="Curso" label="Curso / Graduação *" placeholder="Ex: Ciência da Computação" />
+        <app-input asp-for="Instituicao" label="Instituição *" placeholder="Nome da universidade ou escola" />
+        <app-select asp-for="Grau" label="Grau de Formação *">
+            <option value="fundamental">Ensino Fundamental</option>
+            <option value="medio">Ensino Médio</option>
+            <option value="tecnico">Técnico</option>
+            <option value="graduacao" selected>Graduação</option>
+            <option value="pos">Pós-Graduação</option>
+            <option value="mba">MBA</option>
+            <option value="mestrado">Mestrado</option>
+            <option value="doutorado">Doutorado</option>
+        </app-select>
+        <div></div>
+        <app-input asp-for="DataInicio" label="Início *" type="month" />
+        <div id="grupo-data-fim-fmr">
+            <app-input asp-for="DataFim" label="Término" type="month" />
+        </div>
+    </div>
+    <label class="form-check-label">
+        <app-checkbox asp-for="EmAndamento" id="check-em-andamento-fmr" />
+        <span>Cursando atualmente</span>
+    </label>
+    <div class="form-acoes">
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Formacoes" class="btn btn-ghost">Cancelar</a>
+        <app-button type="submit" variant="primary">Salvar formação</app-button>
+    </div>
+</form>
+<script src="~/Contextos/MeuCurriculo/experiencias.js" asp-append-version="true"></script>

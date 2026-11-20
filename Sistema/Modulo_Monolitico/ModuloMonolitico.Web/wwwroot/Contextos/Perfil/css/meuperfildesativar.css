@@ -1,0 +1,148 @@
+.desativar-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    width: 100%;
+}
+
+.selo-pagina {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    color: var(--clr-text-muted);
+    background: rgba(255, 255, 255, 0.03);
+    margin-bottom: 0.5rem;
+}
+
+.selo-pagina--restrito {
+    color: var(--clr-status-cancelado);
+    border-color: var(--clr-status-cancelado);
+    background: rgba(255, 77, 79, 0.1);
+}
+
+.cabecalho-pagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.cabecalho-pagina .subtitulo-pagina {
+    margin-bottom: 0;
+}
+
+.cabecalho-pagina-acoes {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.cabecalho-pagina-link {
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+
+.cartao-perfil {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--glass-shadow);
+}
+
+.cabecalho-cartao-perfil {
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.cabecalho-cartao-perfil svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--clr-danger);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.titulo-cartao-perfil {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--clr-text);
+}
+
+.corpo-cartao-perfil {
+    padding: 1.5rem;
+}
+
+.warning-box {
+    background: rgba(234, 67, 53, 0.08);
+    border: 1px solid rgba(234, 67, 53, 0.2);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.warning-box svg {
+    color: var(--clr-danger);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+}
+
+.warning-text {
+    font-size: 0.875rem;
+    color: var(--clr-text);
+    line-height: 1.5;
+}
+
+.warning-text strong {
+    color: var(--clr-danger);
+}
+
+.acoes-formulario {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.botao-cancelar {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--clr-text);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.botao-cancelar:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.botao-desativar-enviar {
+    background: var(--clr-danger) !important;
+}

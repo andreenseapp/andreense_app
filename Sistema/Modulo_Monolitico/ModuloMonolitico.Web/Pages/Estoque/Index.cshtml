@@ -1,0 +1,150 @@
+@page
+@model ModuloMonolitico.Web.Pages.Estoque.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Posição de Estoque";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var urlLimpar = $"{ModuloRotas.Estoque.Index}?empresaId={Model.EmpresaIdSelecionada}";
+    var urlEntradaEmpresa = $"{ModuloRotas.Estoque.Entrada}?empresaId={Model.EmpresaIdSelecionada}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Estoque/css/estoque-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+            Estoque
+        </div>
+        <h1 class="titulo-pagina">Posição de Estoque</h1>
+        <p class="subtitulo-pagina">Saldo atual por produto, variação e local.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Estoque.Entrada" class="botao botao-primario botao-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Entrada de Estoque
+        </a>
+    </div>
+</div>
+
+@if (Model.Empresas.Count > 1)
+{
+    <div class="seletor-empresa">
+        <app-select id="seletorEmpresa"
+                    label="Empresa"
+                    class="campo-controle select-empresa"
+                    data-url-listagem="@ModuloRotas.Estoque.Index">
+            @foreach (var emp in Model.Empresas)
+            {
+                <option value="@emp.Id" selected="@(emp.Id == Model.EmpresaIdSelecionada)">
+                    @(emp.RazaoSocial ?? emp.Nome)
+                </option>
+            }
+        </app-select>
+    </div>
+}
+
+<form method="get" class="painel-filtro">
+    <app-input type="hidden" name="empresaId" value="@Model.EmpresaIdSelecionada" />
+    <app-input asp-for="TermoBusca"
+               label="Buscar"
+               type="text"
+               placeholder="Produto, variação ou lote..."
+               class="grupo-filtro grupo-filtro--largo mb-0" />
+    <div class="acoes-filtro">
+        @if (!string.IsNullOrEmpty(Model.TermoBusca))
+        {
+            <a href="@urlLimpar" class="botao-filtro-icone" title="Limpar busca">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </a>
+        }
+        <app-button type="submit" variant="primary" class="botao-filtro">Buscar</app-button>
+    </div>
+</form>
+
+@if (!Model.Saldos.Any())
+{
+    <div class="estado-vazio">
+        <svg class="estado-vazio-icone" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+        <p class="estado-vazio-texto">Nenhum saldo de estoque encontrado.</p>
+        <a href="@urlEntradaEmpresa" class="botao botao-primario botao-estado-vazio">Registrar primeira entrada</a>
+    </div>
+}
+else
+{
+    <div class="barra-listagem">
+        <div class="barra-listagem-contagem">
+            <strong>@Model.Saldos.Count</strong> item(ns) · Estoque total:
+            <strong>@Model.Saldos.Sum(s => s.QuantidadeAtual).ToString("N3")</strong> un.
+        </div>
+    </div>
+
+    <div class="tabela-envoltorio">
+        <table class="app-table" data-seletor-colunas="true">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Variação</th>
+                    <th>Local / Área</th>
+                    <th>Lote</th>
+                    <th>Validade</th>
+                    <th class="col-qtd">Qtd. Atual</th>
+                    <th>Situação</th>
+                    <th class="col-acoes">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model.Saldos)
+                {
+                    var classeQuantidade = s.QuantidadeAtual == 0 ? "zerado" : (s.QuantidadeAtual < 5 ? "baixo" : "ok");
+                    var vencendo = s.DataValidade.HasValue && s.DataValidade.Value <= DateTime.Now.AddDays(30);
+                    var urlSaida = $"{ModuloRotas.Estoque.Saida}?saldoId={s.Id}&empresaId={s.EmpresaId}";
+                    var urlEntrada = $"{ModuloRotas.Estoque.Entrada}?variacaoId={s.ProdutoVariacaoId}&empresaId={s.EmpresaId}";
+
+                    <tr>
+                        <td><strong class="cell-produto">@(s.ProdutoNome ?? "—")</strong></td>
+                        <td>@(s.VariacaoNome ?? "—")</td>
+                        <td>
+                            <span class="cell-local">@(s.LocalNome ?? "—")</span>
+                            @if (!string.IsNullOrEmpty(s.AreaNome))
+                            {
+                                <div class="cell-area">@s.AreaNome</div>
+                            }
+                        </td>
+                        <td><span class="cell-lote">@(s.Lote ?? "—")</span></td>
+                        <td>
+                            @if (s.DataValidade.HasValue)
+                            {
+                                <span class="cell-validade @(vencendo ? "cell-validade--aviso" : "")">
+                                    @s.DataValidade.Value.ToString("dd/MM/yyyy")
+                                </span>
+                            }
+                            else
+                            {
+                                <span>—</span>
+                            }
+                        </td>
+                        <td class="col-qtd">
+                            <span class="etiqueta-qtd @classeQuantidade">@s.QuantidadeAtual.ToString("N3")</span>
+                        </td>
+                        <td>
+                            <span class="etiqueta-situacao">@s.Situacao</span>
+                        </td>
+                        <td>
+                            <div class="acoes-celula">
+                                <a href="@urlSaida" class="botao-acao botao-acao--perigo">Saída</a>
+                                <a href="@urlEntrada" class="botao-acao">Entrada</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Estoque/js/estoque-index.js" asp-append-version="true"></script>
+}

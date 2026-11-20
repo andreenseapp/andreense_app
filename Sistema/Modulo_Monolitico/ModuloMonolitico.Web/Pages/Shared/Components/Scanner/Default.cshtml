@@ -1,0 +1,10 @@
+@model string
+
+<link rel="stylesheet" href="~/Contextos/Shared/css/scanner-padrao.css" asp-append-version="true" />
+
+<div class="scanner-container">
+    <div id="@Model" class="scanner-viewport"></div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
+<script src="~/Contextos/Shared/js/scanner-padrao.js" asp-append-version="true"></script>

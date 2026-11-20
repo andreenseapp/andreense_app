@@ -1,0 +1,29 @@
+@model ModuloMonolitico.Web.Pages.Shared.Components.InboxAlert.InboxAlertViewModel
+
+<div class="inbox-alert">
+    <div class="inbox-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+    </div>
+    <div class="inbox-text">
+        @if (Model.MensagensNaoLidas > 0 || Model.NotificacoesNaoLidas > 0)
+        {
+            <h4>Você tem @(Model.MensagensNaoLidas + Model.NotificacoesNaoLidas) item(s) não lido(s)</h4>
+            <p>
+                @if (Model.MensagensNaoLidas > 0) { <span>@Model.MensagensNaoLidas mensagem(ns) nova(s)</span> }
+                @if (Model.MensagensNaoLidas > 0 && Model.NotificacoesNaoLidas > 0) { <span> &middot; </span> }
+                @if (Model.NotificacoesNaoLidas > 0) { <span>@Model.NotificacoesNaoLidas notificação(ões) pendente(s)</span> }
+            </p>
+        }
+        else
+        {
+            <h4>Tudo em dia! &#10024;</h4>
+            <p>Nenhuma mensagem ou notificação pendente no momento.</p>
+        }
+    </div>
+    <div class="inbox-action">
+        <a href="@Model.Url" class="botao botao-primario btn-sm">Ver Mensagens</a>
+    </div>
+</div>

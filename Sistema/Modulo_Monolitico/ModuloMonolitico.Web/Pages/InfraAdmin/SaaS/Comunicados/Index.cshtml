@@ -1,0 +1,119 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.SaaS.Comunicados.ComunicadosIndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Comunicados & Enquetes";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/saas-comunicados-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Conteúdo
+        </div>
+        <h1 class="titulo-pagina">Comunicados & Enquetes</h1>
+        <p class="subtitulo-pagina">Acompanhe e gerencie os disparos globais enviados para todas as contas.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.InfraAdmin.SaaS_Comunicados_Cadastrar" class="botao botao-primario btn-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Comunicado
+        </a>
+    </div>
+</div>
+
+@if (!Model.Comunicados.Any())
+{
+    <div class="estado-vazio">
+        <p class="estado-vazio-texto">Nenhum comunicado criado até o momento.</p>
+        <a href="@ModuloRotas.InfraAdmin.SaaS_Comunicados_Cadastrar" class="botao-novo botao-acao-estado-vazio">Cadastrar o primeiro comunicado</a>
+    </div>
+}
+else
+{
+    <div class="comunicados-feed">
+        @foreach (var comunicado in Model.Comunicados)
+        {
+            bool expirado = comunicado.DataExpiracao.HasValue && comunicado.DataExpiracao < DateTime.UtcNow;
+            var classeTipo = comunicado.Tipo == "enquete" ? "enquete" : "aviso";
+
+            <div class="comunicado-feed-card @classeTipo">
+                <div class="feed-header">
+                    <div class="feed-title-wrapper">
+                        <h3 class="feed-title">@comunicado.Titulo</h3>
+                        <div class="feed-meta">
+                            <span class="meta-alvo-destaque">Módulo: @(comunicado.ModuloAlvo ?? "Todos")</span>
+                            <span class="feed-meta-dot">&middot;</span>
+                            @if (expirado)
+                            {
+                                <span class="meta-expirado">Expirado em @comunicado.DataExpiracao!.Value.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                            }
+                            else if (comunicado.DataExpiracao.HasValue)
+                            {
+                                <span class="meta-ativo-ate">Ativo até @comunicado.DataExpiracao.Value.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                            }
+                            else
+                            {
+                                <span class="meta-ativo-permanente">Ativo Permanente</span>
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        @if (comunicado.Tipo == "enquete")
+                        {
+                            <span class="badge badge-indigo badge-tipo">Enquete</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-blue badge-tipo">Aviso</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="feed-body">
+                    @comunicado.Mensagem
+                </div>
+
+                <div class="feed-footer">
+                    <div class="feed-metrics">
+                        <div class="feed-metric-item" title="Visualizações">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            @comunicado.TotalLidos Leituras
+                        </div>
+                        @if (comunicado.Tipo == "enquete")
+                        {
+                            <div class="feed-metric-item highlight" title="Votos Recebidos">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                                @comunicado.TotalRespostas Votos
+                            </div>
+                        }
+                    </div>
+
+                    <div class="feed-actions">
+                        <a href="@($"{ModuloRotas.InfraAdmin.SaaS_Comunicados_Detalhes}?id={comunicado.Id}")" class="btn-feed-action btn-estatisticas">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            Estatísticas
+                        </a>
+
+                        <form method="post" asp-page-handler="DeletarFisico" asp-route-id="@comunicado.Id" class="form-deletar-inline">
+                            <app-button type="submit" variant="danger" size="sm" class="btn-feed-action btn-deletar-feed" title="Excluir"
+                                        data-confirmacao="Deseja realmente excluir este comunicado? Todas as respostas registradas serão perdidas permanentemente."
+                                        data-confirmacao-tipo="perigo"
+                                        data-confirmacao-titulo="Excluir Comunicado">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </app-button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/saas-comunicados-index.js" asp-append-version="true"></script>
+}

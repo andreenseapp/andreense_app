@@ -1,0 +1,110 @@
+/* Empresas — Editar / Nova */
+
+.empresas-editar-container {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.form-card {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.75rem;
+}
+
+.alerta-formulario {
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+}
+
+.alerta-formulario--erro {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: var(--clr-status-cancelado);
+}
+
+.form-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--clr-primary, var(--clr-primary));
+    margin: 0 0 1.25rem;
+}
+
+.form-section-title--spaced {
+    margin-top: 1.5rem;
+}
+
+.grade-formulario {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.grade-formulario-endereco {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.grade-formulario-cidade {
+    display: grid;
+    grid-template-columns: 1fr 1fr 120px;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-field-full {
+    grid-column: 1 / -1;
+}
+
+.form-field-spaced {
+    margin-top: 0;
+}
+
+@media (max-width: 768px) {
+    .grade-formulario,
+    .grade-formulario-endereco,
+    .grade-formulario-cidade {
+        grid-template-columns: 1fr;
+    }
+
+    .form-field-full {
+        grid-column: auto;
+    }
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.botao-cancelar {
+    display: inline-flex;
+    align-items: center;
+    height: 38px;
+    padding: 0 1.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background 0.12s, color 0.12s;
+}
+
+.botao-cancelar:hover {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    color: var(--clr-text, var(--clr-text-heading));
+}

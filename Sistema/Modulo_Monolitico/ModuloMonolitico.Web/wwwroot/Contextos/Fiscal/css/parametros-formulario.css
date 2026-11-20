@@ -1,0 +1,149 @@
+.fiscal-formulario-container {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.secao-fiscal {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    box-shadow: var(--glass-shadow);
+}
+
+.secao-fiscal-cabecalho {
+    padding: 1.25rem 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.secao-fiscal-icone {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--clr-status-concluido);
+}
+
+.secao-fiscal-titulo {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--clr-text);
+}
+
+.secao-fiscal-descricao {
+    font-size: 0.82rem;
+    color: var(--clr-text-muted);
+    margin-top: 0.15rem;
+}
+
+.secao-fiscal-body {
+    padding: 1.75rem;
+}
+
+.alerta-producao {
+    background: rgba(234, 67, 53, 0.1);
+    border: 1px solid rgba(234, 67, 53, 0.25);
+    color: var(--clr-danger);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+}
+
+.rotulo-secao-formulario {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--clr-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.campo-check-ativo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.campo-check-ativo input {
+    width: 1.2rem;
+    height: 1.2rem;
+    cursor: pointer;
+}
+
+.campo-check-ativo label {
+    cursor: pointer;
+    color: var(--clr-text);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.grade-formulario-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.grade-formulario-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.grade-formulario-espacada {
+    margin-bottom: 1.25rem;
+}
+
+.dica-campo {
+    font-size: 0.78rem;
+    color: var(--clr-text-muted);
+    margin-top: 0.3rem;
+    display: block;
+}
+
+.divisor {
+    border: none;
+    border-top: 1px solid var(--glass-border);
+    margin: 1.5rem 0;
+}
+
+.campos-csc {
+    margin-bottom: 1.25rem;
+}
+
+.campos-csc--hidden {
+    display: none;
+}
+
+.acoes-formulario-fim {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.botao-confirmar-serie {
+    min-width: 160px;
+}
+
+@media (max-width: 640px) {
+    .grade-formulario-2,
+    .grade-formulario-3 {
+        grid-template-columns: 1fr;
+    }
+}

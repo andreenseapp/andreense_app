@@ -1,0 +1,29 @@
+@page
+@model ModuloMonolitico.Web.Pages.HelpDesk.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Help Desk";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            HelpDesk
+        </div>
+        <h1 class="titulo-pagina">Suporte e Chamados</h1>
+        <p class="subtitulo-pagina">Central de atendimento, SLA e base de conhecimento.</p>
+    </div>
+</div>
+
+<div class="modulos-grid">
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = "#",
+        nome = "Painel de Chamados",
+        descricao = "Gestão de tickets, priorização e acompanhamento de SLA.",
+        textoLink = "Em breve",
+        corHexadecimal = "#94a3b8", corRgb = "148, 163, 184",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\"></path></svg>",
+        emBreve = true
+    })
+</div>

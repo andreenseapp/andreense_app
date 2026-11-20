@@ -1,0 +1,111 @@
+/* Validar E-mail — Auth */
+
+.validar-email-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
+    padding: 2rem 1rem;
+}
+
+.validar-email-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--glass-shadow-lg);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    animation: cardIn var(--transition-slow) forwards;
+}
+
+.validar-email-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 1.5rem;
+    background: var(--clr-primary-glow);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--clr-primary);
+}
+
+.validar-email-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin-bottom: 0.75rem;
+}
+
+.validar-email-subtitle {
+    font-size: 0.9rem;
+    color: var(--clr-text-muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.validar-email-instruction {
+    font-size: 0.9rem;
+    color: var(--clr-text-muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.validar-email-otp input {
+    width: 100%;
+    max-width: 220px;
+    padding: 1rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-align: center;
+    background: rgba(255,255,255,0.5);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    color: var(--clr-text);
+    transition: border-color 0.2s;
+}
+[data-tema='dark'] .validar-email-otp input { background: rgba(0,0,0,0.2); }
+.validar-email-otp input:focus {
+    outline: none;
+    border-color: var(--clr-primary);
+    box-shadow: 0 0 0 3px var(--clr-primary-glow);
+}
+
+.validar-email-erro {
+    margin-top: 1rem;
+    text-align: left;
+}
+
+.validar-email-submit {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.85rem;
+    font-weight: 700;
+}
+
+.validar-email-reenviar {
+    margin-top: 1.75rem;
+    font-size: 0.875rem;
+    color: var(--clr-text-muted);
+}
+
+.validar-email-reenviar form {
+    display: inline;
+}
+
+.validar-email-reenviar button {
+    background: none;
+    border: none;
+    color: var(--clr-primary);
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    font-size: inherit;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+.validar-email-reenviar button:hover { color: var(--clr-accent); }

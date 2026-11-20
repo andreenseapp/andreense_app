@@ -1,0 +1,106 @@
+@page
+@model ModuloMonolitico.Web.Pages.Estoque.SaidaModel
+@using System.Globalization
+@{
+    ViewData[ViewDataKeys.Title] = "Saída de Estoque";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var urlVoltar = Model.Saldo?.EmpresaId != null && Model.Saldo.EmpresaId != Guid.Empty
+        ? $"{ModuloRotas.Estoque.Index}?empresaId={Model.Saldo.EmpresaId}"
+        : ModuloRotas.Estoque.Index;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Estoque/css/saida.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = urlVoltar,
+    TextoVoltar = "Posição de Estoque",
+    Titulo = "Saída de Estoque",
+    Subtitulo = "Registre a saída de um item específico. O sistema valida o saldo antes de confirmar."
+}' />
+
+<main class="conteudo-principal estoque-saida-container">
+    @if (Model.Saldo != null)
+    {
+        <div class="secao-formulario">
+            <p class="titulo-secao">Item selecionado</p>
+            <div class="saldo-info">
+                <div class="item-info">
+                    <div class="rotulo-info">Produto / Variação</div>
+                    <div class="valor-info">@(Model.Saldo.ProdutoNome ?? "—") / @(Model.Saldo.VariacaoNome ?? "—")</div>
+                </div>
+                <div class="item-info">
+                    <div class="rotulo-info">Local</div>
+                    <div class="valor-info">
+                        @(Model.Saldo.LocalNome ?? "—")
+                        @if (!string.IsNullOrEmpty(Model.Saldo.AreaNome))
+                        {
+                            <span> / @Model.Saldo.AreaNome</span>
+                        }
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Saldo.Lote))
+                {
+                    <div class="item-info">
+                        <div class="rotulo-info">Lote</div>
+                        <div class="valor-info valor-info--mono">@Model.Saldo.Lote</div>
+                    </div>
+                }
+                @if (Model.Saldo.DataValidade.HasValue)
+                {
+                    <div class="item-info">
+                        <div class="rotulo-info">Validade</div>
+                        <div class="valor-info">@Model.Saldo.DataValidade.Value.ToString("dd/MM/yyyy")</div>
+                    </div>
+                }
+                <div class="item-info item-info--completo">
+                    <div class="rotulo-info">Saldo Disponível</div>
+                    <div class="valor-info saldo-qtd">@Model.Saldo.QuantidadeAtual.ToString("N3") un.</div>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" id="formSaida">
+            <app-input type="hidden" asp-for="Formulario.SaldoId" />
+
+            <div class="secao-formulario">
+                <p class="titulo-secao">Dados da Saída</p>
+                <app-input asp-for="Formulario.Quantidade"
+                           label="Quantidade a Retirar *"
+                           type="number"
+                           step="0.001"
+                           min="0.001"
+                           max="@Model.Saldo.QuantidadeAtual.ToString("F3", CultureInfo.InvariantCulture)"
+                           required="required"
+                           class="entrada-qtd mb-0" />
+                <div class="bloco-formulario">
+                    <app-input asp-for="Formulario.Motivo"
+                               label="Motivo da Saída"
+                               type="text"
+                               placeholder="Ex: Venda, Consumo interno, Devolução fornecedor..."
+                               class="mb-0" />
+                </div>
+            </div>
+
+            <div class="acoes-formulario">
+                <a href="@urlVoltar" class="botao-cancelar">Cancelar</a>
+                <app-button type="submit"
+                        variant="danger"
+                        class="botao-enviar-perigo"
+                        data-confirmacao="Confirmar saída de estoque? O saldo será reduzido conforme a quantidade informada."
+                        data-confirmacao-tipo="perigo"
+                        data-confirmacao-titulo="Confirmar Saída">
+                    Confirmar Saída
+                </app-button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="estado-vazio">
+            <p class="estado-vazio-texto">Saldo não encontrado.</p>
+            <a href="@ModuloRotas.Estoque.Index" class="botao botao-primario botao-estado-vazio">Voltar</a>
+        </div>
+    }
+</main>

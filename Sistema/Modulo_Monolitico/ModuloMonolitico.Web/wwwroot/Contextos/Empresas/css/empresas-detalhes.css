@@ -1,0 +1,149 @@
+/* Empresas — Detalhes */
+
+.empresas-detalhes-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.botao-voltar {
+    height: 38px;
+    padding: 0 1rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-header-editar {
+    height: 38px;
+    padding: 0 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.detalhes-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .detalhes-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.detalhes-col-principal,
+.detalhes-col-lateral {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.75rem;
+}
+
+.info-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--clr-text, var(--clr-text-heading));
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.info-card-title svg {
+    color: var(--clr-primary, var(--clr-primary));
+    flex-shrink: 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+
+@media (max-width: 640px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.info-field,
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.info-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--clr-text, var(--clr-text-heading));
+}
+
+.info-value-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.info-value-capitalize {
+    text-transform: capitalize;
+}
+
+.endereco-vazio {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.endereco-box {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 8px;
+    padding: 1.25rem;
+}
+
+.meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.distintivo-situacao {
+    display: inline-flex;
+    align-self: flex-start;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+.situacao-ativo {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--clr-success);
+    border: 1px solid rgba(22, 163, 74, 0.25);
+}
+
+.situacao-inativo {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--clr-status-cancelado);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}

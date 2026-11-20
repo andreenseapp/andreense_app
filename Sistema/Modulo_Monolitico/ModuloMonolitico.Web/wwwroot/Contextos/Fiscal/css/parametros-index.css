@@ -1,0 +1,191 @@
+.parametros-index-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.botao-voltar-empresas {
+    height: 38px;
+    padding: 0 1rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+.botao-cabecalho-nova-serie {
+    height: 38px;
+    padding: 0 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.cartao-fiscal {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    transition: all var(--transition-base);
+    box-shadow: var(--glass-shadow);
+}
+
+.cartao-fiscal:hover {
+    border-color: var(--glass-border-focus);
+    transform: translateY(-2px);
+    box-shadow: var(--glass-shadow-lg);
+}
+
+.cartao-fiscal-icone {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cartao-fiscal-icone.nfe {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--clr-primary);
+}
+
+.cartao-fiscal-icone.nfce {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--clr-status-andamento);
+}
+
+.cartao-fiscal-info {
+    flex: 1;
+}
+
+.cartao-fiscal-titulo {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--clr-text);
+    margin-bottom: 0.2rem;
+}
+
+.cartao-fiscal-meta {
+    font-size: 0.85rem;
+    color: var(--clr-text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.cartao-fiscal-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge.producao {
+    background: rgba(234, 67, 53, 0.12);
+    color: var(--clr-danger);
+    border: 1px solid rgba(234, 67, 53, 0.25);
+}
+
+.badge.homologacao {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--clr-warning);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge.ativo {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--clr-status-concluido);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge.inativo {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--clr-text-muted);
+    border: 1px solid var(--glass-border);
+}
+
+.acoes-fiscais {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.botao-editar-serie {
+    height: 36px;
+    padding: 0 1rem;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.botao-excluir-serie {
+    height: 36px;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--clr-danger);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.botao-excluir-serie:hover {
+    background: rgba(234, 67, 53, 0.05);
+    border-color: rgba(234, 67, 53, 0.3);
+}
+
+.form-deletar-serie {
+    margin: 0;
+}
+
+.fiscal-estado-vazio {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--glass-bg);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--glass-border);
+}
+
+.fiscal-vazio-icone {
+    color: var(--clr-text-muted);
+    margin-bottom: 1rem;
+}
+
+.fiscal-vazio-titulo {
+    font-family: var(--font-heading);
+    margin-bottom: 0.5rem;
+    color: var(--clr-text);
+}
+
+.fiscal-vazio-descricao {
+    color: var(--clr-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .cartao-fiscal {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .acoes-fiscais {
+        width: 100%;
+    }
+}

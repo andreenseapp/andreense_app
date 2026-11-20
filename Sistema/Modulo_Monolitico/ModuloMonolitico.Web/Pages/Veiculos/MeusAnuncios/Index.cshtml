@@ -1,0 +1,82 @@
+@page "/Contextos/Veiculos/MeusAnuncios"
+@model ModuloMonolitico.Web.Pages.Veiculos.MeusAnuncios.IndexModel
+@{
+    ViewData["Title"] = "Meus Veículos";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Veiculos/css/comum.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Veiculos/css/meus-anuncios.css" asp-append-version="true" />
+}
+
+<div class="veic-gestao">
+    <div class="veic-gestao-header">
+        <div class="veic-gestao-titulo-grupo">
+            <h1 class="veic-gestao-titulo">Meus Veículos</h1>
+            <p class="veic-gestao-subtitulo">Gerencie seus anúncios de veículos.</p>
+        </div>
+        <a href="@ModuloRotas.VeiculosSaaS.MeusAnuncios_Novo" class="btn-novo-anuncio">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo anúncio
+        </a>
+    </div>
+
+    @if (!Model.MeusAnuncios.Any())
+    {
+        <div class="veic-gestao-vazio">
+            <div class="vazio-icone">🚗</div>
+            <h2>Nenhum veículo anunciado</h2>
+            <p>Comece agora e alcance compradores na sua região.</p>
+            <a href="@ModuloRotas.VeiculosSaaS.MeusAnuncios_Novo" class="btn-novo-anuncio">Criar primeiro anúncio</a>
+        </div>
+    }
+    else
+    {
+        <div class="veic-gestao-lista">
+            @foreach (var anuncio in Model.MeusAnuncios)
+            {
+                <div class="veic-gestao-item @(anuncio.Situacao != "ativo" ? "veic-gestao-item--inativo" : "")">
+                    <div class="gestao-item-foto">
+                        @if (!string.IsNullOrEmpty(anuncio.FotoCapa))
+                        {
+                            <img src="@anuncio.FotoCapa" alt="@anuncio.Titulo" />
+                        }
+                        else
+                        {
+                            <div class="gestao-item-sem-foto">🚗</div>
+                        }
+                    </div>
+                    <div class="gestao-item-info">
+                        <div class="gestao-item-titulo">@anuncio.Titulo</div>
+                        <div class="gestao-item-detalhes">
+                            <span>@anuncio.Marca @anuncio.Modelo</span>
+                            <span>@anuncio.AnoModelo</span>
+                            <span>@($"{anuncio.Quilometragem:N0}") km</span>
+                            <span class="gestao-item-preco">@($"R$ {anuncio.Preco:N0}")</span>
+                        </div>
+                        <div class="gestao-item-badges">
+                            <span class="badge-situacao badge-situacao--@anuncio.Situacao">@anuncio.Situacao</span>
+                            @if (anuncio.EhDestaque)
+                            {
+                                <span class="badge-destaque">⭐ Destaque</span>
+                            }
+                            @if (!string.IsNullOrEmpty(anuncio.CodigoPublico))
+                            {
+                                <span class="badge-codigo">@anuncio.CodigoPublico</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="gestao-item-acoes">
+                        <a href="@ModuloRotas.Veiculos.Detalhes?id=@anuncio.AnuncioVeiculoId" class="btn-ver" target="_blank">Ver</a>
+                        <a href="@ModuloRotas.VeiculosSaaS.MeusAnuncios_Editar?id=@anuncio.AnuncioVeiculoId" class="btn-editar">Editar</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Veiculos/js/meus-anuncios.js" asp-append-version="true"></script>
+}

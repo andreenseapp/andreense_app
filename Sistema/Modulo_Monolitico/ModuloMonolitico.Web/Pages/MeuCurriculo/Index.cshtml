@@ -1,0 +1,119 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Meu Currículo";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<link rel="stylesheet" href="~/Contextos/MeuCurriculo/index.css" asp-append-version="true" />
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            Currículo
+        </div>
+        <h1 class="titulo-pagina">Meu Currículo</h1>
+        <p class="subtitulo-pagina">Gerencie suas informações profissionais e controle a visibilidade do seu perfil.</p>
+    </div>
+    <div class="cabecalho-acoes">
+        @if (Model.MeuCurriculo is not null)
+        {
+            <a href="/Curriculos/Detalhes?id=@Model.MeuCurriculo.Id" target="_blank" class="btn btn-secondary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Ver currículo público
+            </a>
+        }
+    </div>
+</div>
+
+@if (Model.MeuCurriculo is null)
+{
+    <div class="curriculo-inicio">
+        <div class="inicio-icon">📋</div>
+        <h2>Comece a montar seu currículo</h2>
+        <p>Preencha suas informações profissionais e apareça no banco de talentos local.</p>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_DadosProfissionais" class="btn btn-primary">Começar agora</a>
+    </div>
+}
+else
+{
+    var c = Model.MeuCurriculo;
+
+    <div class="curriculo-progresso-card">
+        <div class="progresso-info">
+            <span class="progresso-label">Perfil @c.PercentualPreenchimento% preenchido</span>
+            <div class="progresso-barra">
+                <div class="progresso-fill" style="width: @c.PercentualPreenchimento%"></div>
+            </div>
+        </div>
+        <div class="visibilidade-toggle">
+            <form method="post" asp-page-handler="AlterarVisibilidade" id="form-visibilidade">
+                <app-input type="hidden" name="visivel" value="@(!c.Visivel)" id="input-visivel" />
+                <app-button type="submit" variant="ghost" class="toggle-btn @(c.Visivel ? "ativo" : "")">
+                    <span class="toggle-dot"></span>
+                </app-button>
+            </form>
+            <span class="visibilidade-label">@(c.Visivel ? "Visível no banco de talentos" : "Oculto do banco de talentos")</span>
+        </div>
+    </div>
+
+    <div class="secoes-curriculo">
+
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_DadosProfissionais" class="secao-card @(!string.IsNullOrWhiteSpace(c.CargoDesejado) ? "preenchida" : "")">
+            <div class="secao-icone">🎯</div>
+            <div class="secao-info">
+                <strong>Dados Profissionais</strong>
+                <span>@(string.IsNullOrWhiteSpace(c.CargoDesejado) ? "Cargo desejado, área, modalidade e pretensão" : $"{c.CargoDesejado} · {c.AreaAtuacao}")</span>
+            </div>
+            <div class="secao-status">@(!string.IsNullOrWhiteSpace(c.CargoDesejado) ? "✓" : "→")</div>
+        </a>
+
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Experiencias" class="secao-card @(c.Experiencias.Count > 0 ? "preenchida" : "")">
+            <div class="secao-icone">💼</div>
+            <div class="secao-info">
+                <strong>Experiências Profissionais</strong>
+                <span>@(c.Experiencias.Count == 0 ? "Adicione seu histórico de empregos" : $"{c.Experiencias.Count} experiência(s) cadastrada(s)")</span>
+            </div>
+            <div class="secao-status">@(c.Experiencias.Count > 0 ? "✓" : "→")</div>
+        </a>
+
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Formacoes" class="secao-card @(c.Formacoes.Count > 0 ? "preenchida" : "")">
+            <div class="secao-icone">🎓</div>
+            <div class="secao-info">
+                <strong>Formação Acadêmica</strong>
+                <span>@(c.Formacoes.Count == 0 ? "Adicione sua formação educacional" : $"{c.Formacoes.Count} formação(ões) cadastrada(s)")</span>
+            </div>
+            <div class="secao-status">@(c.Formacoes.Count > 0 ? "✓" : "→")</div>
+        </a>
+
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Cursos" class="secao-card @(c.Cursos.Count > 0 ? "preenchida" : "")">
+            <div class="secao-icone">📜</div>
+            <div class="secao-info">
+                <strong>Cursos e Certificações</strong>
+                <span>@(c.Cursos.Count == 0 ? "Adicione cursos e certificados" : $"{c.Cursos.Count} curso(s) cadastrado(s)")</span>
+            </div>
+            <div class="secao-status">@(c.Cursos.Count > 0 ? "✓" : "→")</div>
+        </a>
+
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Idiomas" class="secao-card @(c.Idiomas.Count > 0 ? "preenchida" : "")">
+            <div class="secao-icone">🌍</div>
+            <div class="secao-info">
+                <strong>Idiomas</strong>
+                <span>@(c.Idiomas.Count == 0 ? "Informe os idiomas que você domina" : $"{c.Idiomas.Count} idioma(s) cadastrado(s)")</span>
+            </div>
+            <div class="secao-status">@(c.Idiomas.Count > 0 ? "✓" : "→")</div>
+        </a>
+
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Habilidades" class="secao-card @(c.Habilidades.Count > 0 ? "preenchida" : "")">
+            <div class="secao-icone">⚡</div>
+            <div class="secao-info">
+                <strong>Habilidades</strong>
+                <span>@(c.Habilidades.Count == 0 ? "Adicione suas competências técnicas" : $"{c.Habilidades.Count} habilidade(s) cadastrada(s)")</span>
+            </div>
+            <div class="secao-status">@(c.Habilidades.Count > 0 ? "✓" : "→")</div>
+        </a>
+
+    </div>
+}
+
+<script src="~/Contextos/MeuCurriculo/index.js" asp-append-version="true"></script>

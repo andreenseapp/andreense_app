@@ -1,0 +1,46 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fiscal.Parametros.EditarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Editar Série Fiscal";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Fiscal/css/parametros-formulario.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.Fiscal.Parametros,
+    TextoVoltar = "Parâmetros",
+    Titulo = "Editar Série Fiscal",
+    Subtitulo = "Altere a configuração de emissão e numeração desta série."
+}' />
+
+<main class="conteudo-principal fiscal-formulario-container">
+    <div class="secao-fiscal">
+        <div class="secao-fiscal-cabecalho">
+            <div class="secao-fiscal-icone">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            </div>
+            <div>
+                <div class="secao-fiscal-titulo">Configurações Gerais</div>
+                <div class="secao-fiscal-descricao">Regras de emissão utilizadas por padrão nas vendas.</div>
+            </div>
+        </div>
+
+        <div class="secao-fiscal-body">
+            <form method="post" id="formularioConfiguracao">
+                @Html.AntiForgeryToken()
+                <app-input type="hidden" asp-for="Id" />
+                <partial name="_FormularioParametrosEmissao" for="Formulario" />
+                <div class="acoes-formulario-fim">
+                    <app-save-button type="submit" class="botao-confirmar-serie">Salvar Alterações</app-save-button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Fiscal/js/parametros-formulario.js" asp-append-version="true"></script>
+}

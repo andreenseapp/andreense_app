@@ -1,0 +1,93 @@
+@page
+@model ModuloMonolitico.Web.Pages.Precos.EditarModel
+@{
+    var ehEdicao = Model.Formulario.Id.HasValue;
+    ViewData[ViewDataKeys.Title] = ehEdicao ? "Editar Contexto de Preço" : "Novo Contexto de Preço";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var urlVoltar = $"{ModuloRotas.Precos.Index}?empresaId={Model.Formulario.EmpresaId}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Precos/css/precos-editar.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = urlVoltar,
+    TextoVoltar = "Contextos de Preço",
+    Titulo = ViewData[ViewDataKeys.Title]?.ToString() ?? "Contexto de Preço",
+    Subtitulo = "Ex.: Varejo, Atacado, Funcionário, Black Friday…"
+}' />
+
+<main class="main-content precos-editar-container">
+    <form method="post" id="formContexto">
+        <app-input type="hidden" asp-for="Formulario.Id" />
+        @if (ehEdicao)
+        {
+            <app-input type="hidden" asp-for="Formulario.EmpresaId" />
+        }
+
+        <div class="formulario-cartao">
+            <div class="formulario-grade">
+                @if (!ehEdicao)
+                {
+                    <app-select asp-for="Formulario.EmpresaId"
+                                label="Empresa *"
+                                required="required"
+                                class="mb-0">
+                        @foreach (var emp in Model.Empresas)
+                        {
+                            <option value="@emp.Id">@(emp.RazaoSocial ?? emp.Nome)</option>
+                        }
+                    </app-select>
+                }
+
+                <app-input asp-for="Formulario.Nome"
+                           label="Nome do Contexto *"
+                           type="text"
+                           placeholder="Ex: Varejo, Atacado, Black Friday"
+                           maxlength="100"
+                           required="required"
+                           class="@(ehEdicao ? "formulario-campo-completo mb-0" : "formulario-campo-espacado mb-0")" />
+
+                <app-textarea asp-for="Formulario.Descricao"
+                              label="Descrição"
+                              rows="2"
+                              placeholder="Opcional: descreva quando este contexto é aplicado."
+                              class="formulario-campo-completo formulario-campo-espacado mb-0" />
+
+                <app-input asp-for="Formulario.Ordem"
+                           label="Ordem de Exibição"
+                           type="number"
+                           min="0"
+                           class="formulario-campo-espacado mb-0" />
+            </div>
+
+            <div class="grupo-alternancia">
+                <app-toggle asp-for="Formulario.EhPadrao"
+                            title="Padrão"
+                            label-on="Este é o contexto de preço padrão da empresa"
+                            label-off="Não é o contexto padrão" />
+
+                @if (ehEdicao)
+                {
+                    <app-toggle asp-for="Formulario.Ativo"
+                                title="Ativo"
+                                label-on="Contexto ativo"
+                                label-off="Contexto inativo" />
+                }
+            </div>
+
+            <div class="formulario-acoes">
+                <a href="@urlVoltar" class="btn-cancelar">Cancelar</a>
+                <app-save-button type="submit">Salvar Contexto</app-save-button>
+            </div>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    @if (!ehEdicao)
+    {
+        <script src="~/Contextos/Shared/js/captura-formulario.js" asp-append-version="true"></script>
+    }
+}

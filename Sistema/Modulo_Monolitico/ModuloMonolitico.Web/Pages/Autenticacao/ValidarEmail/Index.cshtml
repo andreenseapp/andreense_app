@@ -1,0 +1,58 @@
+@page
+@model ModuloMonolitico.Web.Pages.Autenticacao.ValidarEmailModel
+@{
+    ViewData[ViewDataKeys.Title] = "Validar E-mail";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Autenticacao/css/validar-email.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina cabecalho-pagina--centro">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            Autenticação
+        </div>
+        <h1 class="titulo-pagina">Verifique seu E-mail</h1>
+        <p class="subtitulo-pagina">Enviamos um código de 6 dígitos para <strong>@Model.UsuarioEmail</strong>.</p>
+    </div>
+</div>
+
+<main class="main-content validar-email-page">
+    <div class="glass-card validar-email-card">
+        <div class="validar-email-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </div>
+
+        <p class="validar-email-instruction">Digite o código abaixo para validar sua conta.</p>
+
+        <form method="post">
+            <div class="validar-email-otp">
+                <app-input type="text" name="Codigo" maxlength="6" placeholder="000000" required autofocus autocomplete="one-time-code" />
+            </div>
+
+
+            @if (TempData[TempDataKeys.MensagemErro] != null)
+            {
+                <div class="alerta alerta-erro validar-email-erro" role="alerta">
+                    @TempData[TempDataKeys.MensagemErro]
+                </div>
+            }
+
+            <app-button type="submit" variant="primary" class="validar-email-submit">Validar E-mail</app-button>
+        </form>
+
+        <div class="validar-email-reenviar">
+            Não recebeu o código?
+            <form method="post" asp-page-handler="Reenviar">
+                <app-button type="submit" variant="secondary" size="sm">Reenviar E-mail</app-button>
+            </form>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Autenticacao/js/validar-email.js" asp-append-version="true"></script>
+}

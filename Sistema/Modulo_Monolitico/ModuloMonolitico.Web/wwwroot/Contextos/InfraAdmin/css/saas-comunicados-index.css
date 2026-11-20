@@ -1,0 +1,203 @@
+.comunicados-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.comunicado-feed-card {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.75rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.comunicado-feed-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--glass-shadow-lg);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.comunicado-feed-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+}
+
+.comunicado-feed-card.enquete::before {
+    background: linear-gradient(180deg, var(--clr-status-andamento) 0%, var(--clr-primary) 100%);
+}
+.comunicado-feed-card.aviso::before {
+    background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+}
+
+.feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+}
+
+.feed-title-wrapper {
+    flex: 1;
+    padding-right: 1rem;
+}
+
+.feed-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin: 0 0 0.4rem 0;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+}
+
+.feed-meta {
+    font-size: 0.85rem;
+    color: var(--clr-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.feed-meta-dot {
+    opacity: 0.4;
+    font-size: 0.5rem;
+}
+
+.feed-body {
+    color: var(--clr-text, var(--clr-text-heading));
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    white-space: pre-wrap;
+    background: var(--clr-bg, var(--clr-surface-alt));
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.feed-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--clr-border, var(--clr-border));
+}
+
+.feed-metrics {
+    display: flex;
+    gap: 1rem;
+}
+
+.feed-metric-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--clr-text-muted);
+}
+
+.feed-metric-item.highlight {
+    color: #0ea5e9;
+}
+
+.feed-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-feed-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-estatisticas {
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--clr-status-andamento);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+.btn-estatisticas:hover {
+    background: rgba(99, 102, 241, 0.25);
+    color: var(--clr-surface);
+}
+
+.btn-deletar-feed {
+    background: rgba(239, 68, 68, 0.05);
+    color: var(--clr-status-cancelado);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    cursor: pointer;
+}
+.btn-deletar-feed:hover {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+/* Classes adicionadas para eliminar estilos inline */
+.btn-cabecalho-novo {
+    height: 38px;
+    padding: 0 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.estado-vazio {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px dashed var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.estado-vazio-texto {
+    color: var(--clr-text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.botao-acao-estado-vazio {
+    display: inline-flex;
+    width: auto;
+}
+
+.meta-alvo-destaque {
+    font-weight: 600;
+    color: var(--clr-text);
+}
+
+.meta-expirado {
+    color: var(--clr-status-cancelado);
+}
+
+.meta-ativo-ate {
+    color: var(--clr-success);
+}
+
+.meta-ativo-permanente {
+    color: var(--clr-success);
+}
+
+.badge-tipo {
+    font-size: 0.75rem;
+}
+
+.form-deletar-inline {
+    display: contents;
+}

@@ -1,0 +1,200 @@
+/* Estilos Customizados do Modal de Auditoria Premium (Dark Glassmorphism) */
+.auditoria-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.auditoria-backdrop.active {
+    opacity: 1;
+}
+
+.auditoria-modal {
+    background: rgba(18, 22, 29, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md, 12px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    width: 90%;
+    max-width: 650px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(30px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auditoria-backdrop.active .auditoria-modal {
+    transform: translateY(0);
+}
+
+.auditoria-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.auditoria-title h3 {
+    margin: 0;
+    color: var(--clr-text-on-dark);
+    font-size: 1.2rem;
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+.auditoria-title span {
+    font-size: 0.75rem;
+    color: var(--clr-text-muted);
+    margin-top: 0.25rem;
+    display: block;
+    font-family: monospace;
+}
+
+.auditoria-close {
+    background: transparent;
+    border: none;
+    color: var(--clr-text-muted);
+    cursor: pointer;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    line-height: 1;
+}
+
+.auditoria-close:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--clr-text-on-dark);
+}
+
+.auditoria-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+/* Timeline Custom Track */
+.auditoria-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.auditoria-timeline::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 7px;
+    width: 2px;
+    height: calc(100% - 20px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.auditoria-item {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.auditoria-item:last-child {
+    margin-bottom: 0;
+}
+
+.auditoria-badge {
+    position: absolute;
+    left: -2rem;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 3px solid rgba(18, 22, 29, 1);
+    z-index: 1;
+}
+
+.auditoria-badge.criar { background: var(--clr-status-concluido); box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
+.auditoria-badge.editar { background: var(--clr-warning); box-shadow: 0 0 8px rgba(245, 158, 11, 0.5); }
+.auditoria-badge.excluir { background: var(--clr-status-cancelado); box-shadow: 0 0 8px rgba(239, 68, 68, 0.5); }
+
+.auditoria-content {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius-sm, 8px);
+    padding: 1.2rem;
+    transition: border var(--transition-fast);
+}
+
+.auditoria-content:hover {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.auditoria-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+    font-size: 0.8125rem;
+}
+
+.auditoria-user {
+    font-weight: 600;
+    color: var(--clr-text-on-dark);
+}
+
+.auditoria-time {
+    color: var(--clr-text-muted);
+}
+
+.auditoria-desc {
+    font-size: 0.875rem;
+    color: var(--clr-text-muted);
+    margin-bottom: 0.6rem;
+}
+
+.auditoria-action-btn {
+    background: transparent;
+    border: none;
+    color: var(--clr-primary);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.auditoria-action-btn:hover {
+    text-decoration: underline;
+}
+
+.auditoria-details {
+    display: none;
+    margin-top: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    padding: 1.2rem;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--clr-text-placeholder);
+    max-height: 250px;
+    line-height: 1.5;
+}
+

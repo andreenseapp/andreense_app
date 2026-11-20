@@ -1,0 +1,568 @@
+/* ======================================================
+   novo.css — Wizard de publicação de imóvel
+   ====================================================== */
+
+/* ── Container ── */
+.assistente-container {
+  max-width: 860px;
+  margin: 0 auto 64px;
+}
+
+/* ── Steps / Progresso ── */
+.assistente-passos {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 32px;
+  background: var(--imob-surface-alt);
+  border: 1px solid var(--imob-border);
+  border-radius: var(--imob-radius);
+  padding: 4px;
+}
+
+.assistente-passo {
+  flex: 1;
+  padding: 9px 6px;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--imob-text-muted);
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.assistente-passo--ativo {
+  background: var(--imob-primary);
+  color: var(--clr-surface);
+  box-shadow: 0 2px 8px rgba(14, 92, 154, 0.25);
+}
+
+.assistente-passo--ativo-clicavel {
+  cursor: pointer;
+}
+
+.assistente-passo--clicavel:hover:not(.assistente-passo--ativo) {
+  background: var(--clr-surface-hover);
+}
+
+.assistente-passo--completo {
+  background: var(--imob-venda-bg);
+  color: var(--imob-venda);
+}
+
+/* ── Etapas ── */
+.assistente-etapa {
+  display: none;
+}
+
+.assistente-etapa--ativa {
+  display: block;
+  animation: fadeInEtapa 0.2s ease;
+}
+
+@keyframes fadeInEtapa {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.assistente-titulo {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0 0 20px;
+  color: var(--imob-text);
+  letter-spacing: -0.01em;
+}
+
+.assistente-titulo--separado {
+  margin-top: 2rem;
+}
+
+.assistente-subtitulo {
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 28px 0 16px;
+  color: var(--imob-text);
+}
+
+/* ── Seleção de tipo (cards) ── */
+.tipo-negocio-grid,
+.tipo-imovel-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tipo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 28px;
+  border: 2px solid var(--imob-border);
+  border-radius: var(--imob-radius);
+  cursor: pointer;
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s, background 0.18s;
+  min-width: 120px;
+  background: var(--imob-surface);
+}
+
+.tipo-card:hover {
+  border-color: var(--imob-primary);
+  background: var(--imob-primary-bg);
+  transform: translateY(-2px);
+}
+
+.tipo-card input[type="radio"] {
+  display: none;
+}
+
+.tipo-card--selecionado,
+.tipo-card:has(input:checked) {
+  border-color: var(--imob-primary);
+  background: var(--imob-primary-bg);
+  box-shadow: 0 0 0 3px rgba(14, 92, 154, 0.12);
+}
+
+.tipo-card-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.tipo-card span {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--imob-text);
+}
+
+/* ── Grid de formulário ── */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.campo-grupo--completo {
+  grid-column: 1 / -1;
+}
+
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo-rotulo {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--imob-text);
+}
+
+.campo-controle {
+  padding: 11px 14px;
+  border: 1px solid var(--imob-border);
+  border-radius: var(--imob-radius-sm);
+  font-size: 0.9rem;
+  color: var(--imob-text);
+  background: var(--imob-surface);
+  font-family: inherit;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.campo-controle:focus {
+  outline: none;
+  border-color: var(--imob-primary);
+  box-shadow: 0 0 0 3px rgba(14, 92, 154, 0.12);
+}
+
+.campo-controle--valor {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.campo-controle[readonly] {
+  background: var(--imob-surface-alt);
+  color: var(--imob-text-muted);
+  cursor: not-allowed;
+}
+
+.campo-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.campo-check-rotulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.campo-rotulo--opcional {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--imob-text-muted);
+}
+
+.campo-dica-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--imob-text-muted);
+}
+
+.campo-dica-botoes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.campo-dica-label {
+  font-weight: 600;
+  color: var(--imob-text);
+  font-size: 0.8rem;
+}
+
+.btn-pill-complemento {
+  background: rgba(14, 92, 154, 0.08);
+  color: var(--imob-primary);
+  border: 1px solid rgba(14, 92, 154, 0.25);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-pill-complemento:hover {
+  background: rgba(14, 92, 154, 0.15);
+}
+
+.sugestao-titulo-link {
+  color: var(--imob-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── Grade de amenidades ── */
+.amenidades-grupo {
+  margin-top: 16px;
+}
+
+.campo-rotulo--grupo {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--imob-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+  opacity: 0.85;
+}
+
+.campo-checks-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+}
+
+.campo-check-amenidade {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--imob-surface-alt);
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--imob-border);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.campo-check-amenidade:hover {
+  border-color: #93c5fd;
+  background: var(--imob-primary-bg);
+}
+
+.campo-check-amenidade:has(input:checked) {
+  border-color: var(--imob-primary);
+  background: var(--imob-primary-bg);
+}
+
+.campo-check-input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--imob-primary);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* ── Privacidade box ── */
+.privacidade-box {
+  margin-top: 20px;
+  background: #fefce8;
+  border: 1px solid #fde68a;
+  border-radius: var(--imob-radius-sm);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.privacidade-box h3 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin: 0;
+  color: #78350f;
+}
+
+.privacidade-hint {
+  font-size: 0.78rem;
+  color: #92400e;
+  margin: 0;
+}
+
+/* ── Pacote preview ── */
+.pacote-previa {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--imob-aluguel-bg);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: var(--imob-radius-sm);
+  padding: 14px 20px;
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: var(--imob-aluguel);
+}
+
+.pacote-previa strong {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+/* ── Upload de fotos ── */
+.foto-envio-area {
+  border: 2px dashed var(--imob-border);
+  border-radius: var(--imob-radius);
+  padding: 20px;
+  transition: border-color 0.18s, background 0.18s;
+}
+
+.foto-envio-area:hover {
+  border-color: var(--imob-primary);
+}
+
+.foto-envio-area.arrastar-sobre {
+  border-color: var(--imob-primary);
+  background: var(--imob-primary-bg);
+}
+
+.foto-input-hidden {
+  display: none;
+}
+
+.foto-envio-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 20px;
+  cursor: pointer;
+  color: var(--imob-text-muted);
+  text-align: center;
+}
+
+.foto-envio-placeholder p {
+  font-weight: 600;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.foto-envio-placeholder span {
+  font-size: 0.8rem;
+}
+
+.foto-previa-grade {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.foto-previa-item {
+  position: relative;
+  width: 90px;
+  height: 68px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid var(--imob-border);
+}
+
+.foto-previa-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-previa-remover {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background: rgba(0, 0, 0, 0.65);
+  color: var(--clr-surface);
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-adicionar-mais-fotos {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--imob-surface-alt);
+  border: 1px dashed var(--imob-primary);
+  color: var(--imob-primary);
+  border-radius: 6px;
+  padding: 0 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  height: 68px;
+  transition: all 0.18s;
+  margin-top: 12px;
+}
+
+.btn-adicionar-mais-fotos:hover {
+  background: var(--imob-primary-bg);
+}
+
+/* ── Navegação wizard ── */
+.assistente-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--imob-border);
+}
+
+.btn-assistente-anterior,
+.btn-assistente-proximo,
+.btn-assistente-enviar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 28px;
+  border-radius: var(--imob-radius-sm);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+
+.btn-assistente-anterior {
+  background: var(--imob-surface-alt);
+  color: var(--imob-text);
+  border: 1px solid var(--imob-border);
+}
+
+.btn-assistente-anterior:hover {
+  background: var(--clr-surface-hover);
+  border-color: var(--clr-border-soft);
+}
+
+.btn-assistente-proximo {
+  background: var(--imob-primary);
+  color: var(--clr-surface);
+  margin-left: auto;
+  box-shadow: 0 4px 12px rgba(14, 92, 154, 0.2);
+}
+
+.btn-assistente-proximo:hover {
+  background: var(--imob-primary-light);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(14, 92, 154, 0.3);
+}
+
+.btn-assistente-enviar {
+  background: var(--imob-venda);
+  color: var(--clr-surface);
+  margin-left: auto;
+  box-shadow: 0 4px 12px rgba(14, 122, 69, 0.2);
+}
+
+.btn-assistente-enviar:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ── Caixa de sugestão ── */
+.sugestao-titulo-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: var(--imob-text-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .assistente-passos {
+    gap: 2px;
+  }
+
+  .assistente-passo {
+    font-size: 0.65rem;
+    padding: 8px 4px;
+  }
+
+  .tipo-negocio-grid,
+  .tipo-imovel-grid {
+    flex-direction: column;
+  }
+
+  .tipo-card {
+    flex-direction: row;
+    padding: 14px 18px;
+    min-width: unset;
+    width: 100%;
+  }
+
+  .assistente-nav {
+    flex-wrap: wrap;
+  }
+
+  .btn-assistente-anterior,
+  .btn-assistente-proximo,
+  .btn-assistente-enviar {
+    flex: 1;
+    justify-content: center;
+  }
+}

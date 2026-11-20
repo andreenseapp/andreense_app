@@ -1,0 +1,47 @@
+/* InfraAdmin — Grupos de Usuários Novo */
+
+.novo-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.novo-card {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.campo-grupo-descricao {
+    margin-bottom: 1.5rem;
+}
+
+.toggle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.acoes-formulario {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.btn-cancelar {
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    color: var(--clr-text, var(--clr-text-heading));
+    transition: background 0.12s;
+}
+
+.btn-cancelar:hover {
+    background: var(--clr-bg, var(--clr-surface-alt));
+}

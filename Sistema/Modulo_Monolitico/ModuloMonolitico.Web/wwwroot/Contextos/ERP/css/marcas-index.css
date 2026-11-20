@@ -1,0 +1,87 @@
+/* ERP — Marcas Index */
+
+.marcas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.marca-card {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s;
+}
+
+.marca-card:hover {
+    border-color: var(--clr-primary, var(--clr-primary));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.marca-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.marca-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #a855f7, var(--clr-status-andamento));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--clr-surface);
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+.marca-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--clr-text, var(--clr-text-heading));
+    line-height: 1.2;
+}
+
+.marca-desc {
+    font-size: 0.85rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    line-height: 1.4;
+}
+
+.estado-vazio {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px dashed var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+}
+
+.estado-vazio-icone {
+    opacity: 0.35;
+    margin-bottom: 1rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+}
+
+.estado-vazio-texto {
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 1.1rem;
+    margin: 0 0 0.75rem;
+}
+
+.estado-vazio-dica {
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 0.875rem;
+    margin: 0;
+    max-width: 420px;
+    margin-inline: auto;
+    line-height: 1.5;
+}

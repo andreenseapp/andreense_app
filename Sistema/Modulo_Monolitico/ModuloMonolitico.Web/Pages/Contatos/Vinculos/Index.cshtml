@@ -1,0 +1,163 @@
+@page
+@model ModuloMonolitico.Web.Pages.Contatos.Vinculos.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Vínculos de Confiança";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Contatos/css/vinculos-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            CRM
+        </div>
+        <h1 class="titulo-pagina">Vínculos de Confiança</h1>
+        <p class="subtitulo-pagina">Conecte-se com outras contas da plataforma para compartilhar dados de forma segura.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Contatos.Vinculos_Solicitar" class="botao botao-primario botao-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Vínculo
+        </a>
+    </div>
+</div>
+
+<main class="vl-main">
+    @if (Model.SolicitacoesRecebidas.Any(s => s.Situacao == "pendente"))
+    {
+        var pendentes = Model.SolicitacoesRecebidas.Where(s => s.Situacao == "pendente").ToList();
+        <div class="vl-section">
+            <div class="vl-section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbc05" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                Solicitações Recebidas
+                <span class="vl-distintivo-contagem">@pendentes.Count</span>
+            </div>
+
+            @foreach (var s in pendentes)
+            {
+                var inicial = (s.NomeSolicitante ?? s.EmailAlvo ?? "?")[0].ToString().ToUpper();
+                <div class="vl-card">
+                    <div class="vl-card-avatar pendente">@inicial</div>
+                    <div class="vl-card-info">
+                        <div class="vl-card-nome">@(s.NomeSolicitante ?? "Conta desconhecida")</div>
+                        <div class="vl-card-meta">
+                            @s.EmailAlvo
+                            · @s.DataInclusao.ToLocalTime().ToString("dd/MM/yyyy")
+                            @if (!string.IsNullOrEmpty(s.Mensagem))
+                            {
+                                <span> · "<em>@s.Mensagem</em>"</span>
+                            }
+                        </div>
+                    </div>
+                    <span class="vl-pill @s.TipoVinculo">@s.TipoVinculo</span>
+                    <div class="vl-cartao-acoes">
+                        <form method="post" asp-page-handler="Responder" class="vl-inline-form">
+                            <app-input type="hidden" name="solicitacaoId" value="@s.Id" />
+                            <app-input type="hidden" name="aceito" value="true" />
+                            <app-button type="submit" variant="primary" class="vl-botao-sm vl-botao-aceitar">Aceitar</app-button>
+                        </form>
+                        <form method="post" asp-page-handler="Responder" class="vl-inline-form">
+                            <app-input type="hidden" name="solicitacaoId" value="@s.Id" />
+                            <app-input type="hidden" name="aceito" value="false" />
+                            <app-button type="submit" variant="danger" class="vl-botao-sm vl-botao-recusar">Recusar</app-button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="vl-section">
+        <div class="vl-section-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#81c995" stroke-width="2" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            Vínculos Ativos
+        </div>
+
+        @if (!Model.VinculosAtivos.Any())
+        {
+            <div class="vl-vazio">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="vl-vazio-icone" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                <p>Você ainda não tem vínculos ativos.</p>
+                <p class="vl-vazio-dica">Envie um convite para conectar-se com outra conta da plataforma.</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var v in Model.VinculosAtivos)
+            {
+                var inicial = (v.NomeContaParceira ?? "?")[0].ToString().ToUpper();
+                <div class="vl-card">
+                    <div class="vl-card-avatar ativo">@inicial</div>
+                    <div class="vl-card-info">
+                        <div class="vl-card-nome">@(v.NomeContaParceira ?? "Conta vinculada")</div>
+                        <div class="vl-card-meta">
+                            @v.EmailContaParceira
+                            · Desde @v.DataAceite.ToLocalTime().ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
+                    <span class="vl-pill @v.Tipo">@v.Tipo</span>
+                    <span class="vl-pill ativo">ativo</span>
+                    <div class="vl-cartao-acoes">
+                        <app-button type="button"
+                                variant="secondary"
+                                class="vl-botao-sm vl-botao-revogar"
+                                data-revogar-id="@v.Id"
+                                data-revogar-nome="@(v.NomeContaParceira ?? "este vínculo")">
+                            Revogar
+                        </app-button>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    @if (Model.SolicitacoesEnviadas.Any())
+    {
+        <div class="vl-section">
+            <div class="vl-section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                Enviadas
+            </div>
+
+            @foreach (var s in Model.SolicitacoesEnviadas)
+            {
+                var inicial = (s.NomeSolicitante ?? s.EmailAlvo ?? "?")[0].ToString().ToUpper();
+                <div class="vl-card">
+                    <div class="vl-card-avatar @s.Situacao">@inicial</div>
+                    <div class="vl-card-info">
+                        <div class="vl-card-nome">@s.EmailAlvo</div>
+                        <div class="vl-card-meta">Enviado em @s.DataInclusao.ToLocalTime().ToString("dd/MM/yyyy")</div>
+                    </div>
+                    <span class="vl-pill @s.TipoVinculo">@s.TipoVinculo</span>
+                    <span class="vl-pill @s.Situacao">@s.Situacao</span>
+                </div>
+            }
+        </div>
+    }
+</main>
+
+<div class="vl-modal-overlay" id="modal-revogacao">
+    <div class="vl-modal">
+        <div class="vl-modal-title">Revogar vínculo?</div>
+        <div class="vl-modal-body" id="modal-revogacao-texto">
+            Esta ação irá desfazer o vínculo. A outra conta não poderá mais ser selecionada no Seletor.
+        </div>
+        <div class="vl-modal-actions">
+            <app-button type="button" variant="ghost" class="vl-botao-sm vl-botao-cancelar-modal" id="botao-cancelar-revogacao">
+                Cancelar
+            </app-button>
+            <form method="post" asp-page-handler="Revogar" id="formulario-revogacao">
+                <app-input type="hidden" name="vinculoId" id="campo-revogacao-id" />
+                <app-button type="submit" variant="danger" class="vl-botao-sm vl-botao-recusar">Sim, revogar</app-button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Contatos/js/vinculos-index.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,142 @@
+@page
+@using ModuloMonolitico.Web.Extensions
+@model ModuloMonolitico.Web.Pages.InfraAdmin.GruposSaaS.UsuariosModel
+@{
+    ViewData[ViewDataKeys.Title] = $"Membros — {Model.GrupoAtual?.Nome ?? "Grupo SaaS"}";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/grupossaas-usuarios.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            Segurança
+        </div>
+        <h1 class="titulo-pagina">Membros do Grupo</h1>
+        <p class="subtitulo-pagina">Vincule colaboradores ao cargo de acesso à plataforma SaaS.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.InfraAdmin.GruposSaaS" class="botao botao-fantasma cabecalho-pagina-link">← Grupos SaaS</a>
+    </div>
+</div>
+
+<main class="main-content usuarios-container">
+    <div class="grupo-header">
+        <div class="grupo-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <div class="grupo-header-info">
+            <h2>
+                @Model.GrupoAtual?.Nome
+                <span class="situacao-badge @(Model.GrupoAtual?.Ativo == true ? "situacao-ativo" : "situacao-inativo")">
+                    @(Model.GrupoAtual?.Ativo == true ? "Ativo" : "Inativo")
+                </span>
+            </h2>
+            <p>@(string.IsNullOrEmpty(Model.GrupoAtual?.Descricao) ? "Sem descrição." : Model.GrupoAtual.Descricao)</p>
+        </div>
+    </div>
+
+    <div class="page-grid">
+        <div class="card">
+            <p class="card-title">Membros (@Model.Membros.Count())</p>
+
+            @if (!Model.Membros.Any())
+            {
+                <div class="empty-members">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <p>Nenhum membro neste grupo ainda.<br />Use o painel ao lado para adicionar colaboradores.</p>
+                </div>
+            }
+            else
+            {
+                <div class="member-list">
+                    @foreach (var membro in Model.Membros)
+                    {
+                        var iniciais = AvatarIniciais.DeNomeOuEmail(membro.NomeUsuario, membro.EmailUsuario);
+
+                        <div class="member-row">
+                            <div class="member-avatar">@iniciais</div>
+                            <div class="member-info">
+                                <div class="member-nome">@membro.NomeUsuario</div>
+                                <div class="member-email">@membro.EmailUsuario</div>
+                                <div class="member-since">Vinculado em @membro.DataInclusao.ToString("dd/MM/yyyy")</div>
+                            </div>
+                            <form method="post" asp-page-handler="Remover" asp-route-usuarioId="@membro.UsuarioId" asp-route-id="@Model.Id" class="formulario-inline">
+                                <app-input type="hidden" asp-for="Id" />
+                                <app-button type="submit"
+                                            variant="danger"
+                                            size="sm"
+                                            class="botao-remover"
+                                            data-confirmacao="Remover @membro.NomeUsuario deste grupo?"
+                                            data-confirmacao-tipo="perigo"
+                                            data-confirmacao-titulo="Remover Membro">
+                                    Remover
+                                </app-button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="card">
+            <p class="card-title">Adicionar Colaborador</p>
+            <p class="subtitle-text">Busque o usuário pelo e-mail cadastrado na plataforma.</p>
+
+            <form method="post" asp-page-handler="Buscar">
+                <app-input type="hidden" asp-for="Id" />
+                <div class="search-flex">
+                    <app-input asp-for="EmailBusca"
+                               type="email"
+                               placeholder="email@colaborador.com"
+                               class="input-flex-1" />
+                    <app-button type="submit" variant="primary" class="btn-buscar">Buscar</app-button>
+                </div>
+            </form>
+
+            @if (Model.BuscaRealizada)
+            {
+                if (Model.UsuarioEncontrado is not null)
+                {
+                    var u = Model.UsuarioEncontrado;
+                    var jaEhMembro = Model.Membros.Any(m => m.UsuarioId == u.Id);
+                    <div class="search-result">
+                        <div class="user-name">@u.Nome</div>
+                        <div class="user-email">@u.Email</div>
+                        @if (jaEhMembro)
+                        {
+                            <p class="text-warning">Já é membro deste grupo.</p>
+                        }
+                        else
+                        {
+                            <form method="post" asp-page-handler="Vincular" asp-route-usuarioId="@u.Id" asp-route-id="@Model.Id">
+                                <app-input type="hidden" asp-for="Id" />
+                                <app-button type="submit" variant="primary" class="btn-full">Adicionar ao Grupo</app-button>
+                            </form>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="search-not-found">
+                        Nenhum usuário encontrado com o e-mail <strong>@Model.EmailBusca</strong>.
+                    </div>
+                }
+            }
+
+            <div class="footer-actions">
+                <a href="@($"{ModuloRotas.InfraAdmin.GruposSaaS_Editar}?id={Model.Id}")" class="link-voltar">
+                    ← Voltar para permissões do grupo
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/grupossaas-usuarios.js" asp-append-version="true"></script>
+}

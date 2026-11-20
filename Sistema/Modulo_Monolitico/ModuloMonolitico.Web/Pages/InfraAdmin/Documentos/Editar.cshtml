@@ -1,0 +1,70 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.Documentos.EditarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Editar Documento Legal";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/documentos-editar.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.InfraAdmin.Documentos,
+    TextoVoltar = "Documentos",
+    Titulo = "Editar Documento",
+    Tabela = "documentos_legais",
+    RegistroId = Model.Formulario.Id.ToString()
+}' />
+
+<main class="main-content editar-container">
+    <div class="editar-card">
+        <form method="post">
+            <app-input type="hidden" asp-for="Formulario.Id" />
+            <app-input type="hidden" asp-for="Formulario.Tipo" />
+            <app-input type="hidden" asp-for="Formulario.Versao" />
+
+            <div class="input-grid-2">
+                <app-input asp-for="Formulario.Titulo"
+                           label="Título"
+                           type="text"
+                           placeholder="Ex: Termo de Uso Principal"
+                           required="required"
+                           autofocus="autofocus" />
+                <div class="campo-somente-leitura">
+                    <app-input asp-for="Formulario.Tipo"
+                               label="Tipo (não editável)"
+                               type="text"
+                               disabled="disabled" />
+                </div>
+            </div>
+
+            <div class="input-grid-2">
+                <div class="campo-somente-leitura">
+                    <app-input asp-for="Formulario.Versao"
+                               label="Versão (não editável)"
+                               type="text"
+                               disabled="disabled" />
+                </div>
+
+                <app-select asp-for="Formulario.Situacao" label="Situação">
+                    <option value="ativo">Ativo (visível para os usuários)</option>
+                    <option value="inativo">Inativo (rascunho)</option>
+                </app-select>
+            </div>
+
+            <div class="campo-grupo-texto">
+                <app-textarea asp-for="Formulario.Texto"
+                              label="Texto do Documento"
+                              rows="20"
+                              required="required" />
+            </div>
+
+            <app-save-button type="submit" full-width="true" class="btn-salvar">Salvar Alterações</app-save-button>
+        </form>
+    </div>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/documentos-editar.js" asp-append-version="true"></script>
+}

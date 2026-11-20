@@ -1,0 +1,90 @@
+@page
+@using ModuloMonolitico.Dominio.Constantes
+@using ModuloMonolitico.Dominio.Configuracoes
+@model ModuloMonolitico.Web.Pages.Imoveis.BuscasRecentesModel
+@{
+    ViewData[ViewDataKeys.Title] = MensagensSistema.Imobiliaria.TituloBuscasRecentes + " — Imóveis";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/comum.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/buscas-recentes.css" asp-append-version="true" />
+}
+
+<div class="buscas-gestao"
+     id="buscas-gestao"
+     data-modo="@(Model.UsuarioLogado ? "logado" : "anonimo")"
+     data-storage-key="@Model.ChaveStorageBuscasRecentes"
+     data-url-imoveis="@Model.UrlImoveis"
+     data-msg-vazia="@MensagensSistema.Imobiliaria.NenhumaBuscaRecente"
+     data-msg-excluir="@MensagensSistema.Imobiliaria.ExcluirBuscaRecente"
+     data-msg-limpar="@MensagensSistema.Imobiliaria.LimparTodasBuscasRecentes"
+     data-msg-confirmar="@MensagensSistema.Imobiliaria.ConfirmarLimparBuscasRecentes">
+    <div class="buscas-gestao-topo">
+        <div>
+            <a class="buscas-gestao-voltar" href="@Model.UrlImoveis">← @MensagensSistema.Imobiliaria.VoltarAosImoveis</a>
+            <h1 class="buscas-gestao-titulo">@MensagensSistema.Imobiliaria.TituloBuscasRecentes</h1>
+        </div>
+        @if (Model.UsuarioLogado)
+        {
+            <form method="post" asp-page-handler="LimparTodas" class="buscas-gestao-acoes">
+                <app-button type="submit"
+                        variant="danger"
+                        class="btn-limpar-buscas"
+                        data-confirmar-limpar="true"
+                        disabled="@(Model.Buscas.Count == 0 ? true : false)">
+                    @MensagensSistema.Imobiliaria.LimparTodasBuscasRecentes
+                </app-button>
+            </form>
+        }
+        else
+        {
+            <div class="buscas-gestao-acoes">
+                <app-button type="button"
+                        variant="danger"
+                        class="btn-limpar-buscas"
+                        data-limpar-anonimo="true">
+                    @MensagensSistema.Imobiliaria.LimparTodasBuscasRecentes
+                </app-button>
+            </div>
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.MensagemSucesso))
+    {
+        <div class="buscas-gestao-alerta buscas-gestao-alerta--ok">@Model.MensagemSucesso</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.MensagemErro))
+    {
+        <div class="buscas-gestao-alerta buscas-gestao-alerta--erro">@Model.MensagemErro</div>
+    }
+
+    <div class="buscas-gestao-lista" id="buscas-gestao-lista" data-lista-gestao>
+        @if (Model.UsuarioLogado)
+        {
+            if (Model.Buscas.Count == 0)
+            {
+                <p class="buscas-gestao-vazio" data-vazio>@MensagensSistema.Imobiliaria.NenhumaBuscaRecente</p>
+            }
+            else
+            {
+                foreach (var busca in Model.Buscas)
+                {
+                    <div class="busca-gestao-item">
+                        <a class="busca-gestao-link" href="@($"{Model.UrlImoveis}?{busca.QueryString}")">@busca.Rotulo</a>
+                        <form method="post" asp-page-handler="Excluir">
+                            <app-input type="hidden" name="id" value="@busca.Id" />
+                            <app-button type="submit" variant="ghost" size="sm" class="btn-excluir-busca">@MensagensSistema.Imobiliaria.ExcluirBuscaRecente</app-button>
+                        </form>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Imobiliaria/js/comum.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Imobiliaria/js/buscas-recentes.js" asp-append-version="true"></script>
+}

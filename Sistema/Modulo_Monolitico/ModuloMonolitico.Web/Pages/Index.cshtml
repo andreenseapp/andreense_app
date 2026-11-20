@@ -1,0 +1,88 @@
+@page
+@model IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Andreense - A Plataforma Completa";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Andreense: O sistema completo para a sua Cidade e Negócio." />
+    <title>@ViewData[ViewDataKeys.Title]</title>
+    <link rel="icon" type="image/png" href="/img/brand/favicon.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <script src="~/Contextos/Principal/js/index.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/Contextos/Shared/css/sistema-design.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Principal/css/index.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="fundo-animado" aria-hidden="true"></div>
+
+    <partial name="Toolbars/_ToolbarPrincipal" model="new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel()" />
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge animate-fade-in-up">
+                Nova Atualização V2.0 Lançada
+            </div>
+            <h1 class="hero-title animate-fade-in-up delay-100">
+                A Plataforma Inteligente para <span>Sua Cidade</span>
+            </h1>
+            <p class="hero-subtitle animate-fade-in-up delay-200">
+                Um ecossistema completo que unifica ERP, Varejo, Agendamentos e um Hub do Cidadão em uma única plataforma na nuvem. Gerencie sua empresa e conecte-se aos seus clientes com facilidade.
+            </p>
+            <div class="hero-buttons animate-fade-in-up delay-300">
+                <a href="@ModuloRotas.Autenticacao.Login" class="botao botao-primario btn-large">Fazer Login no Sistema</a>
+                <a href="#recursos" class="botao botao-contorno btn-large">Conhecer os Módulos</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="recursos" class="features">
+        <div class="section-header animate-fade-in-up delay-200">
+            <h2 class="section-title">Tudo o que você precisa</h2>
+            <p class="section-subtitle">O Andreense substitui dezenas de ferramentas avulsas. Controle tudo a partir de um único Hub centralizado.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card animate-fade-in-up delay-100">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                </div>
+                <h3 class="feature-title">ERP Completo</h3>
+                <p class="feature-desc">Gestão financeira avançada, controle de contas a pagar e receber, faturamento e emissão de notas fiscais com total segurança.</p>
+            </div>
+
+            <div class="feature-card animate-fade-in-up delay-200">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                </div>
+                <h3 class="feature-title">Varejo & PDV</h3>
+                <p class="feature-desc">Frente de caixa ultra-rápida. Emissão instantânea de cupons e controle de estoque integrado para otimizar suas vendas diárias.</p>
+            </div>
+
+            <div class="feature-card animate-fade-in-up delay-300">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                </div>
+                <h3 class="feature-title">Serviços & Agendamentos</h3>
+                <p class="feature-desc">Agenda inteligente, orçamentos, contratos e controle total do ciclo de vida dos seus serviços com os clientes.</p>
+            </div>
+
+            <div class="feature-card animate-fade-in-up delay-400">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
+                <h3 class="feature-title">Hub do Cidadão</h3>
+                <p class="feature-desc">Fidelidade, cashback e comunicação direta. Aproxime os cidadãos do seu comércio com uma plataforma que beneficia a todos.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; @DateTime.Now.Year Andreense Hub LTDA. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>

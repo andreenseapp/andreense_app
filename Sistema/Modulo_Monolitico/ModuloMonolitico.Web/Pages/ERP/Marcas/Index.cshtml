@@ -1,0 +1,51 @@
+@page
+@model ModuloMonolitico.Web.Pages.ERP.Marcas.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Marcas";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/ERP/css/marcas-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+            Catálogo
+        </div>
+        <h1 class="titulo-pagina">Marcas</h1>
+        <p class="subtitulo-pagina">Gerencie as marcas comerciais vinculadas aos produtos cadastrados.</p>
+    </div>
+</div>
+
+@if (!Model.Marcas.Any())
+{
+    <div class="estado-vazio">
+        <div class="estado-vazio-icone" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+        </div>
+        <p class="estado-vazio-texto">Nenhuma marca cadastrada.</p>
+        <p class="estado-vazio-dica">Cadastre marcas ao editar um produto ou pelo cadastro rápido no formulário de produtos.</p>
+    </div>
+}
+else
+{
+    <div class="marcas-grid">
+        @foreach (var m in Model.Marcas)
+        {
+            var inicial = !string.IsNullOrEmpty(m.Nome) ? m.Nome[..1].ToUpperInvariant() : "M";
+            <div class="marca-card">
+                <div class="marca-header">
+                    <div class="marca-avatar">@inicial</div>
+                    <div class="marca-name">@m.Nome</div>
+                </div>
+                @if (!string.IsNullOrEmpty(m.Descricao))
+                {
+                    <div class="marca-desc">@m.Descricao</div>
+                }
+            </div>
+        }
+    </div>
+}

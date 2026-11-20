@@ -1,0 +1,69 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuPerfilDesativarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Configurações Permanentes";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Perfil/css/meuperfildesativar.css" asp-append-version="true" />
+}
+
+<div class="desativar-page">
+    <div class="cabecalho-pagina">
+        <div>
+            <div class="selo-pagina selo-pagina--restrito">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Perfil
+            </div>
+            <h1 class="titulo-pagina">Configurações Permanentes</h1>
+            <p class="subtitulo-pagina">Gerencie a desativação da sua conta de acesso.</p>
+        </div>
+        <div class="cabecalho-pagina-acoes">
+            <a href="@ModuloRotas.Perfil.MeuPerfil" class="botao botao-fantasma cabecalho-pagina-link">← Perfil</a>
+        </div>
+    </div>
+
+    <div class="cartao-perfil">
+        <div class="cabecalho-cartao-perfil">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span class="titulo-cartao-perfil">Desativar Conta de Usuário</span>
+        </div>
+        <div class="corpo-cartao-perfil">
+            <div class="warning-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <div class="warning-text">
+                    <strong>Esta ação é irreversível!</strong> Ao prosseguir, seu usuário será inativado no sistema.
+                    Você será desconectado e <strong>não conseguirá mais fazer login ou acessar suas empresas</strong>.
+                    Para recuperar o acesso, será necessário contatar o administrador ou suporte da plataforma.
+                </div>
+            </div>
+
+            <form method="post" novalidate>
+                @Html.AntiForgeryToken()
+
+                <app-input asp-for="SenhaConfirmacao"
+                           label="Confirme sua senha para continuar"
+                           type="password"
+                           placeholder="Digite sua senha atual"
+                           required="required"
+                           class="mb-0" />
+
+                <div class="acoes-formulario">
+                    <a href="@ModuloRotas.Perfil.MeuPerfil" class="botao-cancelar">Cancelar</a>
+                    <app-save-button type="submit"
+                                     class="botao-desativar-enviar"
+                                     data-confirmacao="Desativar permanentemente sua conta? Você será desconectado e não poderá mais fazer login."
+                                     data-confirmacao-tipo="perigo"
+                                     data-confirmacao-titulo="Confirmar Desativação">
+                        Confirmar Desativação
+                    </app-save-button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

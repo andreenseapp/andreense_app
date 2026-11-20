@@ -1,0 +1,39 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.Formacoes.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Formação Acadêmica";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo" class="link-voltar-secao">← Meu Currículo</a>
+        <h1 class="titulo-pagina">🎓 Formação Acadêmica</h1>
+    </div>
+    <div class="cabecalho-acoes">
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Formacoes_Novo" class="btn btn-primary">+ Nova formação</a>
+    </div>
+</div>
+
+@if (!Model.Formacoes.Any())
+{
+    <div class="lista-vazia">
+        <p>Nenhuma formação cadastrada ainda.</p>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Formacoes_Novo" class="btn btn-primary">Adicionar formação</a>
+    </div>
+}
+else
+{
+    <div class="lista-itens-curriculo">
+        @foreach (var fmr in Model.Formacoes)
+        {
+            <div class="item-curriculo">
+                <div class="item-curriculo-info">
+                    <strong class="item-titulo">@fmr.Curso</strong>
+                    <span class="item-subtitulo">@fmr.Instituicao · @fmr.Grau</span>
+                    <span class="item-periodo">@fmr.DataInicio.ToString("yyyy") — @(fmr.EmAndamento ? "Cursando" : fmr.DataFim?.ToString("yyyy"))</span>
+                </div>
+                <a href="@ModuloRotas.Curriculos.MeuCurriculo_Formacoes_Editar?id=@fmr.Id" class="btn btn-secondary btn-sm">Editar</a>
+            </div>
+        }
+    </div>
+}

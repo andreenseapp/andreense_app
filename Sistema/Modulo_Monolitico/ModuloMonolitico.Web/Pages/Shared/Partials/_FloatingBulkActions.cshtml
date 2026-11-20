@@ -1,0 +1,16 @@
+@model ModuloMonolitico.Web.Pages.Shared.FloatingBulkActionsViewModel
+
+<div class="acoes-massa-flutuantes" data-selecao-painel>
+    <span class="texto-contagem"><strong data-selecao-contador>0</strong> selecionados</span>
+    <app-button type="submit"
+                variant="danger"
+                size="sm"
+                form="@Model.FormId"
+                asp-page-handler="@Model.Handler"
+                class="btn-action btn-bulk-danger"
+                data-confirmacao="@Model.MensagemConfirmacao"
+                data-confirmacao-tipo="perigo"
+                data-confirmacao-titulo="@Model.TextoBotao">
+        @Model.TextoBotao
+    </app-button>
+</div>

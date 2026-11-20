@@ -1,0 +1,56 @@
+@page
+@model ModuloMonolitico.Web.Pages.SaaS.Comunicados.PendentesModel
+@{
+    Layout = null;
+    var postUrl = $"{ModuloRotas.SaaS.Comunicados_Pendentes}?handler=Responder";
+}
+
+@if (Model.ComunicadoPendente != null)
+{
+    <div id="saas-modal-container" class="saas-comunicado-modal" role="dialog" aria-modal="true" aria-labelledby="saas-modal-title">
+        <div class="saas-modal-fundo" aria-hidden="true"></div>
+
+        <div class="saas-modal-panel">
+            <div class="saas-modal-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+
+            <h2 id="saas-modal-title" class="saas-modal-title">@Model.ComunicadoPendente.Titulo</h2>
+            <div class="saas-modal-message">@Model.ComunicadoPendente.Mensagem</div>
+
+            <form method="post"
+                  action="@postUrl"
+                  class="saas-comunicado-form">
+                @Html.AntiForgeryToken()
+                <app-input type="hidden" name="comunicadoId" value="@Model.ComunicadoPendente.Id" />
+
+                @if (Model.ComunicadoPendente.Tipo == "enquete" && Model.ComunicadoPendente.Opcoes.Count > 0)
+                {
+                    @foreach (var opcao in Model.ComunicadoPendente.Opcoes)
+                    {
+                        <app-button type="submit"
+                                name="opcaoSelecionadaId"
+                                value="@opcao.Id"
+                                class="btn-comunicado-opcao">
+                            @opcao.Texto
+                        </app-button>
+                    }
+                }
+                else
+                {
+                    <app-button type="submit"
+                            variant="primary"
+                            name="opcaoSelecionadaId"
+                            value=""
+                            class="btn-comunicado-opcao btn-comunicado-primario">
+                        Estou ciente
+                    </app-button>
+                }
+            </form>
+        </div>
+    </div>
+}

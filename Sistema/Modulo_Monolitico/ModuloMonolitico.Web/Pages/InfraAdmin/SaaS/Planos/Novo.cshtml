@@ -1,0 +1,76 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.SaaS.PlanosNovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Novo Plano SaaS";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/saas-planos-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.InfraAdmin.SaaS_Planos,
+    TextoVoltar = "Planos",
+    Titulo = "Novo Plano",
+    Subtitulo = "Defina o pacote, o valor e quais features serão incluídas."
+}' />
+
+<main class="main-content formulario-container">
+    <form method="post" class="cartao-formulario">
+        <app-input asp-for="Nome"
+                   label="Nome do Plano"
+                   type="text"
+                   placeholder="Ex: Start, Pro, Enterprise"
+                   required="required"
+                   autofocus="autofocus" />
+
+        <app-textarea asp-for="Descricao"
+                      label="Descrição"
+                      rows="2"
+                      placeholder="Breve descrição para exibir ao cliente..." />
+
+        <app-input asp-for="ValorMensalStr"
+                   label="Valor Mensal (R$)"
+                   type="text"
+                   placeholder="99.90"
+                   pattern="[0-9]+([.][0-9]{1,2})?"
+                   title="Use ponto como separador decimal. Ex: 99.90"
+                   required="required" />
+        <span class="field-hint">Use ponto como separador decimal. Ex: <strong>99.90</strong></span>
+
+        <p class="section-title">Features Incluídas</p>
+        <div class="lista-alternancia-recurso">
+            @foreach (var f in Model.RecursosDisponiveis)
+            {
+                <div class="item-alternancia-recurso">
+                    <app-checkbox class="feature-checkbox mb-0"
+                           id="f_@f.Id"
+                           name="RecursosSelecionados"
+                           value="@f.Id"
+                           label="@($"{f.Chave} - {f.Nome} ({f.Tipo})")" />
+                    @if (f.Tipo == "quantidade")
+                    {
+                        <div>
+                            <small class="feature-limite-label">Limite</small>
+                            <app-input type="number" name="ValoresRecurso[@f.Id]" class="feature-valor-input mb-0" value="5" min="0" placeholder="0" />
+                        </div>
+                    }
+                    else
+                    {
+                        <app-input type="hidden" name="ValoresRecurso[@f.Id]" value="1" />
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="acoes-formulario">
+            <a href="@ModuloRotas.InfraAdmin.SaaS_Planos" class="btn-cancelar">Cancelar</a>
+            <app-save-button type="submit">Criar Plano</app-save-button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/saas-planos-novo.js" asp-append-version="true"></script>
+}

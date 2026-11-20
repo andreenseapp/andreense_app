@@ -1,0 +1,189 @@
+@page
+@using ModuloMonolitico.Web.Extensions
+@model ModuloMonolitico.Web.Pages.Produto.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Meus Produtos";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var filtrosAtivos = !string.IsNullOrEmpty(Model.Filtros.Busca) || !string.IsNullOrEmpty(Model.Filtros.Tipo);
+    var semProdutos = !Model.Produtos.Any() && !filtrosAtivos;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Produto/css/produto-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            Catálogo
+        </div>
+        <h1 class="titulo-pagina">Meus Produtos</h1>
+        <p class="subtitulo-pagina">Gerencie o catálogo de produtos, serviços e insumos.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@($"{ModuloRotas.Produto.Novo}?tipo=insumo")" class="botao botao-primario botao-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Produto
+        </a>
+    </div>
+</div>
+
+@if (semProdutos)
+{
+    <div class="estado-vazio">
+        <p class="estado-vazio-texto">Nenhum produto cadastrado para esta conta.</p>
+        <a href="@ModuloRotas.Produto.Novo" class="botao botao-primario botao-estado-vazio">Cadastrar agora</a>
+    </div>
+}
+else
+{
+    <details class="painel-filtro" @(filtrosAtivos ? "open" : null)>
+        <summary class="resumo-filtro">
+            <span class="resumo-filtro-label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                Filtros
+            </span>
+            <span class="resumo-filtro-hint">Expandir</span>
+        </summary>
+        <form method="get" class="corpo-filtro">
+            <div class="linha-filtro">
+                <app-input asp-for="Filtros.Busca"
+                           label="Buscar Produto"
+                           type="text"
+                           placeholder="Descrição ou código..."
+                           class="grupo-filtro mb-0" />
+                <app-select asp-for="Filtros.Tipo" label="Tipo" class="grupo-filtro mb-0">
+                    <option value="">Todos</option>
+                    <option value="produto">Produto</option>
+                    <option value="servico">Serviço</option>
+                    <option value="insumo">Insumo</option>
+                </app-select>
+            </div>
+            <div class="acoes-filtro">
+                @if (filtrosAtivos)
+                {
+                    <a href="@ModuloRotas.Produto.Index" class="botao botao-secundario botao-filtro">Limpar</a>
+                }
+                <app-button type="submit" variant="primary" class="botao-filtro">Aplicar Filtro</app-button>
+            </div>
+        </form>
+    </details>
+
+    <div class="barra-lista">
+        <div class="barra-lista-contagem">
+            Total de <strong>@Model.TotalItens</strong> produtos encontrados.
+        </div>
+        <div class="barra-ordenacao">
+            <span class="barra-ordenacao-label">Ordenar:</span>
+            <app-button type="button" class="chip-ordenacao" data-ordenar="descricao">Descrição @Html.Raw(Model.RenderizarIconeOrdenacao("descricao"))</app-button>
+            <app-button type="button" class="chip-ordenacao" data-ordenar="codigo">Código @Html.Raw(Model.RenderizarIconeOrdenacao("codigo"))</app-button>
+            <app-button type="button" class="chip-ordenacao" data-ordenar="tipo">Tipo @Html.Raw(Model.RenderizarIconeOrdenacao("tipo"))</app-button>
+            <app-button type="button" class="chip-ordenacao" data-ordenar="preco">Preço @Html.Raw(Model.RenderizarIconeOrdenacao("preco"))</app-button>
+            <app-button type="button" class="chip-ordenacao" data-ordenar="status">Status @Html.Raw(Model.RenderizarIconeOrdenacao("status"))</app-button>
+        </div>
+    </div>
+
+    @if (!Model.Produtos.Any())
+    {
+        <div class="estado-vazio estado-vazio--compacto">
+            <p class="estado-vazio-texto">Nenhum produto encontrado para os filtros selecionados.</p>
+        </div>
+    }
+    else
+    {
+        <div class="grade-produtos">
+            @foreach (var produto in Model.Produtos)
+            {
+                var inicial = AvatarIniciais.DeNomeOuEmail(produto.Descricao, produto.Codigo, "P");
+                var classeAvatar = produto.TipoProduto switch
+                {
+                    "servico" => "avatar-servico",
+                    "insumo" => "avatar-insumo",
+                    _ => "avatar-produto"
+                };
+                var labelTipo = produto.TipoProduto switch
+                {
+                    "servico" => "Serviço",
+                    "insumo" => "Insumo",
+                    "produto" => "Produto",
+                    _ => produto.TipoProduto
+                };
+                var precos = produto.Variacoes.Select(v => v.PrecoVenda).ToList();
+                var minPreco = precos.Count > 0 ? precos.Min() : 0m;
+                var maxPreco = precos.Count > 0 ? precos.Max() : 0m;
+
+                <div class="cartao-produto">
+                    @if (produto.Ativo)
+                    {
+                        <span class="etiqueta-tipo-produto">@labelTipo</span>
+                    }
+                    else
+                    {
+                        <span class="etiqueta-tipo-produto etiqueta-tipo-produto--inativo">Inativo</span>
+                    }
+
+                    <div class="cabecalho-produto">
+                        <div class="avatar-produto-card @classeAvatar">@inicial</div>
+                        <div class="principal-produto">
+                            <div class="nome-produto">@produto.Descricao</div>
+                            <div class="codigo-produto">Cód: @(string.IsNullOrEmpty(produto.Codigo) ? "N/A" : produto.Codigo)</div>
+                        </div>
+                    </div>
+
+                    <div class="detalhes-produto">
+                        <div class="item-detalhe-produto">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                            @produto.Variacoes.Count() variações
+                        </div>
+                        <div class="item-detalhe-produto">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            @if (minPreco == maxPreco)
+                            {
+                                <span>R$ @minPreco.ToString("N2")</span>
+                            }
+                            else
+                            {
+                                <span>R$ @minPreco.ToString("N2") – R$ @maxPreco.ToString("N2")</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="acoes-produto">
+                        <a href="@($"{ModuloRotas.Produto.Editar}?id={produto.Id}")" class="botao-produto botao-produto--editar">Editar</a>
+                        <form method="post" asp-page-handler="DeletarSeguro" asp-route-id="@produto.Id" class="form-acao-inline">
+                            @Html.AntiForgeryToken()
+                            <app-button type="submit"
+                                    variant="danger"
+                                    size="sm"
+                                    class="botao-produto botao-produto--perigo"
+                                    data-confirmacao="Excluir @produto.Descricao? Esta ação não pode ser desfeita."
+                                    data-confirmacao-tipo="perigo"
+                                    data-confirmacao-titulo="Excluir Produto">
+                                Excluir
+                            </app-button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (Model.TotalPaginas > 1)
+        {
+            <div class="log-paginacao">
+                <span>Página @Model.PaginaAtual de @Model.TotalPaginas — @Model.TotalItens produtos</span>
+                <div class="paginacao-nav">
+                    <a href="?PaginaAtual=@(Model.PaginaAtual - 1)&Filtros.Busca=@Uri.EscapeDataString(Model.Filtros.Busca ?? string.Empty)&Filtros.Tipo=@Uri.EscapeDataString(Model.Filtros.Tipo ?? string.Empty)&OrdenarPor=@Uri.EscapeDataString(Model.OrdenarPor ?? string.Empty)&OrdenarDirecao=@Uri.EscapeDataString(Model.OrdenarDirecao ?? string.Empty)"
+                       class="paginacao-btn @(Model.PaginaAtual == 1 ? "desabilitado" : "")">← Anterior</a>
+                    <a href="?PaginaAtual=@(Model.PaginaAtual + 1)&Filtros.Busca=@Uri.EscapeDataString(Model.Filtros.Busca ?? string.Empty)&Filtros.Tipo=@Uri.EscapeDataString(Model.Filtros.Tipo ?? string.Empty)&OrdenarPor=@Uri.EscapeDataString(Model.OrdenarPor ?? string.Empty)&OrdenarDirecao=@Uri.EscapeDataString(Model.OrdenarDirecao ?? string.Empty)"
+                       class="paginacao-btn @(Model.PaginaAtual == Model.TotalPaginas ? "desabilitado" : "")">Próxima →</a>
+                </div>
+            </div>
+        }
+    }
+}
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/ordenar-lista.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Produto/js/produto-index.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,83 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.Documentos.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Documentos Legais";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/documentos-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            Conteúdo
+        </div>
+        <h1 class="titulo-pagina">Documentos Legais</h1>
+        <p class="subtitulo-pagina">Gerencie termos de uso, políticas de privacidade e outros documentos legais.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.InfraAdmin.Documentos_Novo" class="botao botao-primario btn-cabecalho-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Novo Documento
+        </a>
+    </div>
+</div>
+
+<div class="log-table-wrapper">
+    <div class="tabela-responsiva">
+        <table class="log-table" data-seletor-colunas="true">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Tipo</th>
+                    <th>Versão</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Documentos.Any())
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="log-vazio">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                                <div>Nenhum documento cadastrado.</div>
+                                <a href="@ModuloRotas.InfraAdmin.Documentos_Novo" class="botao botao-primario botao-estado-vazio">Criar primeiro documento</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @foreach (var doc in Model.Documentos)
+                {
+                    <tr>
+                        <td><span class="log-data-principal">@doc.Titulo</span></td>
+                        <td><span class="badge-provedor">@doc.Tipo</span></td>
+                        <td>v@(doc.Versao)</td>
+                        <td>
+                            @if (doc.Situacao == "ativo")
+                            {
+                                <span class="badge-sucesso">Ativo</span>
+                            }
+                            else
+                            {
+                                <span class="badge-falha">@doc.Situacao</span>
+                            }
+                        </td>
+                        <td>
+                            <a href="@($"{ModuloRotas.InfraAdmin.Documentos_Editar}?id={doc.Id}")" class="btn-editar">Editar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/InfraAdmin/js/documentos-index.js" asp-append-version="true"></script>
+}

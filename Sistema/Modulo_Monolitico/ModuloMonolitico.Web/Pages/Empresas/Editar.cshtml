@@ -1,0 +1,308 @@
+@page
+
+@model ModuloMonolitico.Web.Pages.Empresas.EditarModel
+
+@{
+
+    var ehNovo = !Model.Id.HasValue;
+
+    ViewData[ViewDataKeys.Title] = ehNovo ? "Nova Empresa" : "Editar Empresa";
+
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+
+    var segmentos = new[] { "Tecnologia", "Varejo", "Indústria", "Saúde", "Educação", "Serviços", "Outros" };
+
+}
+
+
+
+@section Styles {
+
+    <link rel="stylesheet" href="~/Contextos/Empresas/css/empresas-editar.css" asp-append-version="true" />
+
+}
+
+
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+
+    UrlVoltar = ModuloRotas.Empresas.Index,
+
+    TextoVoltar = "Empresas",
+
+    Titulo = ehNovo ? "Nova Empresa" : "Editar Empresa",
+
+    Subtitulo = ehNovo ? "Cadastre uma nova filial ou CNPJ para a sua conta." : "Atualize os dados da sua filial."
+
+}' />
+
+
+
+<main class="main-content empresas-editar-container">
+
+    <form method="post" id="formularioEmpresa" asp-route-id="@Model.Id">
+
+        @Html.AntiForgeryToken()
+
+
+
+        <div class="form-card">
+
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+
+            {
+
+                <div class="alerta-formulario alerta-formulario--erro" role="alerta">
+
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+
+                    {
+
+                        if (!string.IsNullOrEmpty(error.ErrorMessage))
+
+                        {
+
+                            <div>@error.ErrorMessage</div>
+
+                        }
+
+                    }
+
+                </div>
+
+            }
+
+
+
+            <h2 class="form-section-title">
+
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+
+                Dados Fiscais
+
+            </h2>
+
+
+
+            <div class="grade-formulario">
+
+                <app-input asp-for="Formulario.Nome"
+
+                           label="Nome Fantasia *"
+
+                           type="text"
+
+                           required="required"
+
+                           class="form-field-full mb-0" />
+
+
+
+                <app-input asp-for="Formulario.RazaoSocial"
+
+                           label="Razão Social"
+
+                           type="text"
+
+                           class="mb-0" />
+
+
+
+                <app-input asp-for="Formulario.Cnpj"
+
+                           label="CNPJ"
+
+                           type="text"
+
+                           data-mascara="cnpj"
+
+                           class="form-field-spaced mb-0" />
+
+
+
+                <app-input asp-for="Formulario.InscricaoEstadual"
+
+                           label="Inscrição Estadual"
+
+                           type="text"
+
+                           class="form-field-spaced mb-0" />
+
+            </div>
+
+
+
+            <h2 class="form-section-title form-section-title--spaced">
+
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+
+                Atividade Econômica
+
+            </h2>
+
+
+
+            <div class="grade-formulario">
+
+                <app-select asp-for="Formulario.Segmento"
+
+                            label="Segmento / Ramo"
+
+                            default-option="Selecione..."
+
+                            class="mb-0">
+
+                    @foreach (var seg in segmentos)
+
+                    {
+
+                        <option value="@seg">@seg</option>
+
+                    }
+
+                </app-select>
+
+
+
+                <app-input asp-for="Formulario.CnaePrincipal"
+
+                           label="CNAE Principal"
+
+                           type="text"
+
+                           placeholder="Ex: 6204-0/00"
+
+                           class="form-field-spaced mb-0" />
+
+
+
+                <app-input asp-for="Formulario.CnaesSecundarios"
+
+                           label="CNAEs Secundários (Opcional, separe por vírgula)"
+
+                           type="text"
+
+                           placeholder="Ex: 6201-5/01, 6202-3/00"
+
+                           class="form-field-full form-field-spaced mb-0" />
+
+            </div>
+
+
+
+            <h2 class="form-section-title form-section-title--spaced">
+
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+
+                Endereço
+
+            </h2>
+
+
+
+            <div class="grade-formulario">
+
+                <app-input asp-for="Formulario.Cep"
+
+                           label="CEP"
+
+                           type="text"
+
+                           data-mascara="cep"
+
+                           class="mb-0" />
+
+            </div>
+
+
+
+            <div class="grade-formulario-endereco">
+
+                <app-input asp-for="Formulario.Logradouro"
+
+                           label="Logradouro"
+
+                           type="text"
+
+                           class="mb-0" />
+
+
+
+                <app-input asp-for="Formulario.Numero"
+
+                           label="Número"
+
+                           type="text"
+
+                           class="mb-0" />
+
+            </div>
+
+
+
+            <div class="grade-formulario-cidade">
+
+                <app-input asp-for="Formulario.Bairro"
+
+                           label="Bairro"
+
+                           type="text"
+
+                           class="mb-0" />
+
+
+
+                <app-input asp-for="Formulario.Cidade"
+
+                           label="Cidade"
+
+                           type="text"
+
+                           class="mb-0" />
+
+
+
+                <app-input asp-for="Formulario.Uf"
+
+                           label="UF"
+
+                           type="text"
+
+                           maxlength="2"
+
+                           placeholder="Ex: SP"
+
+                           class="mb-0" />
+
+            </div>
+
+
+
+            <div class="form-actions">
+
+                <a href="@ModuloRotas.Empresas.Index" class="botao-cancelar">Cancelar</a>
+
+                <app-save-button type="submit">Salvar Empresa</app-save-button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</main>
+
+
+
+@section Scripts {
+
+    @if (ehNovo)
+
+    {
+
+        <script src="~/Contextos/Shared/js/captura-formulario.js" asp-append-version="true"></script>
+
+    }
+
+}
+

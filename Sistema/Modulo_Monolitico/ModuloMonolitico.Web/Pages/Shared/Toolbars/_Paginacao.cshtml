@@ -1,0 +1,27 @@
+@model dynamic
+@{
+    int paginaAtual = ViewData[ViewDataKeys.PaginaAtual] != null ? (int)ViewData[ViewDataKeys.PaginaAtual] : 1;
+    int totalPaginas = ViewData[ViewDataKeys.TotalPaginas] != null ? (int)ViewData[ViewDataKeys.TotalPaginas] : 1;
+}
+
+@if (totalPaginas > 1)
+{
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Navegação de página">
+            <ul class="pagination pagination-sm">
+                <li class="page-item @(paginaAtual == 1 ? "disabled" : "")">
+                    <a class="page-link" href="?pagina=@(paginaAtual - 1)" tabindex="-1">Anterior</a>
+                </li>
+                @for (int i = 1; i <= totalPaginas; i++)
+                {
+                    <li class="page-item @(paginaAtual == i ? "active" : "")">
+                        <a class="page-link" href="?pagina=@i">@i</a>
+                    </li>
+                }
+                <li class="page-item @(paginaAtual == totalPaginas ? "disabled" : "")">
+                    <a class="page-link" href="?pagina=@(paginaAtual + 1)">Próximo</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}

@@ -1,0 +1,30 @@
+.demo-main { padding: 2rem 1.5rem; max-width: 800px; margin: 0 auto; width: 100%; }
+.demo-header { margin-bottom: 2rem; }
+.demo-title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--clr-text); margin-bottom: 0.5rem; }
+.demo-subtitle { color: var(--clr-text-muted); font-size: 0.9375rem; }
+
+.demo-card {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg); padding: 2rem;
+    box-shadow: var(--glass-shadow); margin-bottom: 2rem;
+}
+.demo-campo-grupo { margin-bottom: 1.5rem; }
+
+.demo-formulario-acoes {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1.5rem;
+}
+
+.demo-btn {
+    background: var(--clr-primary); color: var(--clr-bg-dark); padding: 0.6rem 1.25rem;
+    border-radius: var(--radius-sm); font-weight: 600; border: none; cursor: pointer;
+    transition: all var(--transition-fast);
+}
+.demo-btn:hover { filter: brightness(1.1); }
+
+.demo-msg {
+    padding: 1rem; border-radius: var(--radius-sm); background: rgba(129,201,149,0.1);
+    border: 1px solid rgba(129,201,149,0.2); color: var(--clr-success); font-size: 0.9rem; margin-bottom: 1.5rem;
+}
+

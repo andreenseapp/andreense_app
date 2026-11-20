@@ -1,0 +1,132 @@
+@page
+
+@model ModuloMonolitico.Web.Pages.Autenticacao.EsqueciSenhaModel
+
+@{
+
+  ViewData[ViewDataKeys.Title] = "Esqueci Minha Senha — Andreense";
+
+  Layout = null;
+
+}
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="utf-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="description" content="Recupere sua senha do sistema Andreense." />
+
+  <title>@ViewData[ViewDataKeys.Title]</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <partial name="~/Pages/Shared/Partials/_ContextoStandaloneHead.cshtml" />
+  <link rel="stylesheet" href="@Model.UrlCssPagina" asp-append-version="true" />
+
+</head>
+
+<body>
+
+<div class="fundo-animado" aria-hidden="true"></div>
+
+
+
+<main class="layout-autenticacao autenticacao-principal" role="main">
+
+  <partial name="~/Pages/Shared/Partials/_ContextoStandaloneThemeToggle.cshtml" />
+
+
+
+  <div class="cartao-autenticacao">
+
+    <div class="marca-autenticacao">
+
+      <div class="autenticacao-marca-icone autenticacao-marca-logo" aria-hidden="true">
+
+        <img src="/img/brand/logo-lg.png" alt="Andreense Logo" />
+
+      </div>
+
+      <h1>Recuperar Senha</h1>
+
+      <p>Informe seu e-mail para receber o código</p>
+
+    </div>
+
+
+
+    @if (TempData[TempDataKeys.MensagemSucesso] != null)
+    {
+      <div class="alerta alerta-sucesso" role="alerta" id="alerta-sucesso">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span>@TempData[TempDataKeys.MensagemSucesso]</span>
+      </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.MensagemErro))
+    {
+      <div class="alerta alerta-erro" role="alerta" id="alerta-erro">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <span>@Model.MensagemErro</span>
+      </div>
+    }
+
+    <form method="post" id="form-esqueci" novalidate>
+
+      @Html.AntiForgeryToken()
+
+
+
+      <app-input asp-for="Email"
+
+            type="email"
+
+            placeholder="seu@email.com"
+
+            required="required"
+
+            maxlength="255"
+
+            autocomplete="email"
+
+            autofocus="autofocus" />
+
+
+
+      <app-button type="submit" variant="primary" id="btn-enviar" full-width="true">Enviar Código</app-button>
+
+    </form>
+
+
+
+    <div class="link-autenticacao autenticacao-link--espacado">
+
+      <a href="@ModuloRotas.Autenticacao.Login">Voltar ao Login</a>
+
+    </div>
+
+  </div>
+
+</main>
+
+
+
+<partial name="~/Pages/Shared/Partials/_ContextoStandaloneFoot.cshtml" />
+<script src="@Model.UrlJsPagina" asp-append-version="true"></script>
+
+<div class="mensagens-servidor"
+     data-sucesso="@TempData[TempDataKeys.MensagemSucesso]"
+     data-erro="@(TempData[TempDataKeys.MensagemErro] ?? Model.MensagemErro)">
+</div>
+</body>
+
+</html>
+
+
+
+

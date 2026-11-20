@@ -1,0 +1,392 @@
+@page
+@model ModuloMonolitico.Web.Pages.Agendamentos.Configuracoes.IndexModel
+@using System.Globalization
+@{
+    ViewData[ViewDataKeys.Title] = "Configurar Agendamentos";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+    var cultura = new CultureInfo("pt-BR");
+    var aba = Model.AbaAtiva;
+    var configDict = Model.ConfiguracoesHorarios.ToDictionary(h => h.DiaSemana);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Agendamentos/css/configuracoes-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Configurações
+        </div>
+        <h1 class="titulo-pagina">Configurar Agendamentos</h1>
+        <p class="subtitulo-pagina">Defina horários de funcionamento, serviços e profissionais disponíveis.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@Model.UrlVoltar" class="botao botao-fantasma botao-voltar">← @Model.TextoVoltar</a>
+    </div>
+</div>
+
+<main class="main-content configuracoes-container">
+    <div class="tabs">
+        <a href="@Model.UrlAba("horarios")" class="botao-aba @(aba == "horarios" ? "ativa" : "")">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Horários
+        </a>
+        <a href="@Model.UrlAba("servicos")" class="botao-aba @(aba == "servicos" ? "ativa" : "")">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+            Serviços
+        </a>
+        <a href="@Model.UrlAba("profissionais")" class="botao-aba @(aba == "profissionais" ? "ativa" : "")">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Profissionais
+        </a>
+        <a href="@Model.UrlAba("bloqueios")" class="botao-aba @(aba == "bloqueios" ? "ativa" : "")">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><line x1="9" y1="14" x2="15" y2="20"></line><line x1="15" y1="14" x2="9" y2="20"></line></svg>
+            Bloqueios
+        </a>
+    </div>
+
+    @if (aba == "horarios")
+    {
+        <div class="painel-vidro">
+            <div class="painel-barra">
+                <p class="painel-dica texto-silenciado">
+                    Configure os dias e horários em que sua empresa aceita agendamentos. Você também pode definir horários específicos para cada profissional.
+                </p>
+                <form method="get" id="formFiltroProf" class="cal-filtro-form">
+                    <app-input type="hidden" name="aba" value="horarios" />
+                    @if (!string.IsNullOrEmpty(Model.Voltar))
+                    {
+                        <app-input type="hidden" name="voltar" value="@Model.Voltar" />
+                    }
+                    <app-select asp-for="PrestadorIdComposto"
+                                asp-items="Model.OpcoesPrestadorHorarios"
+                                label="Configurar horários de"
+                                default-option="Empresa (Geral)"
+                                class="cal-filtro-select" />
+                </form>
+            </div>
+
+            <form method="post" asp-page-handler="AtualizarHorarios">
+                <app-input type="hidden" name="voltar" value="@Model.Voltar" />
+                <app-input type="hidden" name="prestadorIdComposto" value="@Model.PrestadorIdComposto" />
+
+                @for (int dia = 0; dia <= 6; dia++)
+                {
+                    var config = configDict.TryGetValue(dia, out var c) ? c : null;
+                    bool ativo = config?.Ativo ?? false;
+                    <div class="horario-row">
+                        <label class="horario-dia-label">
+                            <div class="interruptor">
+                                <input type="checkbox" name="ativo_@dia" value="true" @(ativo ? "checked" : "") id="chk_@dia" data-dia="@dia" class="horario-toggle" />
+                                <span class="interruptor-deslizante"></span>
+                            </div>
+                            <span class="horario-dia-nome">@IndexModel.DiasNomes[dia]</span>
+                        </label>
+                        <div id="row_@dia" class="entradas-hora @(ativo ? "" : "is-disabled")">
+                            <div class="campo-grupo">
+                                <label class="campo-rotulo">Abertura</label>
+                                <app-input type="time" name="inicio_@dia" label="" class="campo-controle" value="@(config?.HoraInicio.ToString("HH:mm") ?? "08:00")" />
+                            </div>
+                            <div class="campo-grupo">
+                                <label class="campo-rotulo">Fechamento</label>
+                                <app-input type="time" name="fim_@dia" label="" class="campo-controle" value="@(config?.HoraFim.ToString("HH:mm") ?? "18:00")" />
+                            </div>
+                            <div class="campo-grupo">
+                                <label class="campo-rotulo">Intervalo</label>
+                                <app-select name="intervalo_@dia" label="" class="campo-controle">
+                                    @foreach (var min in new[] { 15, 20, 30, 45, 60 })
+                                    {
+                                        if (config?.IntervaloMinutos == min)
+                                        {
+                                            <option value="@min" selected>@min min</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@min">@min min</option>
+                                        }
+                                    }
+                                </app-select>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="acoes-formulario">
+                    <app-save-button type="submit">Salvar Horários</app-save-button>
+                </div>
+            </form>
+        </div>
+    }
+
+    @if (aba == "servicos")
+    {
+        <div class="painel-vidro">
+            <div class="info-banner texto-primario">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <div>
+                    <strong>Integração com o Estoque</strong>
+                    <span>Os serviços agendáveis são cadastrados como <strong>Produtos (Tipo Serviço)</strong> no ERP. Defina duração, cor e valor no cadastro do item.</span>
+                </div>
+            </div>
+
+            @if (!Model.Servicos.Any())
+            {
+                <div class="estado-vazio">
+                    <div class="estado-vazio-icone">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+                    </div>
+                    <h3 class="estado-vazio-titulo texto-padrao">Nenhum serviço cadastrado</h3>
+                    <p class="estado-vazio-texto">Acesse o módulo de Produtos para cadastrar os serviços oferecidos.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="data-table log-table" data-seletor-colunas="true">
+                        <thead>
+                            <tr>
+                                <th>Serviço</th>
+                                <th>Duração</th>
+                                <th>Preço</th>
+                                <th>Situação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var ts in Model.Servicos)
+                        {
+                            <tr>
+                                <td class="cell-servico">
+                                    <span class="cor-dot" style="--cor-servico: @ts.CorHexadecimal"></span>@ts.Descricao
+                                </td>
+                                <td><span class="tag-duracao">@ts.DuracaoMinutos min</span></td>
+                                <td class="cell-preco">@ts.PrecoVenda.ToString("C2", cultura)</td>
+                                <td><span class="etiqueta @(ts.Ativo ? "etiqueta-ativo" : "etiqueta-inativo")">@(ts.Ativo ? "Ativo" : "Inativo")</span></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            <a href="@ModuloRotas.Produto.Index" class="add-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Ir para Cadastro de Produtos (Serviços)
+            </a>
+        </div>
+    }
+
+    @if (aba == "profissionais")
+    {
+        <div class="painel-vidro">
+            <div class="info-banner texto-primario">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <div>
+                    <strong>Integração com a Equipe</strong>
+                    <span>Prestadores são <strong>Usuários</strong> e <strong>Contatos (Funcionários)</strong>. Sem vínculos = apto a todos os serviços; com vínculos = limitado aos serviços marcados.</span>
+                </div>
+            </div>
+
+            @if (!Model.Prestadores.Any())
+            {
+                <div class="estado-vazio">
+                    <div class="estado-vazio-icone">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                    </div>
+                    <h3 class="estado-vazio-titulo texto-padrao">Nenhum usuário ou funcionário</h3>
+                    <p class="estado-vazio-texto">Cadastre usuários ou funcionários na sua empresa para que possam receber agendamentos.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="data-table log-table" data-seletor-colunas="true">
+                        <thead>
+                            <tr>
+                                <th>Profissional</th>
+                                <th>E-mail</th>
+                                <th>Serviços Realizados</th>
+                                <th class="col-acoes" data-coluna-fixa>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var p in Model.Prestadores)
+                        {
+                            var servicoIds = string.Join(",", p.Servicos?.Select(s => s.Id) ?? []);
+                            <tr>
+                                <td>
+                                    <div class="prof-cell">
+                                        <div class="prof-avatar">@(p.NomeExibicao.Substring(0, 1).ToUpper())</div>
+                                        <div>
+                                            <span class="prof-nome">@p.NomeExibicao</span>
+                                            <span class="prof-tipo">@(p.UsuarioId.HasValue ? "Usuário do Sistema" : "Funcionário (Contato)")</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="cell-muted texto-silenciado">@(p.Email ?? "—")</td>
+                                <td>
+                                    <div class="servicos-tags">
+                                        @if (p.Servicos != null && p.Servicos.Any())
+                                        {
+                                            foreach (var s in p.Servicos)
+                                            {
+                                                <span class="servico-tag">
+                                                    <span class="cor-dot cor-dot-sm" style="--cor-servico: @s.CorHexadecimal"></span>@s.Descricao
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="etiqueta etiqueta-inativo">Todos os serviços</span>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="col-acoes">
+                                    <app-button type="button"
+                                                class="botao-contorno btn-editar-prof"
+                                                data-usuario-id="@p.UsuarioId"
+                                                data-contato-id="@p.ContatoId"
+                                                data-nome="@p.NomeExibicao"
+                                                data-servicos="@servicoIds">
+                                        Vincular Serviços
+                                    </app-button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            <div class="formulario-embutido" id="formProf">
+                <h4 class="formulario-embutido-title">
+                    Serviços do Prestador <span id="profNomeTitulo" class="formulario-embutido-nome"></span>
+                </h4>
+                <form method="post" asp-page-handler="VincularServicosPrestador">
+                    <app-input type="hidden" name="voltar" value="@Model.Voltar" />
+                    <app-input type="hidden" name="usuarioId" id="profUsuarioId" value="" />
+                    <app-input type="hidden" name="contatoId" id="profContatoId" value="" />
+
+                    <div class="campo-grupo full">
+                        <p class="painel-dica texto-silenciado">Marque todos os serviços que este membro da equipe está apto a realizar:</p>
+                        <div class="checkboxes-grid">
+                            @foreach (var ts in Model.Servicos.Where(o => o.Ativo))
+                            {
+                                <label class="item-check">
+                                    <app-checkbox name="produtoVariacaoIds" value="@ts.Id" class="prof-servico-check"></app-checkbox>
+                                    <span class="cor-dot" style="--cor-servico: @ts.CorHexadecimal"></span>
+                                    <span class="item-check-label">@ts.Descricao</span>
+                                </label>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="acoes-formulario">
+                        <app-button type="button" class="botao-contorno btn-fechar-prof">Cancelar</app-button>
+                        <app-save-button type="submit">Salvar Vínculos</app-save-button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+
+    @if (aba == "bloqueios")
+    {
+        <div class="painel-vidro">
+            <div class="painel-barra">
+                <p class="painel-dica texto-silenciado">
+                    Defina períodos (férias, feriados ou manutenções) em que a empresa ou um profissional específico não receberá agendamentos.
+                </p>
+                <app-button type="button" variant="primary" class="btn-abrir-bloqueio">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Novo Bloqueio
+                </app-button>
+            </div>
+
+            @if (!Model.HorariosBloqueados.Any())
+            {
+                <div class="estado-vazio estado-vazio--tracejado">
+                    <p class="estado-vazio-texto">Nenhum bloqueio configurado para os próximos períodos.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="data-table log-table" data-seletor-colunas="true">
+                        <thead>
+                            <tr>
+                                <th>Período</th>
+                                <th>Profissional Afetado</th>
+                                <th>Motivo</th>
+                                <th class="col-acoes" data-coluna-fixa></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var a in Model.HorariosBloqueados)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="periodo-cell">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                        @a.DataInicio.ToString("dd/MM/yyyy HH:mm")
+                                        <span class="periodo-sep">até</span>
+                                        @a.DataFim.ToString("dd/MM/yyyy HH:mm")
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (a.NomeProfissional == null)
+                                    {
+                                        <span class="etiqueta etiqueta-empresa">Todos (Empresa Fechada)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="cell-prestador">@a.NomeProfissional</span>
+                                    }
+                                </td>
+                                <td class="cell-muted texto-silenciado">@(a.Motivo ?? "—")</td>
+                                <td class="col-acoes">
+                                    <form method="post" asp-page-handler="DeletarFisico" class="formulario-inline">
+                                        <app-input type="hidden" name="voltar" value="@Model.Voltar" />
+                                        <app-input type="hidden" name="id" value="@a.Id" />
+                                        <app-button type="submit"
+                                                    class="botao-perigo"
+                                                    data-confirmacao="Tem certeza que deseja remover este bloqueio? A agenda voltará a ficar livre neste período."
+                                                    data-confirmacao-tipo="perigo"
+                                                    data-confirmacao-titulo="Remover Bloqueio">
+                                            Remover
+                                        </app-button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            <div class="formulario-embutido" id="formBloqueio">
+                <h4 class="formulario-embutido-title">Registrar Novo Bloqueio</h4>
+                <form method="post" asp-page-handler="CadastrarBloqueio">
+                    <app-input type="hidden" name="voltar" value="@Model.Voltar" />
+                    <div class="grade-formulario cols3">
+                        <app-input name="dataInicio" label="Início do Bloqueio *" type="datetime-local" required="required" />
+                        <app-input name="dataFim" label="Fim do Bloqueio *" type="datetime-local" required="required" />
+                        <app-select name="prestadorIdComposto" label="Quem será bloqueado?" asp-items="Model.OpcoesPrestadorBloqueio" default-option="Toda a Empresa" />
+                        <app-input name="motivo" label="Motivo (visível internamente)" placeholder="Ex: Feriado Nacional, Férias do Colaborador, Manutenção..." class="full" />
+                    </div>
+                    <div class="acoes-formulario">
+                        <app-button type="button" class="botao-contorno btn-fechar-bloqueio">Cancelar</app-button>
+                        <app-save-button type="submit">Confirmar Bloqueio</app-save-button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Agendamentos/js/configuracoes-index.js" asp-append-version="true"></script>
+}
+

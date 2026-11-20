@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ModuloMonolitico.Aplicacao\ModuloMonolitico.Aplicacao.csproj" />
+    <ProjectReference Include="..\ModuloMonolitico.Infraestrutura\ModuloMonolitico.Infraestrutura.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+    <PackageReference Include="Htmx.TagHelpers" Version="1.12.0" />
+    <PackageReference Include="MediatR" Version="14.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.1.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
+    <PackageReference Include="BarcodeLib" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="ModuloMonolitico.Web.Core" />
+    <Using Include="ModuloMonolitico.Web.Extensions" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>annotations</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Desativa a geração do .exe (apphost) no Windows para evitar o erro de arquivo bloqueado por processos órfãos -->
+    <UseAppHost>false</UseAppHost>
+  </PropertyGroup>
+
+</Project>

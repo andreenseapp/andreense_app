@@ -1,0 +1,75 @@
+@model ModuloMonolitico.Web.Pages.Agendamentos.Painel.IndexModel
+@{
+    string[] nomesDias = ["SEG", "TER", "QUA", "QUI", "SEX", "SÁB", "DOM"];
+
+    var dias = Model.ModoVisualizacao == "dia"
+        ? new List<DateTime> { Model.DiaAtual.Date }
+        : Enumerable.Range(0, 7).Select(i => Model.InicioSemanaAtual.AddDays(i)).ToList();
+
+    var agendsPorDiaGrade = Model.AgendamentosExibicao
+        .GroupBy(a => a.DataHoraInicio.Date)
+        .ToDictionary(g => g.Key, g => g.ToList());
+}
+
+<div class="calendario-grade-wrapper">
+    <div class="grade-cabecalho">
+        <div class="coluna-hora-vazia"></div>
+
+        <div class="colunas-dias-cabecalho">
+            @foreach (var data in dias)
+            {
+                bool ehHoje = data.Date == DateTime.Today;
+                int indexNome = ((int)data.DayOfWeek + 6) % 7;
+
+                <div class="dia-cabecalho-item">
+                    <span class="dia-nome">@nomesDias[indexNome]</span>
+                    <span class="dia-numero @(ehHoje ? "dia-destaque" : "")">@data.Day</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="grade-corpo">
+        <div class="coluna-horas">
+            @for (int hora = 0; hora <= 23; hora++)
+            {
+                <div class="hora-celula">
+                    <span>@hora.ToString("00"):00</span>
+                </div>
+            }
+        </div>
+
+        <div class="area-matriz">
+            <div class="fundo-linhas">
+                @for (int hora = 0; hora <= 23; hora++)
+                {
+                    <div class="linha-hora"></div>
+                }
+            </div>
+
+            <div class="fundo-colunas">
+                @foreach (var data in dias)
+                {
+                    var agendsDia = agendsPorDiaGrade.TryGetValue(data.Date, out var lista) ? lista : [];
+
+                    <div class="coluna-dia-vertical">
+                        @foreach (var ag in agendsDia)
+                        {
+                            double inicioMin = ag.DataHoraInicio.TimeOfDay.TotalMinutes;
+                            double duracaoMin = Math.Max((ag.DataHoraFim - ag.DataHoraInicio).TotalMinutes, 20);
+                            var corEvento = ag.CorHexadecimalServico ?? "var(--clr-primary)";
+
+                            <a class="evento-grade"
+                               href="@($"{ModuloRotas.Agendamentos.Painel_Detalhes}?id={ag.Id}")"
+                               style="top: @(inicioMin.ToString(System.Globalization.CultureInfo.InvariantCulture))px; height: @(duracaoMin.ToString(System.Globalization.CultureInfo.InvariantCulture))px; --evento-cor: @corEvento"
+                               title="@($"{ag.ClienteNome} — {ag.NomeTipoServico} ({ag.DataHoraInicio:HH:mm}-{ag.DataHoraFim:HH:mm})")">
+                                <span class="evento-grade-hora">@ag.DataHoraInicio.ToString("HH:mm")</span>
+                                <span class="evento-grade-titulo">@ag.ClienteNome</span>
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

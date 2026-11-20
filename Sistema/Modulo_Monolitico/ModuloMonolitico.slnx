@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="ModuloMonolitico.Aplicacao/ModuloMonolitico.Aplicacao.csproj" />
+  <Project Path="ModuloMonolitico.Dominio/ModuloMonolitico.Dominio.csproj" />
+  <Project Path="ModuloMonolitico.Infraestrutura/ModuloMonolitico.Infraestrutura.csproj" />
+  <Project Path="ModuloMonolitico.Testes/ModuloMonolitico.Testes.csproj" />
+  <Project Path="ModuloMonolitico.Web/ModuloMonolitico.Web.csproj" />
+</Solution>

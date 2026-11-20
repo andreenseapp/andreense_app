@@ -1,0 +1,34 @@
+@model ModuloMonolitico.Web.Pages.Shared.IListPagination
+
+@if (Model.TotalPaginas > 1)
+{
+    var qs = Context.Request.Query
+        .Where(q => !string.Equals(q.Key, "PaginaAtual", StringComparison.OrdinalIgnoreCase))
+        .SelectMany(q => q.Value.Select(v => $"{Uri.EscapeDataString(q.Key)}={Uri.EscapeDataString(v ?? "")}"));
+    var queryBase = string.Join("&", qs);
+    var sep = string.IsNullOrEmpty(queryBase) ? "?" : $"?{queryBase}&";
+
+    <div class="paginacao-container">
+        @if (Model.PaginaAtual > 1)
+        {
+            <a href="@($"{sep}PaginaAtual={Model.PaginaAtual - 1}")" class="btn-action btn-pagina">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg> Anterior
+            </a>
+        }
+
+        @for (int i = 1; i <= Model.TotalPaginas; i++)
+        {
+            var isCurrent = i == Model.PaginaAtual;
+            <a href="@($"{sep}PaginaAtual={i}")" class="btn-action num-pagina @(isCurrent ? "pagina-ativa" : "")">
+                @i
+            </a>
+        }
+
+        @if (Model.PaginaAtual < Model.TotalPaginas)
+        {
+            <a href="@($"{sep}PaginaAtual={Model.PaginaAtual + 1}")" class="btn-action btn-pagina">
+                Próximo <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </a>
+        }
+    </div>
+}

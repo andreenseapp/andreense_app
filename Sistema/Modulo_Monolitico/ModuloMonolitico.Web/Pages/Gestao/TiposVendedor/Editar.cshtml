@@ -1,0 +1,50 @@
+@page
+@model ModuloMonolitico.Web.Pages.Gestao.TiposVendedor.EditarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Editar Tipo de Vendedor";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Gestao/css/tiposvendedor-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.Gestao.TiposVendedor,
+    TextoVoltar = "Tipos de Vendedor",
+    Titulo = "Editar Tipo de Vendedor",
+    Subtitulo = $"Atualize os dados de {Model.Formulario.Nome}"
+}' />
+
+<main class="main-content tiposvendedor-novo-container">
+    <form method="post" id="formTipoVendedor">
+        @Html.AntiForgeryToken()
+        <app-input type="hidden" asp-for="Formulario.Id" />
+
+        <div class="cartao-formulario">
+            <app-input asp-for="Formulario.Nome"
+                       label="Nome da Categoria *"
+                       type="text"
+                       placeholder="Ex: Vendedor Externo, Representante..."
+                       required="required"
+                       class="mb-0" />
+
+            <app-textarea asp-for="Formulario.Descricao"
+                          label="Descrição (Opcional)"
+                          rows="3"
+                          class="campo-formulario-espacado mb-0" />
+
+            <div class="campo-alternancia">
+                <app-toggle asp-for="Formulario.Ativo"
+                            title="Ativo"
+                            label-on="Ativo no sistema"
+                            label-off="Inativo" />
+            </div>
+
+            <div class="acoes-formulario">
+                <a href="@ModuloRotas.Gestao.TiposVendedor" class="botao-cancelar">Cancelar</a>
+                <app-save-button type="submit">Salvar Alterações</app-save-button>
+            </div>
+        </div>
+    </form>
+</main>

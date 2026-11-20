@@ -1,0 +1,79 @@
+@model ModuloMonolitico.Web.Pages.Contatos.Cadastro.ContatoFormularioModelo
+<div class="conteudo-aba">
+
+  <div class="form-section">
+    <p class="form-section-title">Dados da Empresa</p>
+    <div class="form-grid form-grid-2">
+      <app-input asp-for="RazaoSocial"
+            type="text"
+            placeholder="Nome Empresa LTDA"
+            maxlength="255"
+            class="field-span-2" />
+
+      <app-input asp-for="NomeFantasia"
+            type="text"
+            placeholder="Como é conhecido"
+            maxlength="255"
+            class="field-span-2" />
+
+      <app-input asp-for="Cnpj"
+            type="text"
+            placeholder="00.000.000/0000-00"
+            maxlength="18"
+            data-mascara="cnpj"
+            inputmode="numeric" />
+
+      <app-input asp-for="InscricaoEstadual"
+            type="text"
+            placeholder="000.000.000.000"
+            maxlength="30" />
+
+      <app-input asp-for="InscricaoMunicipal"
+            type="text"
+            placeholder="0000000"
+            maxlength="20" />
+
+      <app-select asp-for="Crt" label="Regime Tributário (CRT)">
+        <option value="">Selecione...</option>
+        <option value="1">1 — Simples Nacional</option>
+        <option value="2">2 — Simples Nacional — Excesso</option>
+        <option value="3">3 — Regime Normal (Lucro Real/Presumido)</option>
+        <option value="4">4 — MEI</option>
+      </app-select>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <p class="form-section-title">Contato</p>
+    <div class="form-grid form-grid-2">
+      <app-input asp-for="Email"
+            label="E-mail comercial"
+            type="email"
+            placeholder="contato@empresa.com"
+            autocomplete="email" />
+
+      <app-input asp-for="Telefone"
+            label="Telefone"
+            type="tel"
+            placeholder="(00) 0000-0000"
+            data-mascara="telefone"
+            inputmode="tel" />
+    </div>
+  </div>
+
+  <div class="form-section">
+    <p class="form-section-title">Carteira / Vendedores</p>
+    <div class="form-grid form-grid-2">
+      <app-select asp-for="Vendedor1Id"
+                  label="Vendedor Titular"
+                  asp-items="@(ViewData[ViewDataKeys.ListaVendedores] as SelectList)"
+                  default-option="-- Sem vínculo --" />
+
+      <app-select asp-for="Vendedor2Id"
+                  label="Vendedor Secundário"
+                  asp-items="@(ViewData[ViewDataKeys.ListaVendedores] as SelectList)"
+                  default-option="-- Sem vínculo --" />
+    </div>
+  </div>
+
+</div>

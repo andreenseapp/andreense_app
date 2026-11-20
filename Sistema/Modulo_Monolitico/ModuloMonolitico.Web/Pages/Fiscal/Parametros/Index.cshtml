@@ -1,0 +1,87 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fiscal.Parametros.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Parâmetros de Emissão";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Fiscal/css/parametros-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="selo-pagina">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            Fiscal
+        </div>
+        <h1 class="titulo-pagina">Parâmetros de Emissão</h1>
+        <p class="subtitulo-pagina">Gerencie as séries fiscais para NF-e e NFC-e.</p>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.Empresas.Index" class="botao botao-fantasma botao-voltar-empresas">← Minhas Empresas</a>
+        <a href="@ModuloRotas.Fiscal.Parametros_Novo" class="botao botao-primario botao-cabecalho-nova-serie">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Nova Série
+        </a>
+    </div>
+</div>
+
+<main class="conteudo-principal parametros-index-container">
+    @if (Model.Configuracoes != null && Model.Configuracoes.Any())
+    {
+        @foreach (var config in Model.Configuracoes)
+        {
+            <div class="cartao-fiscal">
+                <div class="cartao-fiscal-icone @(config.Modelo == 55 ? "nfe" : "nfce")">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                </div>
+                <div class="cartao-fiscal-info">
+                    <div class="cartao-fiscal-titulo">
+                        @(config.Modelo == 55 ? "Nota Fiscal Eletrônica (NF-e)" : "Nota Fiscal de Consumidor (NFC-e)") — Série @config.Serie
+                    </div>
+                    <div class="cartao-fiscal-meta">
+                        <span class="badge @(config.Situacao == "ativo" ? "ativo" : "inativo")">
+                            @(config.Situacao == "ativo" ? "Ativa" : "Inativa")
+                        </span>
+                        <span class="badge @(config.Ambiente == 1 ? "prod" : "homol")">
+                            @(config.Ambiente == 1 ? "Produção" : "Homologação")
+                        </span>
+                        <span class="cartao-fiscal-meta-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Próximo Nº: <strong>@config.ProximoNumeroNf</strong>
+                        </span>
+                        <span class="cartao-fiscal-meta-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            Desconto: @(config.TratamentoDesconto == "RATEIO" ? "Rateio" : "Destaque")
+                        </span>
+                    </div>
+                </div>
+                <div class="acoes-fiscais">
+                    <a href="@($"{ModuloRotas.Fiscal.Parametros}/Editar/{config.Id}")" class="botao botao-contorno botao-editar-serie">Editar</a>
+                    <form method="post"
+                          asp-page-handler="DeletarSeguro"
+                          asp-route-id="@config.Id"
+                          class="form-deletar-serie"
+                          data-confirmacao="Deseja realmente remover esta série fiscal?"
+                          data-confirmacao-titulo="Excluir série"
+                          data-confirmacao-tipo="perigo">
+                        @Html.AntiForgeryToken()
+                        <app-button type="submit" variant="danger" size="sm" class="botao-excluir-serie">Excluir</app-button>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="fiscal-estado-vazio">
+            <div class="fiscal-vazio-icone">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            </div>
+            <h3 class="fiscal-vazio-titulo">Nenhum parâmetro configurado</h3>
+            <p class="fiscal-vazio-descricao">Você ainda não possui séries de faturamento cadastradas para esta empresa.</p>
+            <a href="@ModuloRotas.Fiscal.Parametros_Novo" class="botao botao-primario">Cadastrar Primeira Série</a>
+        </div>
+    }
+</main>

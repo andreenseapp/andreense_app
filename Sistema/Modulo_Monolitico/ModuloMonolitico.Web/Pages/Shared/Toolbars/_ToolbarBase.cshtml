@@ -1,0 +1,213 @@
+@using ModuloMonolitico.Web.Pages.Shared.Toolbars
+@model ToolbarViewModel
+@{
+    var pathAtual = Context.Request.Path.Value ?? "";
+
+    var host = Context.Request.Host.Host.ToLower();
+    var urlLogo = User.Identity?.IsAuthenticated == true ? ModuloRotas.Principal.Hub : ModuloRotas.Raiz.Index;
+
+    var subdominiosPortais = new[] { "imoveis", "imóveis", "curriculos", "currículos", "empregos", "vagas", "cidade" };
+    var subdomain = host.StartsWith("www.") ? host.Substring(4).Split('.')[0] : host.Split('.')[0];
+    
+    if (subdominiosPortais.Contains(subdomain))
+    {
+        urlLogo = "/";
+    }
+    else
+    {
+        if (pathAtual.StartsWith("/Imoveis", StringComparison.OrdinalIgnoreCase)) urlLogo = "/Imoveis";
+        else if (pathAtual.StartsWith("/Curriculos", StringComparison.OrdinalIgnoreCase)) urlLogo = "/Curriculos";
+        else if (pathAtual.StartsWith("/Contextos/Cidadania", StringComparison.OrdinalIgnoreCase)) urlLogo = "/Contextos/Cidadania";
+        else 
+        {
+            var cookie = Context.Request.Cookies["portal_origem"];
+            if (!string.IsNullOrEmpty(cookie) && (cookie == "/Imoveis" || cookie == "/Curriculos" || cookie == "/Contextos/Cidadania"))
+            {
+                urlLogo = cookie;
+            }
+        }
+    }
+
+    var isPortalSemWorkspace = subdominiosPortais.Contains(subdomain) || 
+                               urlLogo == "/Imoveis" || 
+                               urlLogo == "/Curriculos" || 
+                               urlLogo == "/Contextos/Cidadania";
+
+
+    int totalEmpresas = 0;
+    var empClaimJson = User.FindFirst("empresas")?.Value;
+    if (!string.IsNullOrEmpty(empClaimJson))
+    {
+        try {
+            var arr = System.Text.Json.JsonSerializer.Deserialize<List<Guid>>(empClaimJson);
+            if (arr != null) totalEmpresas = arr.Count;
+        } catch {}
+    }
+}
+
+<link href="~/Contextos/Shared/css/barra-ferramentas-base.css" rel="stylesheet" asp-append-version="true" />
+
+<header class="barra-superior" role="banner">
+  <div class="barra-superior-esquerda">
+    <a href="@urlLogo" class="barra-superior-marca" aria-label="Voltar ao início">
+      <div class="barra-superior-logo">
+        <img src="/img/brand/logo-sm.png" alt="Logo" />
+      </div>
+      <span class="topbar-name">Andreense</span>
+    </a>
+  </div>
+
+  <div class="barra-superior-direita">
+    @if (Model.Tipo == "Principal")
+    {
+        <nav class="topbar-nav-links">
+            <a href="/#recursos" class="topbar-nav-link">Recursos</a>
+            <a href="/#sobre" class="topbar-nav-link">Sobre o Sistema</a>
+            <a href="/#contato" class="topbar-nav-link">Contato</a>
+        </nav>
+        <a href="@ModuloRotas.Autenticacao.Login" class="botao botao-primario topbar-btn-acesso">Acessar Conta</a>
+    }
+    else
+    {
+      <app-button type="button" variant="ghost" size="sm" id="alternar-tema" class="topbar-icon-btn-action" aria-label="Alternar tema">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </app-button>
+      @if (User.Identity?.IsAuthenticated == true)
+      {
+          @if (!isPortalSemWorkspace && totalEmpresas > 1)
+          {
+              var empresaNomeCookie = Context.Request.Cookies["empresa_ativa_nome_v2"];
+              var textoWorkspace = !string.IsNullOrEmpty(empresaNomeCookie)
+                  ? System.Net.WebUtility.UrlDecode(empresaNomeCookie)
+                  : "Selecionar Workspace";
+
+              <div class="topbar-divider"></div>
+
+              <a href="@ModuloRotas.Empresas.Empresas_Selecionar" class="topbar-workspace-btn" title="Trocar Workspace">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="topbar-workspace-icon-left">
+                      <rect x="3" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="14" width="7" height="7"></rect>
+                      <rect x="3" y="14" width="7" height="7"></rect>
+                  </svg>
+                  <span class="topbar-workspace-text">@textoWorkspace</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="topbar-workspace-icon-right">
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <polyline points="9 21 3 21 3 15"></polyline>
+                      <line x1="21" y1="3" x2="14" y2="10"></line>
+                      <line x1="3" y1="21" x2="10" y2="14"></line>
+                  </svg>
+              </a>
+
+              <div class="topbar-divider"></div>
+              <a href="@ModuloRotas.Gestao.Configuracoes" class="topbar-icon-btn-action" aria-label="Configurações">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+              </a>
+          }
+          <div class="topbar-divider"></div>
+          <a href="@ModuloRotas.Perfil.MeuPerfil" class="topbar-user-btn" aria-label="Meu perfil">
+            <div class="topbar-user-avatar">U</div>
+            <span class="topbar-user-name">Meu Perfil</span>
+          </a>
+          <a href="@ModuloRotas.Autenticacao.Sair" class="topbar-logout-btn" aria-label="Sair do sistema">Sair</a>
+      }
+      else
+      {
+          <a href="@ModuloRotas.Autenticacao.Login?ReturnUrl=@Uri.EscapeDataString(Context.Request.Path + Context.Request.QueryString)" class="botao botao-primario topbar-login-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+            Entrar
+          </a>
+      }
+
+    }
+  </div>
+</header>
+
+@if (!string.IsNullOrEmpty(Model.Titulo))
+{
+    <div class="barra-ferramentas-conteudo">
+        @if (Model.MostrarBotaoVoltar)
+        {
+            <div class="toolbar-back-btn-container">
+                <a href="@Model.UrlVoltar" class="barra-ferramentas-voltar">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Voltar para @Model.TextoVoltar
+                </a>
+            </div>
+        }
+        <div class="barra-ferramentas-cabecalho">
+            <div>
+                <h1 class="barra-ferramentas-titulo">@Model.Titulo</h1>
+                @if (!string.IsNullOrEmpty(Model.Subtitulo))
+                {
+                    <p class="barra-ferramentas-subtitulo">@Model.Subtitulo</p>
+                }
+            </div>
+            <div class="toolbar-actions-container">
+                @if (Model.Tipo == "Cadastro" && Model.MostrarBotaoLog)
+                {
+                    <app-button type="button"
+                                variant="ghost"
+                                size="sm"
+                                class="botao-log-cadastral"
+                                title="Visualizar histórico de alterações (Log)"
+                                data-audit-log="true"
+                                data-audit-tabela="@Model.Tabela"
+                                data-audit-registro-id="@Model.RegistroId">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 8v4l3 3"></path>
+                            <circle cx="12" cy="12" r="10"></circle>
+                        </svg>
+                        Histórico
+                    </app-button>
+                }
+                @if (Model.MostrarBotaoAcao)
+                {
+                    <a href="@Model.UrlBotaoAcao" class="botao botao-primario toolbar-action-btn">
+                        @if (!string.IsNullOrEmpty(Model.IconeBotaoAcao))
+                        {
+                            @Html.Raw(Model.IconeBotaoAcao)
+                        }
+                        @Model.TextoBotaoAcao
+                    </a>
+                }
+            </div>
+        </div>
+        <hr class="toolbar-divider-bottom" />
+    </div>
+}
+
+<script>
+    (function() {
+        var path = window.location.pathname.toLowerCase();
+        if (path.startsWith('/imoveis')) {
+            document.cookie = "portal_origem=/Imoveis; path=/; max-age=31536000";
+        } else if (path.startsWith('/curriculos')) {
+            document.cookie = "portal_origem=/Curriculos; path=/; max-age=31536000";
+        } else if (path.startsWith('/contextos/cidadania')) {
+            document.cookie = "portal_origem=/Contextos/Cidadania; path=/; max-age=31536000";
+        }
+    })();
+</script>
+
+

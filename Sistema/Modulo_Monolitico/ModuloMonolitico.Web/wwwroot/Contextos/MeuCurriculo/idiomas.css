@@ -1,0 +1,9 @@
+@import url("index.css");
+
+.idiomas-editor { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+.idiomas-lista { display: flex; flex-direction: column; gap: 10px; }
+.idioma-item-row { display: flex; align-items: center; justify-content: space-between; background: var(--mc-bg); border: 1px solid var(--mc-border); border-radius: 10px; padding: 12px 16px; }
+.idioma-item-info strong { color: var(--mc-texto); }
+.idioma-item-info span { color: var(--mc-sub); margin-left: 8px; font-size: 13px; }
+.adicionar-idioma { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.adicionar-idioma select { flex: 1; min-width: 140px; }

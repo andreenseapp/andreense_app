@@ -1,0 +1,130 @@
+/* Agendamentos — Painel Novo */
+
+.painel-novo-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+}
+
+.painel-vidro {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--glass-shadow-lg);
+    margin-bottom: 1.5rem;
+}
+
+.titulo-secao {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.grade-formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.grade-formulario-servico {
+    margin-top: 1.25rem;
+}
+
+.campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.campo-grupo.full,
+app-input.full,
+app-textarea.full {
+    grid-column: 1 / -1;
+}
+
+.campo-rotulo {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--clr-text);
+}
+
+.secao-horarios {
+    margin-top: 1.25rem;
+}
+
+.acoes-formulario {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-top: 1rem;
+}
+
+.botao-cancelar {
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--glass-border);
+    color: var(--clr-text);
+    transition: background var(--transition-fast);
+}
+
+.botao-cancelar:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.toggle-email {
+    margin-top: -0.25rem;
+}
+
+.grade-horarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.botao-horario {
+    padding: 0.5rem;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    color: var(--clr-text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.botao-horario:hover,
+.botao-horario.selecionado {
+    background: var(--clr-primary);
+    color: var(--clr-botao-primario-texto, var(--clr-bg-dark));
+    border-color: var(--clr-primary);
+}
+
+.horarios-carregando {
+    color: var(--clr-text-muted);
+    font-size: 0.875rem;
+    padding: 1rem 0;
+}
+
+#DataAgendamento::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+#DataAgendamento::-moz-calendar-picker-indicator {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .grade-formulario {
+        grid-template-columns: 1fr;
+    }
+}

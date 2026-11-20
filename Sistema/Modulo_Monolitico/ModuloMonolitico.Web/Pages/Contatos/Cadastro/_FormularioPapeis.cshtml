@@ -1,0 +1,85 @@
+@model ModuloMonolitico.Web.Pages.Contatos.Cadastro.ContatoFormularioModelo
+
+<div class="conteudo-aba">
+
+  <p class="papel-intro">
+    Selecione os papéis que este contato terá para sua empresa. Os dados cadastrais (nome, CPF/CNPJ) são compartilhados — nunca duplicados.
+  </p>
+
+  <div class="papeis-grid">
+
+    <label class="papel-card" for="papel-cliente">
+      <app-checkbox class="papel-alternar" id="papel-cliente" asp-for="EhCliente"></app-checkbox>
+      <div class="papel-card-inner">
+        <div class="papel-check" aria-hidden="true"></div>
+        <div class="papel-icone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="papel-nome">Cliente</div>
+        <div class="papel-descricao">Pode gerar pedidos de venda, orçamentos e receber cobranças.</div>
+      </div>
+    </label>
+
+    <label class="papel-card" for="papel-fornecedor">
+      <app-checkbox class="papel-alternar" id="papel-fornecedor" asp-for="EhFornecedor"></app-checkbox>
+      <div class="papel-card-inner">
+        <div class="papel-check" aria-hidden="true"></div>
+        <div class="papel-icone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="papel-nome">Fornecedor</div>
+        <div class="papel-descricao">Pode receber pedidos de compra e gerar contas a pagar.</div>
+      </div>
+    </label>
+
+    <label class="papel-card" for="papel-transportador">
+      <app-checkbox class="papel-alternar" id="papel-transportador" asp-for="EhTransportador"></app-checkbox>
+      <div class="papel-card-inner">
+        <div class="papel-check" aria-hidden="true"></div>
+        <div class="papel-icone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <div class="papel-nome">Transportador</div>
+        <div class="papel-descricao">Responsável pelo transporte em embarques e @TerminologiaErp.AbreviacaoNotaFiscalEletronica.</div>
+      </div>
+    </label>
+
+    <label class="papel-card" for="papel-lead">
+      <app-checkbox class="papel-alternar" id="papel-lead" asp-for="EhLead"></app-checkbox>
+      <div class="papel-card-inner">
+        <div class="papel-check" aria-hidden="true"></div>
+        <div class="papel-icone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        </div>
+        <div class="papel-nome">Lead</div>
+        <div class="papel-descricao">Contato frio identificado como potencial cliente. Ainda não demonstrou interesse ativo.</div>
+      </div>
+    </label>
+
+    <label class="papel-card" for="papel-prospect">
+      <app-checkbox class="papel-alternar" id="papel-prospect" asp-for="EhProspect"></app-checkbox>
+      <div class="papel-card-inner">
+        <div class="papel-check" aria-hidden="true"></div>
+        <div class="papel-icone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <div class="papel-nome">Prospect</div>
+        <div class="papel-descricao">Contato qualificado que já demonstrou interesse ativo. Está no pipeline comercial.</div>
+      </div>
+    </label>
+
+    <label class="papel-card" for="papel-funcionario">
+      <app-checkbox class="papel-alternar" id="papel-funcionario" asp-for="EhFuncionario"></app-checkbox>
+      <div class="papel-card-inner">
+        <div class="papel-check" aria-hidden="true"></div>
+        <div class="papel-icone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <div class="papel-nome">Funcionário</div>
+        <div class="papel-descricao">Membro da equipe ou profissional vinculado. Pode ser agendado em serviços ou associado a comissões.</div>
+      </div>
+    </label>
+
+  </div>
+
+</div>

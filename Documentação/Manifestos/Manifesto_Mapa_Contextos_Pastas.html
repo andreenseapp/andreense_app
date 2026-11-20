@@ -1,0 +1,3856 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Árvore genealógica — Contextos × Pastas — Monolito</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  
+  :root {
+    --bg-main: #0f1115;
+    --bg-card: #181a1f;
+    --bg-card-hover: #1e2128;
+    --border-color: #2a2d35;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent-color: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.15);
+    --success-color: #10b981;
+    --success-bg: rgba(16, 185, 129, 0.1);
+    --error-color: #ef4444;
+    --error-bg: rgba(239, 68, 68, 0.1);
+    --warning-color: #f59e0b;
+    --warning-bg: rgba(245, 158, 11, 0.1);
+  }
+
+  * { box-sizing: border-box; }
+  
+  body {
+    margin: 0;
+    background-color: var(--bg-main);
+    background-image: 
+      radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+    color: var(--text-primary);
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-main); }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+  a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  a:hover { 
+    color: #60a5fa;
+    text-shadow: 0 0 8px var(--accent-glow);
+  }
+  
+  code {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.85em;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+    color: #e2e8f0;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .page { 
+    max-width: 1400px; 
+    margin: 0 auto; 
+    padding: 40px 32px 100px; 
+  }
+
+  .hero { 
+    margin-bottom: 64px; 
+    position: relative;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .hero h1 {
+    font-size: 2.75rem;
+    font-weight: 700;
+    margin: 0 0 16px;
+    background: linear-gradient(to right, #ffffff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.03em;
+  }
+  
+  .lead { 
+    color: var(--text-secondary); 
+    font-size: 1.15rem; 
+    max-width: 800px; 
+    margin: 0;
+  }
+  
+  .meta { 
+    display: inline-block;
+    color: var(--text-muted); 
+    font-size: 0.9rem; 
+    margin-top: 24px; 
+    background: var(--bg-card);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+  }
+
+  h2 { 
+    font-size: 1.75rem; 
+    margin: 0 0 24px; 
+    color: #fff; 
+    font-weight: 600; 
+    letter-spacing: -0.02em; 
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .how, .toc, .shared-cap, .example, .orphans {
+    margin-bottom: 72px;
+  }
+
+  .how-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+    gap: 16px; 
+    margin-bottom: 24px; 
+  }
+  
+  .how-card { 
+    background: var(--bg-card); 
+    border: 1px solid var(--border-color); 
+    border-radius: 16px; 
+    padding: 24px; 
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .how-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    border-color: #334155;
+  }
+  
+  .how-num { 
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--accent-glow); 
+    color: var(--accent-color); 
+    font-weight: 700; 
+    font-size: 0.85rem; 
+    border-radius: 8px; 
+    margin-bottom: 16px; 
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+  
+  .how-card strong { 
+    display: block; 
+    margin-bottom: 8px; 
+    color: #fff; 
+    font-size: 1.1rem; 
+    font-weight: 600; 
+  }
+  
+  .how-card p { 
+    margin: 0; 
+    font-size: 0.95rem; 
+    color: var(--text-secondary); 
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .how-note {
+    color: var(--text-secondary);
+    font-size: 0.98rem;
+    max-width: 900px;
+    line-height: 1.7;
+  }
+
+  .toc {
+    background: linear-gradient(145deg, var(--bg-card), rgba(24, 26, 31, 0.5));
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  
+  .toc-grid { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 12px; 
+  }
+  
+  .toc-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+  }
+  
+  .toc-link:hover { 
+    background: rgba(255,255,255,0.08); 
+    border-color: rgba(255,255,255,0.15); 
+    color: #fff; 
+    transform: translateY(-1px);
+  }
+  
+  .toc-link--example { 
+    background: rgba(59, 130, 246, 0.1); 
+    border-color: rgba(59, 130, 246, 0.2); 
+    color: #93c5fd;
+  }
+  
+  .toc-link--shared { 
+    background: rgba(16, 185, 129, 0.1); 
+    border-color: rgba(16, 185, 129, 0.2); 
+    color: #6ee7b7;
+  }
+
+  .context-block { 
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 32px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  
+  h3.context-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+  }
+  
+  h3.context-name code { 
+    font-size: 1.1rem; 
+    background: rgba(59, 130, 246, 0.15); 
+    color: #93c5fd;
+    border-color: rgba(59, 130, 246, 0.2);
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: 1px solid;
+  }
+
+  .gene-row { 
+    display: flex; 
+    align-items: stretch; 
+    gap: 16px; 
+    overflow-x: auto; 
+    padding-bottom: 16px; 
+    scroll-behavior: smooth;
+    margin: 0 -16px;
+    padding: 0 16px 24px;
+  }
+  
+  .gene-col { 
+    flex: 0 0 320px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px;
+    position: relative;
+  }
+  
+  .gene-col-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0 0 12px;
+    border-bottom: 2px solid var(--border-color);
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .gene-arrow { 
+    flex: 0 0 24px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: var(--border-color); 
+    font-size: 1.5rem;
+    position: relative;
+  }
+  
+  .gene-arrow::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background: var(--border-color);
+  }
+
+  .gene-node { 
+    border-radius: 16px; 
+    padding: 20px; 
+    flex: 1; 
+    background: #1c1e24;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .gene-node::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 3px;
+  }
+
+  .gene-node--ok { 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  .gene-node--ok::before { background: var(--success-color); }
+  
+  .gene-node--missing { 
+    background: rgba(239, 68, 68, 0.03); 
+    border: 1px dashed rgba(239, 68, 68, 0.3); 
+  }
+  .gene-node--missing::before { background: var(--error-color); }
+
+  .node-status {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .gene-node--ok .node-status { 
+    background: var(--success-bg);
+    color: var(--success-color); 
+  }
+  
+  .gene-node--missing .node-status { 
+    background: var(--error-bg);
+    color: var(--error-color); 
+  }
+
+  .node-path {
+    font-size: 0.9rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-primary);
+    word-break: break-all;
+    margin-bottom: 16px;
+    line-height: 1.5;
+    background: rgba(0,0,0,0.2);
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.02);
+  }
+  
+  .node-subtitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 16px 0 12px;
+  }
+
+  .node-detail { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55; }
+
+  .node-files--full { 
+    max-height: 300px; 
+    overflow-y: auto; 
+    padding-right: 8px;
+  }
+  
+  .node-dirs, .node-files {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+  }
+  
+  .node-files li { 
+    position: relative;
+    padding: 6px 0 6px 24px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.02);
+  }
+  
+  .node-files li:last-child { border-bottom: none; }
+  
+  .node-files li::before {
+    content: '📄';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em;
+    opacity: 0.5;
+  }
+
+  .cross-links {
+    margin-top: 24px;
+    padding: 24px;
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 16px;
+  }
+  
+  .cross-links-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #93c5fd;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .cross-links ul { 
+    margin: 0; 
+    padding-left: 24px; 
+    color: var(--text-primary); 
+  }
+  
+  .cross-links li { margin-bottom: 10px; }
+  .cross-links strong { color: #bfdbfe; font-weight: 600; }
+
+  .shared-block { 
+    background: var(--bg-card); 
+    border: 1px solid var(--border-color); 
+    border-radius: 16px; 
+    padding: 24px 32px; 
+    margin-bottom: 24px; 
+  }
+  
+  .shared-block h3 { 
+    margin: 0 0 20px; 
+    font-size: 1.25rem; 
+    color: #fff; 
+  }
+  
+  .menu-table { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0;
+    margin-top: 16px; 
+  }
+  
+  .menu-table th { 
+    text-align: left; 
+    padding: 12px 16px; 
+    background: rgba(255,255,255,0.02);
+    color: var(--text-muted); 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .menu-table th:first-child { border-top-left-radius: 8px; }
+  .menu-table th:last-child { border-top-right-radius: 8px; }
+  
+  .menu-table td { 
+    padding: 16px; 
+    border-bottom: 1px solid rgba(255,255,255,0.03); 
+    vertical-align: middle; 
+    color: var(--text-primary); 
+  }
+  
+  .menu-table tr:hover td {
+    background: rgba(255,255,255,0.01);
+  }
+
+  .orphan-list, .consumer-list, .option-list {
+    margin: 0;
+    padding-left: 24px;
+    color: var(--text-primary);
+  }
+  .orphan-list li, .consumer-list li, .option-list li { margin-bottom: 8px; }
+
+  @media (max-width: 1100px) {
+    .gene-col { flex: 0 0 280px; }
+  }
+  
+  @media (max-width: 768px) {
+    .page { padding: 24px 16px 80px; }
+    .hero h1 { font-size: 2rem; }
+    .context-block { padding: 20px; }
+    .gene-row { padding-bottom: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <h1>Árvore genealógica dos contextos</h1>
+    <p class="lead">Cada linha é um <strong>contexto de negócio</strong> (nome da pasta em <code>Web/Pages</code>).
+    Da esquerda para a direita você vê como a pasta desse contexto aparece — ou não — em cada camada do monolito.</p>
+    <p class="meta">Gerado em 18/06/2026 23:57 · 26 contextos em Web/Pages · caminho base: <code>Sistema/Modulo_Monolitico/</code></p>
+  </header>
+  <section class="how">
+    <h2>Como ler esta árvore</h2>
+    <div class="how-grid">
+      <div class="how-card"><span class="how-num">1</span><strong>Domínio — Interfaces de Repositório</strong><p>Contratos que a aplicação enxerga. Pasta: ModuloMonolitico.Dominio/InterfacesDeRepositorio/{Contexto}/</p></div>
+      <div class="how-card"><span class="how-num">2</span><strong>Domínio — Entidades</strong><p>Modelos de negócio. Pasta: ModuloMonolitico.Dominio/Entidades/{Contexto}/ (ou subpastas)</p></div>
+      <div class="how-card"><span class="how-num">3</span><strong>Infraestrutura — Repositórios (Dapper)</strong><p>Implementação SQL. Pasta: ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/{Contexto}/</p></div>
+      <div class="how-card"><span class="how-num">4</span><strong>Infraestrutura — Injeção de Dependência</strong><p>Registro no container. Arquivo: ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/{Contexto}Setup.cs</p></div>
+      <div class="how-card"><span class="how-num">5</span><strong>Aplicação — Casos de Uso</strong><p>Comandos, consultas MediatR. Pasta: ModuloMonolitico.Aplicacao/CasosDeUso/{Contexto}/</p></div>
+      <div class="how-card"><span class="how-num">6</span><strong>Web — Razor Pages</strong><p>Telas .cshtml. Pasta: ModuloMonolitico.Web/Pages/{Contexto}/</p></div>
+      <div class="how-card"><span class="how-num">7</span><strong>Web — Assets estáticos</strong><p>CSS/JS do contexto. Pasta: ModuloMonolitico.Web/wwwroot/Contextos/{Contexto}/</p></div>
+    </div>
+    <p class="how-note">Setas horizontais ligam a <em>mesma linha genealógica</em> do contexto. Caixas tracejadas = pasta ou arquivo ausente nesta camada.
+    Ligações cruzadas (contexto A usa pasta B) aparecem em bloco separado abaixo da linha, com caminho completo.</p>
+    <p class="how-note"><strong>Contextos transversais:</strong> alguns contextos (ex.: <code>Produto</code>) aparecem no menu de <em>vários módulos</em> (ERP e Área de Serviços),
+    mas têm stack própria alinhada em todas as camadas — veja o contexto <a href="#ctx-Produto">Produto</a>.</p>
+  </section>
+  <section class="shared-cap" id="hub-produto">
+    <h2>Contexto <code>Produto</code> — hub transversal</h2>
+    <p class="shared-lead">Produto físico (mercadoria), insumo e serviço agendável (<code>tipo_item=servico</code>) são a <strong>mesma entidade</strong> (<code>Produto</code> + <code>ProdutoVariacao</code>).
+    O contexto tem <strong>stack própria alinhada</strong> em todas as camadas — não é subpasta de ERP nem Estoque.</p>
+    <div class="shared-block">
+      <h3>Onde aparece no menu (mesma tela, dois módulos)</h3>
+      <table class="menu-table">
+        <thead><tr><th>Módulo do menu</th><th>Texto no menu</th><th>Rota canônica</th><th>Arquivo físico</th></tr></thead>
+        <tbody>
+          <tr><td><code>ERP</code></td><td>Produtos</td><td><code>/Contextos/Produto</code></td><td><code>Pages/Produto/Index.cshtml</code></td></tr>
+          <tr><td><code>Área de Serviços</code></td><td>Catálogo de Serviços</td><td><code>/Contextos/Produto</code></td><td><code>Pages/Produto/Index.cshtml</code> (mesmo arquivo)</td></tr>
+        </tbody></table>
+      <p class="shared-note">Permissões: <code>Produto.Visualizar</code>, <code>Produto.Criar</code>, <code>Produto.Editar</code>. Rotas legadas <code>/ERP/Produtos/*</code> redirecionam para <code>/Contextos/Produto/*</code>.</p>
+    </div>
+    <div class="shared-block">
+      <h3>Quem consome o contexto Produto (sem tela própria de produto)</h3>
+      <ul class="consumer-list">
+        <li><a href="#ctx-Agendamentos">Agendamentos</a> — Configurações → serviços agendáveis = produtos tipo servico</li>
+        <li><a href="#ctx-Estoque">Estoque</a> — movimentação usa <code>ListarProdutosAtivosQuery</code> e <code>IProdutoRepositorio</code></li>
+        <li><code>Api/SeletorProdutoVariacao</code> — componente de busca reutilizável</li>
+        <li><a href="#ctx-Precos">Precos</a> — contextos de preço vinculados a variações de produto</li>
+      </ul>
+      <p class="shared-note">Árvore genealógica completa do contexto: <a href="#ctx-Produto">#ctx-Produto</a></p>
+    </div>
+  </section>
+
+  <nav class="toc">
+    <h2>Índice — ir direto ao contexto</h2>
+    <div class="toc-grid">
+      <a class="toc-link toc-link--shared" href="#ctx-Produto">Produto (hub transversal ERP + Serviços)</a>
+      <a class="toc-link toc-link--example" href="#exemplo">Autenticacao (exemplo completo)</a>
+      <a class="toc-link" href="#ctx-Agendamentos">Agendamentos</a>
+      <a class="toc-link" href="#ctx-Api">Api</a>
+      <a class="toc-link" href="#ctx-AreaServicos">AreaServicos</a>
+      <a class="toc-link" href="#ctx-Base">Base</a>
+      <a class="toc-link" href="#ctx-Cidadania">Cidadania</a>
+      <a class="toc-link" href="#ctx-Contatos">Contatos</a>
+      <a class="toc-link" href="#ctx-Empresas">Empresas</a>
+      <a class="toc-link" href="#ctx-ERP">ERP</a>
+      <a class="toc-link" href="#ctx-Estoque">Estoque</a>
+      <a class="toc-link" href="#ctx-Fidelizacao">Fidelizacao</a>
+      <a class="toc-link" href="#ctx-Financeiro">Financeiro</a>
+      <a class="toc-link" href="#ctx-Fiscal">Fiscal</a>
+      <a class="toc-link" href="#ctx-Geral">Geral</a>
+      <a class="toc-link" href="#ctx-Gestao">Gestao</a>
+      <a class="toc-link" href="#ctx-HelpDesk">HelpDesk</a>
+      <a class="toc-link" href="#ctx-InfraAdmin">InfraAdmin</a>
+      <a class="toc-link" href="#ctx-Logistica">Logistica</a>
+      <a class="toc-link" href="#ctx-Mensagens">Mensagens</a>
+      <a class="toc-link" href="#ctx-Notificacoes">Notificacoes</a>
+      <a class="toc-link" href="#ctx-Perfil">Perfil</a>
+      <a class="toc-link" href="#ctx-Precos">Precos</a>
+      <a class="toc-link" href="#ctx-Principal">Principal</a>
+      <a class="toc-link" href="#ctx-Produto">Produto</a>
+      <a class="toc-link" href="#ctx-SaaS">SaaS</a>
+      <a class="toc-link" href="#ctx-Varejo">Varejo</a>
+    </div>
+  </nav>
+  <section class="example" id="exemplo">
+    <h2>Exemplo completo — contexto <code>Autenticacao</code></h2>
+    <p>Este é o modelo de leitura. Todas as linhas abaixo seguem o mesmo padrão: sete colunas, nomes reais de pastas e arquivos.</p>
+    <div class="gene-row gene-row--example">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Autenticacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>ICodigoValidacaoRepositorio.cs</code></li>
+    <li><code>IGrupoUsuarioRepositorio.cs</code></li>
+    <li><code>ISessaoRepositorio.cs</code></li>
+    <li><code>ITentativaLoginRepositorio.cs</code></li>
+    <li><code>IUsuarioRepositorio.cs</code></li>
+    <li><code>IVinculoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Autenticacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>GrupoPermissao.cs</code></li>
+    <li><code>GrupoUsuario.cs</code></li>
+    <li><code>SessaoUsuario.cs</code></li>
+    <li><code>Usuario.cs</code></li>
+    <li><code>UsuarioConta.cs</code></li>
+    <li><code>UsuarioEmpresa.cs</code></li>
+    <li><code>VinculoConta.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Autenticacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>CodigoValidacaoRepositorio.cs</code></li>
+    <li><code>GrupoUsuarioRepositorio.cs</code></li>
+    <li><code>SessaoRepositorio.cs</code></li>
+    <li><code>TentativaLoginRepositorio.cs</code></li>
+    <li><code>UsuarioRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/AutenticacaoSetup.cs</div>
+  <ul class="node-files">
+    <li><code>AutenticacaoSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Autenticacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/AtualizarFotoPerfilCommand.cs</code></li>
+    <li><code>Comandos/CadastrarUsuarioCommand.cs</code></li>
+    <li><code>Comandos/CodigoValidacaoCommands.cs</code></li>
+    <li><code>Comandos/LoginCommand.cs</code></li>
+    <li><code>Comandos/LoginGoogleCommand.cs</code></li>
+    <li><code>Comandos/RedefinirSenhaCommand.cs</code></li>
+    <li><code>Comandos/RenovarTokenCommand.cs</code></li>
+    <li><code>Comandos/ResetAdminCommand.cs</code></li>
+    <li><code>Comandos/SolicitarRecuperacaoSenhaCommand.cs</code></li>
+    <li><code>Grupos/Comandos/CadastrarGrupoCommand.cs</code></li>
+    <li><code>Grupos/Comandos/DeletarGrupoCommand.cs</code></li>
+    <li><code>Grupos/Queries/GruposQueries.cs</code></li>
+    <li><code>Queries/ListarUsuariosPorContaQuery.cs</code></li>
+    <li><code>Queries/UsuarioQueries.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Autenticacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>README.md</code></li>
+    <li><code>Cadastro/Index.cshtml</code></li>
+    <li><code>Cadastro/Index.cshtml.cs</code></li>
+    <li><code>EsqueciSenha/Index.cshtml</code></li>
+    <li><code>EsqueciSenha/Index.cshtml.cs</code></li>
+    <li><code>Grupos/Editar.cshtml</code></li>
+    <li><code>Grupos/Editar.cshtml.cs</code></li>
+    <li><code>Grupos/Index.cshtml</code></li>
+    <li><code>Grupos/Index.cshtml.cs</code></li>
+    <li><code>Grupos/Novo.cshtml</code></li>
+    <li><code>Grupos/Novo.cshtml.cs</code></li>
+    <li><code>Login/Index.cshtml</code></li>
+    <li><code>Login/Index.cshtml.cs</code></li>
+    <li><code>LoginGoogle/Index.cshtml</code></li>
+    <li><code>LoginGoogle/Index.cshtml.cs</code></li>
+    <li><code>RedefinirSenha/Index.cshtml</code></li>
+    <li><code>RedefinirSenha/Index.cshtml.cs</code></li>
+    <li><code>RenovarToken/Index.cshtml</code></li>
+    <li><code>RenovarToken/Index.cshtml.cs</code></li>
+    <li><code>ResetAdmin/Index.cshtml</code></li>
+    <li><code>ResetAdmin/Index.cshtml.cs</code></li>
+    <li><code>Sair/Index.cshtml</code></li>
+    <li><code>Sair/Index.cshtml.cs</code></li>
+    <li><code>ValidarEmail/Index.cshtml</code></li>
+    <li><code>ValidarEmail/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Autenticacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/cadastro.css</code></li>
+    <li><code>css/comum.css</code></li>
+    <li><code>css/esqueci-senha.css</code></li>
+    <li><code>css/grupos-editar.css</code></li>
+    <li><code>css/grupos-index.css</code></li>
+    <li><code>css/grupos-novo.css</code></li>
+    <li><code>css/login.css</code></li>
+    <li><code>css/redefinir-senha.css</code></li>
+    <li><code>css/validar-email.css</code></li>
+    <li><code>js/cadastro.js</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/esqueci-senha.js</code></li>
+    <li><code>js/login.js</code></li>
+    <li><code>js/redefinir-senha.js</code></li>
+    <li><code>js/validar-email.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+  </section>
+  <section class="all-contexts">
+    <h2>Todos os contextos (Web/Pages)</h2>
+    <article class="context-block" id="ctx-Agendamentos">
+      <h3 class="context-name">Contexto: <code>Agendamentos</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Agendamentos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IAgendamentoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Agendamentos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Agendamento.cs</code></li>
+    <li><code>ConfigHorario.cs</code></li>
+    <li><code>HorarioBloqueado.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Agendamentos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>AgendamentoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/AgendamentosSetup.cs</div>
+  <ul class="node-files">
+    <li><code>AgendamentosSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Agendamentos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/AtualizarStatusAgendamentoCommand.cs</code></li>
+    <li><code>Comandos/CadastrarAgendamentoCommand.cs</code></li>
+    <li><code>Comandos/CadastrarHorarioBloqueadoCommand.cs</code></li>
+    <li><code>Comandos/CancelarAgendamentoCommand.cs</code></li>
+    <li><code>Comandos/DeletarHorarioBloqueadoCommand.cs</code></li>
+    <li><code>Comandos/SalvarConfigHorariosCommand.cs</code></li>
+    <li><code>Comandos/VincularServicosPrestadorCommand.cs</code></li>
+    <li><code>Queries/ListarAgendamentosClienteQuery.cs</code></li>
+    <li><code>Queries/ListarAgendamentosQuery.cs</code></li>
+    <li><code>Queries/ListarHorariosBloqueadosQuery.cs</code></li>
+    <li><code>Queries/ListarPrestadoresQuery.cs</code></li>
+    <li><code>Queries/ListarServicosAgendaQuery.cs</code></li>
+    <li><code>Queries/ObterAgendamentoQuery.cs</code></li>
+    <li><code>Queries/ObterConfigHorariosQuery.cs</code></li>
+    <li><code>Queries/ObterSlotsDisponiveisQuery.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Agendamentos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Configuracoes/Index.cshtml</code></li>
+    <li><code>Configuracoes/Index.cshtml.cs</code></li>
+    <li><code>MeusAgendamentos/Detalhes.cshtml</code></li>
+    <li><code>MeusAgendamentos/Detalhes.cshtml.cs</code></li>
+    <li><code>MeusAgendamentos/Index.cshtml</code></li>
+    <li><code>MeusAgendamentos/Index.cshtml.cs</code></li>
+    <li><code>MeusAgendamentos/Novo.cshtml</code></li>
+    <li><code>MeusAgendamentos/Novo.cshtml.cs</code></li>
+    <li><code>Painel/Detalhes.cshtml</code></li>
+    <li><code>Painel/Detalhes.cshtml.cs</code></li>
+    <li><code>Painel/Index.cshtml</code></li>
+    <li><code>Painel/Index.cshtml.cs</code></li>
+    <li><code>Painel/Novo.cshtml</code></li>
+    <li><code>Painel/Novo.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Agendamentos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/configuracoes-index.css</code></li>
+    <li><code>css/meus-agendamentos-detalhes.css</code></li>
+    <li><code>css/meus-agendamentos-index.css</code></li>
+    <li><code>css/meus-agendamentos-novo.css</code></li>
+    <li><code>css/painel-detalhes.css</code></li>
+    <li><code>css/painel-index.css</code></li>
+    <li><code>css/painel-novo.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/configuracoes-index.js</code></li>
+    <li><code>js/meus-agendamentos-detalhes.js</code></li>
+    <li><code>js/meus-agendamentos-index.js</code></li>
+    <li><code>js/meus-agendamentos-novo.js</code></li>
+    <li><code>js/painel-detalhes.js</code></li>
+    <li><code>js/painel-index.js</code></li>
+    <li><code>js/painel-novo.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+    <div class="cross-links">
+      <div class="cross-links-title">Ligações cruzadas (este contexto usa pastas de outro nome)</div>
+      <ul>
+        <li><strong>contexto transversal</strong> → <a href="#ctx-Produto">Servi&#231;os agend&#225;veis = produtos com tipo_item=servico (contexto Produto)</a></li>
+        <li><strong>dominio_iface</strong> → <code>InterfacesDeRepositorio/Produto/IProdutoRepositorio.cs</code> — AgendamentoRepositorio lista servi&#231;os via tabela erp_produtos</li>
+        <li><strong>web_pages</strong> → <code>Pages/Produto/Index.cshtml</code> — Link &#39;Cadastrar servi&#231;o&#39; em Configura&#231;&#245;es aponta para contexto Produto</li>
+      </ul>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Api">
+      <h3 class="context-name">Contexto: <code>Api</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Api</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Api</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Api</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Api</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Api</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Api</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/ApiSetup.cs</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Api</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Api</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Api</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Api</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Cep.cshtml</code></li>
+    <li><code>Cep.cshtml.cs</code></li>
+    <li><code>SeletorProdutoVariacao.cshtml</code></li>
+    <li><code>SeletorProdutoVariacao.cshtml.cs</code></li>
+    <li><code>SeletorProfissional.cshtml</code></li>
+    <li><code>SeletorProfissional.cshtml.cs</code></li>
+    <li><code>SeletorUsuario.cshtml</code></li>
+    <li><code>SeletorUsuario.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Api</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Api</code></div>
+</div>
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-AreaServicos">
+      <h3 class="context-name">Contexto: <code>AreaServicos</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/AreaServicos</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Servicos</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/AreaServicos</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Servicos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Prestador.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/AreaServicos</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Servicos</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/AreaServicosSetup.cs</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/ServicosSetup.cs</div>
+  <ul class="node-files">
+    <li><code>ServicosSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/AreaServicos</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Servicos</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/AreaServicos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Servicos</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/AreaServicos</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Servicos</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>AreaServicos</code></div>
+</div>
+      </div>
+    </div>
+    <div class="cross-links">
+      <div class="cross-links-title">Ligações cruzadas (este contexto usa pastas de outro nome)</div>
+      <ul>
+        <li><strong>contexto transversal</strong> → <a href="#ctx-Produto">Menu &#39;Cat&#225;logo de Servi&#231;os&#39; aponta para Pages/Produto/Index.cshtml</a></li>
+        <li><strong>web_pages</strong> → <code>Pages/Agendamentos/Configuracoes/</code> — Consome produtos tipo servico para agenda</li>
+      </ul>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Base">
+      <h3 class="context-name">Contexto: <code>Base</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Base</div>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IEmpresaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Base</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Auditoria.cs</code></li>
+    <li><code>Conta.cs</code></li>
+    <li><code>Endereco.cs</code></li>
+    <li><code>GrupoPermissaoSaaS.cs</code></li>
+    <li><code>GrupoUsuarioSaaS.cs</code></li>
+    <li><code>IContatoPapel.cs</code></li>
+    <li><code>RecursoSistema.cs</code></li>
+    <li><code>RecursoSistemaSaaS.cs</code></li>
+    <li><code>UsuarioGrupoSaaS.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Empresa.cs</code></li>
+    <li><code>EmpresaCliente.cs</code></li>
+    <li><code>EmpresaCnaeSecundario.cs</code></li>
+    <li><code>EmpresaFornecedor.cs</code></li>
+    <li><code>EmpresaFuncionario.cs</code></li>
+    <li><code>EmpresaLead.cs</code></li>
+    <li><code>EmpresaProspect.cs</code></li>
+    <li><code>EmpresaTransportador.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Base</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>RepositorioBase.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>EmpresaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/BaseSetup.cs</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Base</code></div>
+</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/EmpresasSetup.cs</div>
+  <ul class="node-files">
+    <li><code>EmpresasSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Base</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Base</code></div>
+</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/EmpresasCommands.cs</code></li>
+    <li><code>Consultas/EmpresasQueries.cs</code></li>
+    <li><code>Equipe/Comandos/AtualizarGrupoEquipeCommand.cs</code></li>
+    <li><code>Equipe/Comandos/ConvidarEquipeCommand.cs</code></li>
+    <li><code>Equipe/Comandos/ReenviarConviteEquipeCommand.cs</code></li>
+    <li><code>Equipe/Comandos/RemoverMembroEquipeCommand.cs</code></li>
+    <li><code>Equipe/Comandos/ResponderConviteEquipeCommand.cs</code></li>
+    <li><code>Equipe/Consultas/ListarConvitesUsuarioQuery.cs</code></li>
+    <li><code>Equipe/Consultas/ListarEmpresasUsuarioQuery.cs</code></li>
+    <li><code>Equipe/Consultas/ListarEquipeQuery.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Base</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Equipe/Index.cshtml</code></li>
+    <li><code>Equipe/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Detalhes.cshtml</code></li>
+    <li><code>Detalhes.cshtml.cs</code></li>
+    <li><code>Editar.cshtml</code></li>
+    <li><code>Editar.cshtml.cs</code></li>
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>Selecionar.cshtml</code></li>
+    <li><code>Selecionar.cshtml.cs</code></li>
+    <li><code>Convite/ResponderConviteEquipe.cshtml</code></li>
+    <li><code>Convite/ResponderConviteEquipe.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Base</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/equipe-index.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/equipe-index.js</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/convite-responder-equipe.css</code></li>
+    <li><code>css/editar.css</code></li>
+    <li><code>css/index.css</code></li>
+    <li><code>css/selecionar.css</code></li>
+    <li><code>js/comum.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Cidadania">
+      <h3 class="context-name">Contexto: <code>Cidadania</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Cidadania</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IAchadosPerdidosRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Cidadania</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>AchadoPerdido.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Cidadania</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>AchadosPerdidosRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/CidadaniaSetup.cs</div>
+  <ul class="node-files">
+    <li><code>CidadaniaSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Cidadania</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>AchadosPerdidos/Comandos/CadastrarAchadoPerdidoCommand.cs</code></li>
+    <li><code>AchadosPerdidos/Consultas/ListarAchadosPerdidosAtivosQuery.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Cidadania</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>AchadosPerdidos/Index.cshtml</code></li>
+    <li><code>AchadosPerdidos/Index.cshtml.cs</code></li>
+    <li><code>CodigoBarras/Index.cshtml</code></li>
+    <li><code>CodigoBarras/Index.cshtml.cs</code></li>
+    <li><code>EtiquetaEnvio/Index.cshtml</code></li>
+    <li><code>EtiquetaEnvio/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Cidadania</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/achados-perdidos.css</code></li>
+    <li><code>css/codigo-barras.css</code></li>
+    <li><code>css/etiqueta-envio.css</code></li>
+    <li><code>js/achados-perdidos.js</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/etiqueta-envio.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Contatos">
+      <h3 class="context-name">Contexto: <code>Contatos</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Contatos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IContatoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Contatos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Contato.cs</code></li>
+    <li><code>SolicitacaoVinculo.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Contatos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>ContatoRepositorio.cs</code></li>
+    <li><code>VinculoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/ContatosSetup.cs</div>
+  <ul class="node-files">
+    <li><code>ContatosSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Contatos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/ContatosCommands.cs</code></li>
+    <li><code>Comandos/ResponderVinculoCommand.cs</code></li>
+    <li><code>Comandos/SolicitarVinculoCommand.cs</code></li>
+    <li><code>Consultas/ContatosQueries.cs</code></li>
+    <li><code>Consultas/VinculosQueries.cs</code></li>
+    <li><code>Contatos/Comandos/AtualizarContatoCommand.cs</code></li>
+    <li><code>Contatos/Comandos/CadastrarContatoCommand.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Contatos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>Cadastro/_FormCliente.cshtml</code></li>
+    <li><code>Cadastro/_FormEnderecos.cshtml</code></li>
+    <li><code>Cadastro/_FormFisica.cshtml</code></li>
+    <li><code>Cadastro/_FormFornecedor.cshtml</code></li>
+    <li><code>Cadastro/_FormFuncionario.cshtml</code></li>
+    <li><code>Cadastro/_FormJuridica.cshtml</code></li>
+    <li><code>Cadastro/_FormLead.cshtml</code></li>
+    <li><code>Cadastro/_FormPapeis.cshtml</code></li>
+    <li><code>Cadastro/_FormProspect.cshtml</code></li>
+    <li><code>Cadastro/_FormTransportador.cshtml</code></li>
+    <li><code>Cadastro/ContatoFormPageModel.cs</code></li>
+    <li><code>Cadastro/ContatoFormViewModel.cs</code></li>
+    <li><code>Cadastro/Detalhes.cshtml</code></li>
+    <li><code>Cadastro/Detalhes.cshtml.cs</code></li>
+    <li><code>Cadastro/Editar.cshtml</code></li>
+    <li><code>Cadastro/Editar.cshtml.cs</code></li>
+    <li><code>Cadastro/Index.cshtml</code></li>
+    <li><code>Cadastro/Index.cshtml.cs</code></li>
+    <li><code>Cadastro/Novo.cshtml</code></li>
+    <li><code>Cadastro/Novo.cshtml.cs</code></li>
+    <li><code>Cadastro/Relatorio.cshtml</code></li>
+    <li><code>Cadastro/Relatorio.cshtml.cs</code></li>
+    <li><code>Vinculos/Index.cshtml</code></li>
+    <li><code>Vinculos/Index.cshtml.cs</code></li>
+    <li><code>Vinculos/Solicitar.cshtml</code></li>
+    <li><code>Vinculos/Solicitar.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Contatos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/cadastro-index.css</code></li>
+    <li><code>css/cadastro-relatorio.css</code></li>
+    <li><code>css/comum.css</code></li>
+    <li><code>css/vinculos-index.css</code></li>
+    <li><code>css/vinculos-solicitar.css</code></li>
+    <li><code>js/cadastro-editar.js</code></li>
+    <li><code>js/cadastro-index.js</code></li>
+    <li><code>js/cadastro-novo.js</code></li>
+    <li><code>js/cadastro-relatorio.js</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/form-enderecos.js</code></li>
+    <li><code>js/vinculos-index.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Empresas">
+      <h3 class="context-name">Contexto: <code>Empresas</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IEmpresaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Empresa.cs</code></li>
+    <li><code>EmpresaCliente.cs</code></li>
+    <li><code>EmpresaCnaeSecundario.cs</code></li>
+    <li><code>EmpresaFornecedor.cs</code></li>
+    <li><code>EmpresaFuncionario.cs</code></li>
+    <li><code>EmpresaLead.cs</code></li>
+    <li><code>EmpresaProspect.cs</code></li>
+    <li><code>EmpresaTransportador.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>EmpresaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/EmpresasSetup.cs</div>
+  <ul class="node-files">
+    <li><code>EmpresasSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/EmpresasCommands.cs</code></li>
+    <li><code>Consultas/EmpresasQueries.cs</code></li>
+    <li><code>Equipe/Comandos/AtualizarGrupoEquipeCommand.cs</code></li>
+    <li><code>Equipe/Comandos/ConvidarEquipeCommand.cs</code></li>
+    <li><code>Equipe/Comandos/ReenviarConviteEquipeCommand.cs</code></li>
+    <li><code>Equipe/Comandos/RemoverMembroEquipeCommand.cs</code></li>
+    <li><code>Equipe/Comandos/ResponderConviteEquipeCommand.cs</code></li>
+    <li><code>Equipe/Consultas/ListarConvitesUsuarioQuery.cs</code></li>
+    <li><code>Equipe/Consultas/ListarEmpresasUsuarioQuery.cs</code></li>
+    <li><code>Equipe/Consultas/ListarEquipeQuery.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Detalhes.cshtml</code></li>
+    <li><code>Detalhes.cshtml.cs</code></li>
+    <li><code>Editar.cshtml</code></li>
+    <li><code>Editar.cshtml.cs</code></li>
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>Selecionar.cshtml</code></li>
+    <li><code>Selecionar.cshtml.cs</code></li>
+    <li><code>Convite/ResponderConviteEquipe.cshtml</code></li>
+    <li><code>Convite/ResponderConviteEquipe.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Empresas</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/convite-responder-equipe.css</code></li>
+    <li><code>css/editar.css</code></li>
+    <li><code>css/index.css</code></li>
+    <li><code>css/selecionar.css</code></li>
+    <li><code>js/comum.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-ERP">
+      <h3 class="context-name">Contexto: <code>ERP</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/ERP</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>ICategoriaRepositorio.cs</code></li>
+    <li><code>IMarcaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Erp</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>ICategoriaRepositorio.cs</code></li>
+    <li><code>IMarcaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/ERP</div>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Erp</div>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/ERP</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>CategoriaRepositorio.cs</code></li>
+    <li><code>MarcaRepositorio.cs</code></li>
+    <li><code>UnidadeMedidaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Erp</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>CategoriaRepositorio.cs</code></li>
+    <li><code>MarcaRepositorio.cs</code></li>
+    <li><code>UnidadeMedidaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/ERPSetup.cs</div>
+  <ul class="node-files">
+    <li><code>ERPSetup.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/ErpSetup.cs</div>
+  <ul class="node-files">
+    <li><code>ErpSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/ERP</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Consultas/ListarCategoriasQuery.cs</code></li>
+    <li><code>Consultas/ListarMarcasQuery.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Erp</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Consultas/ListarCategoriasQuery.cs</code></li>
+    <li><code>Consultas/ListarMarcasQuery.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/ERP</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>_Layout.cshtml</code></li>
+    <li><code>_ViewStart.cshtml</code></li>
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>Categorias/Index.cshtml</code></li>
+    <li><code>Categorias/Index.cshtml.cs</code></li>
+    <li><code>Marcas/Index.cshtml</code></li>
+    <li><code>Marcas/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Erp</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>_Layout.cshtml</code></li>
+    <li><code>_ViewStart.cshtml</code></li>
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>Categorias/Index.cshtml</code></li>
+    <li><code>Categorias/Index.cshtml.cs</code></li>
+    <li><code>Marcas/Index.cshtml</code></li>
+    <li><code>Marcas/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/ERP</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/categorias-index.css</code></li>
+    <li><code>css/marcas-index.css</code></li>
+    <li><code>js/comum.js</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Erp</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/categorias-index.css</code></li>
+    <li><code>css/marcas-index.css</code></li>
+    <li><code>js/comum.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+    <div class="cross-links">
+      <div class="cross-links-title">Ligações cruzadas (este contexto usa pastas de outro nome)</div>
+      <ul>
+        <li><strong>contexto transversal</strong> → <a href="#ctx-Produto">Menu &#39;Produtos&#39; aponta para Pages/Produto/ — contexto pr&#243;prio, n&#227;o subpasta de ERP</a></li>
+      </ul>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Estoque">
+      <h3 class="context-name">Contexto: <code>Estoque</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Estoque</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IEstoqueRepositorio.cs</code></li>
+    <li><code>IUnidadeMedidaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Erp</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>ICategoriaRepositorio.cs</code></li>
+    <li><code>IMarcaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Estoque</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>AreaEstoque.cs</code></li>
+    <li><code>EstoqueMovimentacao.cs</code></li>
+    <li><code>EstoqueSaldo.cs</code></li>
+    <li><code>LocalEstoque.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Erp</div>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Estoque</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>EstoqueRepositorio.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Erp</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>CategoriaRepositorio.cs</code></li>
+    <li><code>MarcaRepositorio.cs</code></li>
+    <li><code>UnidadeMedidaRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/EstoqueSetup.cs</div>
+  <ul class="node-files">
+    <li><code>EstoqueSetup.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/ErpSetup.cs</div>
+  <ul class="node-files">
+    <li><code>ErpSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Estoque</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/AdicionarSaldoEstoqueCommand.cs</code></li>
+    <li><code>Comandos/RegistrarSaidaEstoqueCommand.cs</code></li>
+    <li><code>Consultas/EstoqueQueries.cs</code></li>
+    <li><code>Consultas/UnidadesMedidaQueries.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Erp</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Consultas/ListarCategoriasQuery.cs</code></li>
+    <li><code>Consultas/ListarMarcasQuery.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Estoque</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Entrada.cshtml</code></li>
+    <li><code>Entrada.cshtml.cs</code></li>
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>Saida.cshtml</code></li>
+    <li><code>Saida.cshtml.cs</code></li>
+    <li><code>UnidadesMedida/Index.cshtml</code></li>
+    <li><code>UnidadesMedida/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Erp</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>_Layout.cshtml</code></li>
+    <li><code>_ViewStart.cshtml</code></li>
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>Categorias/Index.cshtml</code></li>
+    <li><code>Categorias/Index.cshtml.cs</code></li>
+    <li><code>Marcas/Index.cshtml</code></li>
+    <li><code>Marcas/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Estoque</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/entrada.css</code></li>
+    <li><code>css/estoque-index.css</code></li>
+    <li><code>css/saida.css</code></li>
+    <li><code>css/unidadesmedida-index.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/entrada.js</code></li>
+    <li><code>js/estoque-index.js</code></li>
+    <li><code>js/saida.js</code></li>
+    <li><code>js/unidadesmedida-index.js</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Erp</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/categorias-index.css</code></li>
+    <li><code>css/marcas-index.css</code></li>
+    <li><code>js/comum.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+    <div class="cross-links">
+      <div class="cross-links-title">Ligações cruzadas (este contexto usa pastas de outro nome)</div>
+      <ul>
+        <li><strong>aplicacao</strong> → <code>CasosDeUso/Produto/Consultas/ListarProdutosAtivosQuery.cs</code> — Movimenta&#231;&#227;o de estoque consome produtos do contexto Produto</li>
+        <li><strong>dominio_iface</strong> → <code>InterfacesDeRepositorio/Produto/IProdutoRepositorio.cs</code> — Estoque usa IProdutoRepositorio — contrato no contexto Produto</li>
+      </ul>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Fidelizacao">
+      <h3 class="context-name">Contexto: <code>Fidelizacao</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Fidelizacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>ICashbackRepositorio.cs</code></li>
+    <li><code>IFidelidadeRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Fidelizacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>CashbackCredito.cs</code></li>
+    <li><code>CashbackRegra.cs</code></li>
+    <li><code>CashbackSaldo.cs</code></li>
+    <li><code>CashbackToken.cs</code></li>
+    <li><code>CashbackUtilizacao.cs</code></li>
+    <li><code>FidelidadeCarimbo.cs</code></li>
+    <li><code>FidelidadeCartao.cs</code></li>
+    <li><code>FidelidadeLog.cs</code></li>
+    <li><code>FidelidadeSaldo.cs</code></li>
+    <li><code>FidelidadeToken.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Fidelizacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>CashbackRepositorio.cs</code></li>
+    <li><code>FidelidadeRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/FidelizacaoSetup.cs</div>
+  <ul class="node-files">
+    <li><code>FidelizacaoSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Fidelizacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Cashback/Comandos/CashbackRegraCommands.cs</code></li>
+    <li><code>Cashback/Comandos/CreditarCashbackCommand.cs</code></li>
+    <li><code>Cashback/Comandos/DebitarCashbackCommand.cs</code></li>
+    <li><code>Cashback/Comandos/TokensCashbackCommands.cs</code></li>
+    <li><code>Cashback/Consultas/CashbackQueries.cs</code></li>
+    <li><code>Fidelidade/Comandos/FidelidadeCartaoCommands.cs</code></li>
+    <li><code>Fidelidade/Comandos/RegistrarCarimboCommand.cs</code></li>
+    <li><code>Fidelidade/Comandos/ResgatarRecompensaCommand.cs</code></li>
+    <li><code>Fidelidade/Comandos/TokensFidelidadeCommands.cs</code></li>
+    <li><code>Fidelidade/Consultas/FidelidadeQueries.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Fidelizacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>LerQRCode.cshtml</code></li>
+    <li><code>LerQRCode.cshtml.cs</code></li>
+    <li><code>MeuCashback.cshtml</code></li>
+    <li><code>MeuCashback.cshtml.cs</code></li>
+    <li><code>MeusCartoes.cshtml</code></li>
+    <li><code>MeusCartoes.cshtml.cs</code></li>
+    <li><code>Cashback/Editar.cshtml</code></li>
+    <li><code>Cashback/Editar.cshtml.cs</code></li>
+    <li><code>Cashback/Gerar.cshtml</code></li>
+    <li><code>Cashback/Gerar.cshtml.cs</code></li>
+    <li><code>Cashback/Index.cshtml</code></li>
+    <li><code>Cashback/Index.cshtml.cs</code></li>
+    <li><code>Cashback/Novo.cshtml</code></li>
+    <li><code>Cashback/Novo.cshtml.cs</code></li>
+    <li><code>Fidelidade/Editar.cshtml</code></li>
+    <li><code>Fidelidade/Editar.cshtml.cs</code></li>
+    <li><code>Fidelidade/Index.cshtml</code></li>
+    <li><code>Fidelidade/Index.cshtml.cs</code></li>
+    <li><code>Fidelidade/Novo.cshtml</code></li>
+    <li><code>Fidelidade/Novo.cshtml.cs</code></li>
+    <li><code>Fidelidade/Validar.cshtml</code></li>
+    <li><code>Fidelidade/Validar.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Fidelizacao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/cashback-editar.css</code></li>
+    <li><code>css/cashback-gerar.css</code></li>
+    <li><code>css/cashback-index.css</code></li>
+    <li><code>css/cashback-novo.css</code></li>
+    <li><code>css/fidelidade-editar.css</code></li>
+    <li><code>css/fidelidade-index.css</code></li>
+    <li><code>css/fidelidade-novo.css</code></li>
+    <li><code>css/fidelidade-validar.css</code></li>
+    <li><code>css/ler-qrcode.css</code></li>
+    <li><code>css/meu-cashback.css</code></li>
+    <li><code>css/meus-cartoes.css</code></li>
+    <li><code>js/cashback-editar.js</code></li>
+    <li><code>js/cashback-index.js</code></li>
+    <li><code>js/cashback-novo.js</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/fidelidade-editar.js</code></li>
+    <li><code>js/fidelidade-index.js</code></li>
+    <li><code>js/fidelidade-novo.js</code></li>
+    <li><code>js/ler-qrcode.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Financeiro">
+      <h3 class="context-name">Contexto: <code>Financeiro</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Financeiro</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Financeiro</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Financeiro</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Financeiro</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Financeiro</div>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/FinanceiroSetup.cs</div>
+  <ul class="node-files">
+    <li><code>FinanceiroSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Financeiro</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Financeiro</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Financeiro</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Financeiro</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Financeiro</code></div>
+</div>
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Fiscal">
+      <h3 class="context-name">Contexto: <code>Fiscal</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Fiscal</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IFiscalRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Fiscal</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>CertificadoDigital.cs</code></li>
+    <li><code>ConfiguracaoEmissao.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Fiscal</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>FiscalRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/FiscalSetup.cs</div>
+  <ul class="node-files">
+    <li><code>FiscalSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Fiscal</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Parametros/Comandos/ConfiguracaoEmissaoCommands.cs</code></li>
+    <li><code>Parametros/Consultas/ConfiguracaoEmissaoQueries.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Fiscal</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>Parametros/Editar.cshtml</code></li>
+    <li><code>Parametros/Editar.cshtml.cs</code></li>
+    <li><code>Parametros/Index.cshtml</code></li>
+    <li><code>Parametros/Index.cshtml.cs</code></li>
+    <li><code>Parametros/Novo.cshtml</code></li>
+    <li><code>Parametros/Novo.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Fiscal</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/parametros-editar.css</code></li>
+    <li><code>css/parametros-index.css</code></li>
+    <li><code>css/parametros-novo.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/parametros-editar.js</code></li>
+    <li><code>js/parametros-novo.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Geral">
+      <h3 class="context-name">Contexto: <code>Geral</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IAuditoriaRepositorio.cs</code></li>
+    <li><code>IMensagensRepositorio.cs</code></li>
+    <li><code>INotificacaoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Geral</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Geral</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>AuditoriaRepositorio.cs</code></li>
+    <li><code>MensagensRepositorio.cs</code></li>
+    <li><code>NotificacaoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/GeralSetup.cs</div>
+  <ul class="node-files">
+    <li><code>GeralSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/EnviarMensagemSistemaCommand.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>SeletorDemo/Index.cshtml</code></li>
+    <li><code>SeletorDemo/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/seletordemo-index.css</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Gestao">
+      <h3 class="context-name">Contexto: <code>Gestao</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Gestao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IVendedorRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Gestao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>TipoVendedor.cs</code></li>
+    <li><code>UsuarioProfissao.cs</code></li>
+    <li><code>Vendedor.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Gestao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>TipoVendedorRepositorio.cs</code></li>
+    <li><code>VendedorRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/GestaoSetup.cs</div>
+  <ul class="node-files">
+    <li><code>GestaoSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Gestao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/CadastrarTipoVendedorCommand.cs</code></li>
+    <li><code>Comandos/CadastrarVendedorCommand.cs</code></li>
+    <li><code>Comandos/DeletarVendedoresEmLoteCommand.cs</code></li>
+    <li><code>Queries/ListarTiposVendedorQuery.cs</code></li>
+    <li><code>Queries/ListarVendedoresPaginadoQuery.cs</code></li>
+    <li><code>Queries/ListarVendedoresQuery.cs</code></li>
+    <li><code>Queries/ObterTipoVendedorQuery.cs</code></li>
+    <li><code>Queries/ObterVendedorQuery.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Gestao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Configuracoes/Index.cshtml</code></li>
+    <li><code>Configuracoes/Index.cshtml.cs</code></li>
+    <li><code>TiposVendedor/Editar.cshtml</code></li>
+    <li><code>TiposVendedor/Editar.cshtml.cs</code></li>
+    <li><code>TiposVendedor/Index.cshtml</code></li>
+    <li><code>TiposVendedor/Index.cshtml.cs</code></li>
+    <li><code>TiposVendedor/Novo.cshtml</code></li>
+    <li><code>TiposVendedor/Novo.cshtml.cs</code></li>
+    <li><code>Vendedores/Detalhes.cshtml</code></li>
+    <li><code>Vendedores/Detalhes.cshtml.cs</code></li>
+    <li><code>Vendedores/Editar.cshtml</code></li>
+    <li><code>Vendedores/Editar.cshtml.cs</code></li>
+    <li><code>Vendedores/Index.cshtml</code></li>
+    <li><code>Vendedores/Index.cshtml.cs</code></li>
+    <li><code>Vendedores/Novo.cshtml</code></li>
+    <li><code>Vendedores/Novo.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Gestao</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/configuracoes-index.css</code></li>
+    <li><code>css/tiposvendedor-editar.css</code></li>
+    <li><code>css/tiposvendedor-index.css</code></li>
+    <li><code>css/tiposvendedor-novo.css</code></li>
+    <li><code>css/vendedores-editar.css</code></li>
+    <li><code>css/vendedores-index.css</code></li>
+    <li><code>css/vendedores-novo.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/configuracoes-index.js</code></li>
+    <li><code>js/tiposvendedor-editar.js</code></li>
+    <li><code>js/tiposvendedor-index.js</code></li>
+    <li><code>js/tiposvendedor-novo.js</code></li>
+    <li><code>js/vendedores-editar.js</code></li>
+    <li><code>js/vendedores-index.js</code></li>
+    <li><code>js/vendedores-novo.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+    <div class="cross-links">
+      <div class="cross-links-title">Ligações cruzadas (este contexto usa pastas de outro nome)</div>
+      <ul>
+        <li><strong>infra_repo</strong> → <code>Repositorios/InfraAdmin/DocumentoRepositorio.cs</code> — DocumentoRepositorio foi movido para InfraAdmin</li>
+      </ul>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-HelpDesk">
+      <h3 class="context-name">Contexto: <code>HelpDesk</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/HelpDesk</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>HelpDesk</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/HelpDesk</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>HelpDesk</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/HelpDesk</div>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/HelpDeskSetup.cs</div>
+  <ul class="node-files">
+    <li><code>HelpDeskSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/HelpDesk</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>HelpDesk</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/HelpDesk</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/HelpDesk</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>HelpDesk</code></div>
+</div>
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-InfraAdmin">
+      <h3 class="context-name">Contexto: <code>InfraAdmin</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/InfraAdmin</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IDocumentoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/InfraAdmin</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>DocumentoAceite.cs</code></li>
+    <li><code>DocumentoLegal.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/InfraAdmin</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>DocumentoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/InfraAdminSetup.cs</div>
+  <ul class="node-files">
+    <li><code>InfraAdminSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/InfraAdmin</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Consultas/InfraAdminQueries.cs</code></li>
+    <li><code>Consultas/ListarTentativasLoginQuery.cs</code></li>
+    <li><code>Documentos/DocumentosAdminQueries.cs</code></li>
+    <li><code>Documentos/Comandos/RegistrarAceiteCommand.cs</code></li>
+    <li><code>Documentos/Consultas/ObterDocumentosAtivosParaAceiteQuery.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/InfraAdmin</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>Documentos/Editar.cshtml</code></li>
+    <li><code>Documentos/Editar.cshtml.cs</code></li>
+    <li><code>Documentos/Index.cshtml</code></li>
+    <li><code>Documentos/Index.cshtml.cs</code></li>
+    <li><code>Documentos/Novo.cshtml</code></li>
+    <li><code>Documentos/Novo.cshtml.cs</code></li>
+    <li><code>Grupos/Editar.cshtml</code></li>
+    <li><code>Grupos/Editar.cshtml.cs</code></li>
+    <li><code>Grupos/Index.cshtml</code></li>
+    <li><code>Grupos/Index.cshtml.cs</code></li>
+    <li><code>Grupos/Novo.cshtml</code></li>
+    <li><code>Grupos/Novo.cshtml.cs</code></li>
+    <li><code>GruposSaaS/Editar.cshtml</code></li>
+    <li><code>GruposSaaS/Editar.cshtml.cs</code></li>
+    <li><code>GruposSaaS/Index.cshtml</code></li>
+    <li><code>GruposSaaS/Index.cshtml.cs</code></li>
+    <li><code>GruposSaaS/Novo.cshtml</code></li>
+    <li><code>GruposSaaS/Novo.cshtml.cs</code></li>
+    <li><code>GruposSaaS/Usuarios.cshtml</code></li>
+    <li><code>GruposSaaS/Usuarios.cshtml.cs</code></li>
+    <li><code>HistoricoLogin/Index.cshtml</code></li>
+    <li><code>HistoricoLogin/Index.cshtml.cs</code></li>
+    <li><code>Logs/Index.cshtml</code></li>
+    <li><code>Logs/Index.cshtml.cs</code></li>
+    <li><code>SaaS/Comunicados/Criar.cshtml</code></li>
+    <li><code>SaaS/Comunicados/Criar.cshtml.cs</code></li>
+    <li><code>SaaS/Comunicados/Detalhes.cshtml</code></li>
+    <li><code>SaaS/Comunicados/Detalhes.cshtml.cs</code></li>
+    <li><code>SaaS/Comunicados/Index.cshtml</code></li>
+    <li><code>SaaS/Comunicados/Index.cshtml.cs</code></li>
+    <li><code>SaaS/Contas/Index.cshtml</code></li>
+    <li><code>SaaS/Contas/Index.cshtml.cs</code></li>
+    <li><code>SaaS/Faturas/Index.cshtml</code></li>
+    <li><code>SaaS/Faturas/Index.cshtml.cs</code></li>
+    <li><code>SaaS/Planos/Editar.cshtml</code></li>
+    <li><code>SaaS/Planos/Editar.cshtml.cs</code></li>
+    <li><code>SaaS/Planos/Index.cshtml</code></li>
+    <li><code>SaaS/Planos/Index.cshtml.cs</code></li>
+    <li><code>SaaS/Planos/Novo.cshtml</code></li>
+    <li><code>SaaS/Planos/Novo.cshtml.cs</code></li>
+    <li><code>Sessao/Index.cshtml</code></li>
+    <li><code>Sessao/Index.cshtml.cs</code></li>
+    <li><code>UltimosConectados/Index.cshtml</code></li>
+    <li><code>UltimosConectados/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/InfraAdmin</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/documentos-index.css</code></li>
+    <li><code>css/grupos-editar.css</code></li>
+    <li><code>css/grupos-index.css</code></li>
+    <li><code>css/grupos-novo.css</code></li>
+    <li><code>css/grupossaas-editar.css</code></li>
+    <li><code>css/grupossaas-index.css</code></li>
+    <li><code>css/grupossaas-novo.css</code></li>
+    <li><code>css/grupossaas-usuarios.css</code></li>
+    <li><code>css/logs-index.css</code></li>
+    <li><code>css/saas-comunicados-index.css</code></li>
+    <li><code>css/saas-contas-index.css</code></li>
+    <li><code>css/saas-faturas-index.css</code></li>
+    <li><code>css/saas-planos-editar.css</code></li>
+    <li><code>css/saas-planos-index.css</code></li>
+    <li><code>css/saas-planos-novo.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/documentos-index.js</code></li>
+    <li><code>js/grupos-editar.js</code></li>
+    <li><code>js/grupos-index.js</code></li>
+    <li><code>js/grupos-novo.js</code></li>
+    <li><code>js/grupossaas-editar.js</code></li>
+    <li><code>js/grupossaas-index.js</code></li>
+    <li><code>js/grupossaas-novo.js</code></li>
+    <li><code>js/grupossaas-usuarios.js</code></li>
+    <li><code>js/logs-index.js</code></li>
+    <li><code>js/saas-contas-index.js</code></li>
+    <li><code>js/saas-faturas-index.js</code></li>
+    <li><code>js/saas-planos-editar.js</code></li>
+    <li><code>js/saas-planos-index.js</code></li>
+    <li><code>js/saas-planos-novo.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Logistica">
+      <h3 class="context-name">Contexto: <code>Logistica</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Logistica</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Logistica</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Logistica</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Logistica</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Logistica</div>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/LogisticaSetup.cs</div>
+  <ul class="node-files">
+    <li><code>LogisticaSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Logistica</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Logistica</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Logistica</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Logistica</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Logistica</code></div>
+</div>
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Mensagens">
+      <h3 class="context-name">Contexto: <code>Mensagens</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Mensagens</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Mensagens</code></div>
+</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IAuditoriaRepositorio.cs</code></li>
+    <li><code>IMensagensRepositorio.cs</code></li>
+    <li><code>INotificacaoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Mensagens</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Mensagens</code></div>
+</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Geral</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Mensagens</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Mensagens</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Mensagens</code></div>
+</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>AuditoriaRepositorio.cs</code></li>
+    <li><code>MensagensRepositorio.cs</code></li>
+    <li><code>NotificacaoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/MensagensSetup.cs</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Mensagens</code></div>
+</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/GeralSetup.cs</div>
+  <ul class="node-files">
+    <li><code>GeralSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Mensagens</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Consultas/MensagensQueries.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/EnviarMensagemSistemaCommand.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Mensagens</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>SeletorDemo/Index.cshtml</code></li>
+    <li><code>SeletorDemo/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Mensagens</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/index.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/index.js</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/seletordemo-index.css</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+    <div class="cross-links">
+      <div class="cross-links-title">Ligações cruzadas (este contexto usa pastas de outro nome)</div>
+      <ul>
+        <li><strong>dominio_iface</strong> → <code>InterfacesDeRepositorio/Geral/IMensagensRepositorio.cs</code> — Reposit&#243;rio fica em Geral, n&#227;o em Mensagens</li>
+      </ul>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Notificacoes">
+      <h3 class="context-name">Contexto: <code>Notificacoes</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Notificacoes</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Notificacoes</code></div>
+</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IAuditoriaRepositorio.cs</code></li>
+    <li><code>IMensagensRepositorio.cs</code></li>
+    <li><code>INotificacaoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Notificacoes</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Notificacoes</code></div>
+</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Geral</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Notificacoes</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Notificacoes</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Notificacoes</code></div>
+</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>AuditoriaRepositorio.cs</code></li>
+    <li><code>MensagensRepositorio.cs</code></li>
+    <li><code>NotificacaoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/NotificacoesSetup.cs</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Notificacoes</code></div>
+</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/GeralSetup.cs</div>
+  <ul class="node-files">
+    <li><code>GeralSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Notificacoes</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Consultas/NotificacoesQueries.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/EnviarMensagemSistemaCommand.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Notificacoes</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>SeletorDemo/Index.cshtml</code></li>
+    <li><code>SeletorDemo/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Notificacoes</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/index.css</code></li>
+  </ul>
+</div>
+
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Geral</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/seletordemo-index.css</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+    <div class="cross-links">
+      <div class="cross-links-title">Ligações cruzadas (este contexto usa pastas de outro nome)</div>
+      <ul>
+        <li><strong>dominio_iface</strong> → <code>InterfacesDeRepositorio/Geral/INotificacaoRepositorio.cs</code> — Reposit&#243;rio fica em Geral</li>
+      </ul>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Perfil">
+      <h3 class="context-name">Contexto: <code>Perfil</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Perfil</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Perfil</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Perfil</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Perfil</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Perfil</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Perfil</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/PerfilSetup.cs</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Perfil</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Perfil</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/UsuarioPerfilCommands.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Perfil</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>MeuPerfil.cshtml</code></li>
+    <li><code>MeuPerfil.cshtml.cs</code></li>
+    <li><code>MeuPerfilDesativar.cshtml</code></li>
+    <li><code>MeuPerfilDesativar.cshtml.cs</code></li>
+    <li><code>MeusVinculos/Index.cshtml</code></li>
+    <li><code>MeusVinculos/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Perfil</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/meuperfil.css</code></li>
+    <li><code>css/meuperfildesativar.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/meuperfil.js</code></li>
+    <li><code>js/meuperfildesativar.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Precos">
+      <h3 class="context-name">Contexto: <code>Precos</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Precos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IContextoPrecoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Precos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>ContextoPreco.cs</code></li>
+    <li><code>Preco.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Precos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>ContextoPrecoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/PrecosSetup.cs</div>
+  <ul class="node-files">
+    <li><code>PrecosSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Precos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/AtualizarContextoPrecoCommand.cs</code></li>
+    <li><code>Comandos/CadastrarContextoPrecoCommand.cs</code></li>
+    <li><code>Comandos/DefinirPrecoCommand.cs</code></li>
+    <li><code>Comandos/DeletarContextoPrecoCommand.cs</code></li>
+    <li><code>Consultas/ContextoPrecoQueries.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Precos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Editar.cshtml</code></li>
+    <li><code>Editar.cshtml.cs</code></li>
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Precos</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/precos-editar.css</code></li>
+    <li><code>css/precos-index.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/precos-editar.js</code></li>
+    <li><code>js/precos-index.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Principal">
+      <h3 class="context-name">Contexto: <code>Principal</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Principal</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Principal</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Principal</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Principal</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Principal</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Principal</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/PrincipalSetup.cs</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Principal</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Principal</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Consultas/DashboardQueries.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Principal</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Principal</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/index.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/index.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Produto">
+      <h3 class="context-name">Contexto: <code>Produto</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Produto</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IProdutoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Produto</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Produto.cs</code></li>
+    <li><code>ProdutoVariacao.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Produto</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>ProdutoRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/ProdutoSetup.cs</div>
+  <ul class="node-files">
+    <li><code>ProdutoSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Produto</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comandos/AtualizarProdutoCommand.cs</code></li>
+    <li><code>Comandos/CadastrarProdutoCommand.cs</code></li>
+    <li><code>Comandos/DeletarProdutoCommand.cs</code></li>
+    <li><code>Consultas/ListarProdutosAtivosQuery.cs</code></li>
+    <li><code>Consultas/ListarProdutosVariacoesQuery.cs</code></li>
+    <li><code>Consultas/ListarProdutosPaginadoQuery.cs</code></li>
+    <li><code>Consultas/ObterProdutoQuery.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Produto</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Editar.cshtml</code></li>
+    <li><code>Editar.cshtml.cs</code></li>
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+    <li><code>Novo.cshtml</code></li>
+    <li><code>Novo.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Produto</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/produtos-editar.css</code></li>
+    <li><code>css/produtos-index.css</code></li>
+    <li><code>css/produtos-novo.css</code></li>
+    <li><code>js/produtos-editar.js</code></li>
+    <li><code>js/produtos-novo.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+    <div class="cross-links">
+      <div class="cross-links-title">Ligações cruzadas (este contexto usa pastas de outro nome)</div>
+      <ul>
+        <li><strong>menu compartilhado</strong> → <code>MenuSistemaDefinicoes.cs</code> — Aparece no menu ERP (&#39;Produtos&#39;) e &#193;rea de Servi&#231;os (&#39;Cat&#225;logo de Servi&#231;os&#39;) — mesma tela, permiss&#227;o Produto.Visualizar</li>
+      </ul>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-SaaS">
+      <h3 class="context-name">Contexto: <code>SaaS</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/SaaS</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>IAssinaturaSaaSRepositorio.cs</code></li>
+    <li><code>IComunicadoSaaSRepositorio.cs</code></li>
+    <li><code>IGrupoUsuarioSaaSRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/SaaS</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>ComunicadoSaaS.cs</code></li>
+    <li><code>ContaAddon.cs</code></li>
+    <li><code>ContaAssinatura.cs</code></li>
+    <li><code>FaturaSaaS.cs</code></li>
+    <li><code>FeatureSaaS.cs</code></li>
+    <li><code>LeituraComunicadoSaaS.cs</code></li>
+    <li><code>OpcaoComunicadoSaaS.cs</code></li>
+    <li><code>PlanoFeatureSaaS.cs</code></li>
+    <li><code>PlanoSaaS.cs</code></li>
+    <li><code>StatusAssinatura.cs</code></li>
+    <li><code>StatusFatura.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/SaaS</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>AssinaturaSaaSRepositorio.cs</code></li>
+    <li><code>ComunicadoSaaSRepositorio.cs</code></li>
+    <li><code>GrupoUsuarioSaaSRepositorio.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/SaaSSetup.cs</div>
+  <ul class="node-files">
+    <li><code>SaaSSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/SaaS</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Assinatura/AssinaturaSaaSAdminQueries.cs</code></li>
+    <li><code>Comandos/CadastrarGrupoSaaSCommand.cs</code></li>
+    <li><code>Comandos/DesvincularUsuarioGrupoSaaSCommand.cs</code></li>
+    <li><code>Comandos/VincularUsuarioGrupoSaaSCommand.cs</code></li>
+    <li><code>Comunicados/ComunicadosAdminQueries.cs</code></li>
+    <li><code>Comunicados/Comandos/RegistrarLeituraComunicadoCommand.cs</code></li>
+    <li><code>Comunicados/Consultas/ConsultarComunicadosPendentesQuery.cs</code></li>
+    <li><code>Queries/ListarGruposSaaSQuery.cs</code></li>
+    <li><code>Queries/ListarRecursosSaaSQuery.cs</code></li>
+    <li><code>Queries/ListarUsuariosDoGrupoSaaSQuery.cs</code></li>
+    <li><code>Queries/ObterGrupoSaaSQuery.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/SaaS</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Comunicados/Pendentes.cshtml</code></li>
+    <li><code>Comunicados/Pendentes.cshtml.cs</code></li>
+    <li><code>Suspensa/Index.cshtml</code></li>
+    <li><code>Suspensa/Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/SaaS</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>css/suspensa-index.css</code></li>
+    <li><code>js/comum.js</code></li>
+    <li><code>js/suspensa-index.js</code></li>
+  </ul>
+</div>
+
+      </div>
+    </div>
+    <div class="cross-links">
+      <div class="cross-links-title">Ligações cruzadas (este contexto usa pastas de outro nome)</div>
+      <ul>
+        <li><strong>web_pages</strong> → <code>Pages/InfraAdmin/SaaS/</code> — Telas admin SaaS ficam dentro de InfraAdmin/SaaS</li>
+      </ul>
+    </div>
+
+    </article>
+    <article class="context-block" id="ctx-Varejo">
+      <h3 class="context-name">Contexto: <code>Varejo</code></h3>
+    <div class="gene-row">
+      <div class="gene-col">
+        <div class="gene-col-title">1 &#183; Dom&#237;nio — Interfaces de Reposit&#243;rio</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/InterfacesDeRepositorio/Varejo</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Varejo</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">2 &#183; Dom&#237;nio — Entidades</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Dominio/Entidades/Varejo</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Varejo</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">3 &#183; Infraestrutura — Reposit&#243;rios (Dapper)</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/AcessoADados/Repositorios/Varejo</div>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">4 &#183; Infraestrutura — Inje&#231;&#227;o de Depend&#234;ncia</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Infraestrutura/InjecaoDependencia/Contextos/VarejoSetup.cs</div>
+  <ul class="node-files">
+    <li><code>VarejoSetup.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">5 &#183; Aplica&#231;&#227;o — Casos de Uso</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Aplicacao/CasosDeUso/Varejo</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Varejo</code></div>
+</div>
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">6 &#183; Web — Razor Pages</div>
+<div class="gene-node gene-node--ok">
+  <div class="node-status">Presente</div>
+  <div class="node-path">ModuloMonolitico.Web/Pages/Varejo</div>
+  <div class="node-subtitle">Todos os arquivos</div>
+  <ul class="node-files node-files--full">
+    <li><code>Index.cshtml</code></li>
+    <li><code>Index.cshtml.cs</code></li>
+  </ul>
+</div>
+
+      </div>
+      <div class="gene-arrow" aria-hidden="true">→</div>
+      <div class="gene-col">
+        <div class="gene-col-title">7 &#183; Web — Assets est&#225;ticos</div>
+<div class="gene-node gene-node--missing">
+  <div class="node-status">Ausente</div>
+  <div class="node-path">ModuloMonolitico.Web/wwwroot/Contextos/Varejo</div>
+  <div class="node-detail">Não existe no disco para o contexto <code>Varejo</code></div>
+</div>
+      </div>
+    </div>
+
+    </article>
+  </section>
+  <section class="orphans">
+    <h2>Pastas fora do par Web/Pages (transversais)</h2>
+    <p>Existem no disco mas não têm pasta homônima em <code>Web/Pages</code>:</p>
+    <ul class="orphan-list">
+      <li><code>Servicos</code> — Entidades/Servicos</li>
+      <li><code>Geral</code> — Repositorios/Geral, InterfacesDeRepositorio/Geral</li>
+    </ul>
+  </section>
+</div>
+</body></html>

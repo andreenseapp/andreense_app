@@ -1,0 +1,46 @@
+/* InfraAdmin — Documentos Legais Editar */
+
+.editar-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.editar-card {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 2.5rem;
+}
+
+.input-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 640px) {
+    .input-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.campo-grupo-texto {
+    margin-bottom: 2.5rem;
+}
+
+.campo-grupo-texto textarea {
+    min-height: 400px;
+    font-family: 'Courier New', monospace;
+    line-height: 1.6;
+}
+
+.campo-somente-leitura input[disabled] {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+.btn-salvar {
+    height: 50px;
+    font-weight: 700;
+}

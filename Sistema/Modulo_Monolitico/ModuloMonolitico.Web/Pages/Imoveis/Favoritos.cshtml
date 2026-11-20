@@ -1,0 +1,70 @@
+@page
+@using ModuloMonolitico.Dominio.Constantes
+@using ModuloMonolitico.Dominio.Configuracoes
+@model ModuloMonolitico.Web.Pages.Imoveis.FavoritosModel
+@{
+    ViewData[ViewDataKeys.Title] = MensagensSistema.Imobiliaria.TituloMeusFavoritos + " — Imóveis";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/comum.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/favoritos.css" asp-append-version="true" />
+}
+
+<div class="favoritos-gestao"
+     id="favoritos-gestao"
+     data-pagina-favoritos="true"
+     data-url-favoritar="@ModuloRotas.Imoveis.Favoritar"
+     data-url-login="@Model.UrlLogin"
+     data-url-imoveis="@Model.UrlImoveis"
+     data-msg-vazio="@MensagensSistema.Imobiliaria.NenhumFavorito"
+     data-msg-explorar="@MensagensSistema.Imobiliaria.ExplorarImoveis">
+    <div class="favoritos-gestao-topo">
+        <div>
+            <a class="favoritos-gestao-voltar" href="@Model.UrlImoveis">← @MensagensSistema.Imobiliaria.VoltarAosImoveis</a>
+            <h1 class="favoritos-gestao-titulo">@MensagensSistema.Imobiliaria.TituloMeusFavoritos</h1>
+        </div>
+    </div>
+
+    @if (Model.Resultado.TotalItens > 0)
+    {
+        <div class="favoritos-gestao-info">
+            <span><strong>@Model.Resultado.TotalItens</strong> imóvel(is) favoritado(s)</span>
+        </div>
+
+        <div class="imob-grid" id="favoritos-grid">
+            @{ ViewData[ViewDataKeys.FavoritosIds] = Model.FavoritosIds; }
+            @foreach (var anuncio in Model.Resultado.Itens)
+            {
+                <partial name="Components/_AnuncioCard" model="anuncio" />
+            }
+        </div>
+
+        @if (Model.Resultado.TotalPaginas > 1)
+        {
+            <div class="imob-paginacao">
+                @for (int p = 1; p <= Model.Resultado.TotalPaginas; p++)
+                {
+                    <a href="?pagina=@p"
+                       class="paginacao-btn @(p == Model.Resultado.PaginaAtual ? "paginacao-btn--ativo" : "")">@p</a>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <div class="favoritos-gestao-vazio" id="favoritos-vazio">
+            <div class="favoritos-gestao-vazio-icone" aria-hidden="true">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </div>
+            <p>@MensagensSistema.Imobiliaria.NenhumFavorito</p>
+            <a class="favoritos-gestao-explorar" href="@Model.UrlImoveis">@MensagensSistema.Imobiliaria.ExplorarImoveis</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Imobiliaria/js/favoritos.js" asp-append-version="true"></script>
+}

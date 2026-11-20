@@ -1,0 +1,46 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.Experiencias.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Experiências Profissionais";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo" class="link-voltar-secao">← Meu Currículo</a>
+        <h1 class="titulo-pagina">💼 Experiências Profissionais</h1>
+    </div>
+    <div class="cabecalho-acoes">
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Experiencias_Novo" class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nova experiência
+        </a>
+    </div>
+</div>
+
+@if (!Model.Experiencias.Any())
+{
+    <div class="lista-vazia">
+        <p>Nenhuma experiência cadastrada ainda.</p>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Experiencias_Novo" class="btn btn-primary">Adicionar primeira experiência</a>
+    </div>
+}
+else
+{
+    <div class="lista-itens-curriculo">
+        @foreach (var exp in Model.Experiencias)
+        {
+            <div class="item-curriculo">
+                <div class="item-curriculo-info">
+                    <strong class="item-titulo">@exp.Cargo</strong>
+                    <span class="item-subtitulo">@exp.Empresa@(!string.IsNullOrWhiteSpace(exp.Cidade) ? $" · {exp.Cidade}" : "")</span>
+                    <span class="item-periodo">@exp.DataInicio.ToString("MM/yyyy") — @(exp.EmAndamento ? "Presente" : exp.DataFim?.ToString("MM/yyyy"))</span>
+                    @if (!string.IsNullOrWhiteSpace(exp.Descricao))
+                    {
+                        <p class="item-descricao">@exp.Descricao</p>
+                    }
+                </div>
+                <a href="@ModuloRotas.Curriculos.MeuCurriculo_Experiencias_Editar?id=@exp.Id" class="btn btn-secondary btn-sm">Editar</a>
+            </div>
+        }
+    </div>
+}

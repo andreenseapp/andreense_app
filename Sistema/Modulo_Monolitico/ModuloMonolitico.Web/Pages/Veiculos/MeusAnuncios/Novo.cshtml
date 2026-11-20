@@ -1,0 +1,154 @@
+@page "/Contextos/Veiculos/MeusAnuncios/Novo"
+@model ModuloMonolitico.Web.Pages.Veiculos.MeusAnuncios.NovoModel
+@{
+    ViewData["Title"] = "Novo Anúncio de Veículo";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Veiculos/css/comum.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Veiculos/css/form-anuncio.css" asp-append-version="true" />
+}
+
+<div class="veic-form-page">
+    <div class="veic-form-header">
+        <a href="@ModuloRotas.VeiculosSaaS.MeusAnuncios" class="btn-voltar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Meus Veículos
+        </a>
+        <h1 class="veic-form-titulo">Novo Anúncio</h1>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="veic-form" id="form-novo-veiculo">
+        @Html.AntiForgeryToken()
+
+        <div class="veic-form-secao">
+            <h2 class="veic-form-secao-titulo">Dados do Veículo</h2>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <app-input asp-for="TipoVeiculo" label="Tipo de Veículo" type="hidden" value="carro" />
+                    <label class="app-label">Tipo de Veículo</label>
+                    <app-select asp-for="TipoVeiculo">
+                        <option value="carro">Carro</option>
+                        <option value="moto">Moto</option>
+                        <option value="caminhao">Caminhão</option>
+                        <option value="utilitario">Utilitário</option>
+                    </app-select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <app-input asp-for="Marca" label="Marca *" placeholder="Ex: Toyota, Honda, Ford..." />
+                </div>
+                <div class="form-col">
+                    <app-input asp-for="Modelo" label="Modelo *" placeholder="Ex: Corolla, Civic, Ka..." />
+                </div>
+                <div class="form-col">
+                    <app-input asp-for="Versao" label="Versão" placeholder="Ex: 1.8 XEi, 2.0 EX..." />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <app-input asp-for="AnoFabricacao" label="Ano de Fabricação *" type="number" />
+                </div>
+                <div class="form-col">
+                    <app-input asp-for="AnoModelo" label="Ano do Modelo *" type="number" />
+                </div>
+                <div class="form-col">
+                    <app-input asp-for="NumeroPortas" label="Nº de Portas" type="number" placeholder="Ex: 4" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <app-input asp-for="Quilometragem" label="Quilometragem *" type="number" placeholder="Ex: 50000" />
+                </div>
+                <div class="form-col">
+                    <app-input asp-for="Cor" label="Cor *" placeholder="Ex: Prata, Branco, Preto..." />
+                </div>
+                <div class="form-col">
+                    <app-input asp-for="Placa" label="Placa" placeholder="Ex: ABC-1234" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <label class="app-label">Combustível *</label>
+                    <app-select asp-for="Combustivel">
+                        <option value="">Selecione...</option>
+                        <option value="flex">Flex</option>
+                        <option value="gasolina">Gasolina</option>
+                        <option value="etanol">Etanol</option>
+                        <option value="diesel">Diesel</option>
+                        <option value="eletrico">Elétrico</option>
+                        <option value="hibrido">Híbrido</option>
+                    </app-select>
+                </div>
+                <div class="form-col">
+                    <label class="app-label">Câmbio *</label>
+                    <app-select asp-for="Cambio">
+                        <option value="">Selecione...</option>
+                        <option value="manual">Manual</option>
+                        <option value="automatico">Automático</option>
+                        <option value="cvt">CVT</option>
+                        <option value="automatizado">Automatizado</option>
+                    </app-select>
+                </div>
+            </div>
+        </div>
+
+        <div class="veic-form-secao">
+            <h2 class="veic-form-secao-titulo">Anúncio</h2>
+
+            <div class="form-row">
+                <div class="form-col form-col--wide">
+                    <app-input asp-for="Titulo" label="Título do Anúncio *" placeholder="Ex: Toyota Corolla XEi 2019 — Único Dono" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col form-col--wide">
+                    <app-textarea asp-for="Descricao" label="Descrição" placeholder="Descreva o estado de conservação, histórico de revisões, opcionais, etc." rows="5" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <app-input asp-for="Preco" label="Preço *" type="number" placeholder="Ex: 45000" />
+                </div>
+                <div class="form-col">
+                    <app-input asp-for="ContatoWhatsapp" label="WhatsApp para contato" placeholder="(11) 90000-0000" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <app-checkbox asp-for="AceitaTroca" label="Aceita troca" />
+                </div>
+            </div>
+        </div>
+
+        <div class="veic-form-secao">
+            <h2 class="veic-form-secao-titulo">Fotos</h2>
+            <p class="veic-form-ajuda">Adicione até 20 fotos. A primeira foto será a capa do anúncio.</p>
+            <input type="file" name="Fotos" id="input-fotos" multiple accept="image/*" class="input-fotos" />
+            <label for="input-fotos" class="btn-adicionar-fotos">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                Selecionar fotos
+            </label>
+            <div class="fotos-preview" id="fotos-preview"></div>
+        </div>
+
+        <div class="veic-form-acoes">
+            <a href="@ModuloRotas.VeiculosSaaS.MeusAnuncios" class="btn-cancelar">Cancelar</a>
+            <app-button type="submit">Publicar anúncio</app-button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Veiculos/js/form-anuncio.js" asp-append-version="true"></script>
+}

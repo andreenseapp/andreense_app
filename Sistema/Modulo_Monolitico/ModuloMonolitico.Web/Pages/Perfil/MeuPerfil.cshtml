@@ -1,0 +1,246 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuPerfilModel
+@{
+    ViewData[ViewDataKeys.Title] = "Meu Perfil";
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Perfil/css/meuperfil.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/Contextos/Perfil/js/meuperfil.js" asp-append-version="true"></script>
+}
+
+<main class="main-content meu-perfil-container">
+    <div class="cabecalho-pagina">
+        <div>
+            <div class="selo-pagina">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Perfil
+            </div>
+            <h1 class="titulo-pagina">Meu Perfil</h1>
+            <p class="subtitulo-pagina">Suas informações de conta e preferências.</p>
+        </div>
+    </div>
+
+    <div class="profile-grid">
+
+        <!-- Card: Identidade -->
+        <div class="cartao-perfil cartao-perfil--completo">
+            <div class="cabecalho-cartao-perfil">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span class="titulo-cartao-perfil">Informações Pessoais</span>
+            </div>
+            <div class="corpo-cartao-perfil">
+                <div class="avatar-block">
+                    <div id="avatar-container" class="envoltorio-avatar">
+                        @if (!string.IsNullOrEmpty(Model.UrlFoto))
+                        {
+                            <img src="@Model.UrlFoto" class="avatar-grande" alt="Foto de Perfil" />
+                        }
+                        else
+                        {
+                            <div class="avatar-grande" aria-hidden="true">@Model.LetraAvatar</div>
+                        }
+                        <div class="avatar-edit-badge">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#121212" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        </div>
+                    </div>
+
+                    <form id="formulario-envio-foto" class="formulario-envio-foto" method="post" asp-page-handler="EnviarFoto" enctype="multipart/form-data">
+                        <app-input type="file" id="input-foto" name="arquivo" accept="image/*" />
+                    </form>
+
+                    <div class="avatar-info">
+                        <div class="avatar-name">@Model.NomeAtual</div>
+                        <div class="avatar-email">@Model.EmailAtual</div>
+                        <div class="avatar-badge">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            Titular da Conta
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post" id="formulario-perfil">
+                    @Html.AntiForgeryToken()
+
+                    <h3 class="titulo-secao-formulario">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        Informações Pessoais
+                    </h3>
+
+                    <div class="grade-formulario-2">
+                        <app-input asp-for="Formulario.Nome"
+                                   label="Nome Completo"
+                                   type="text"
+                                   required="required"
+                                   maxlength="200" />
+
+                        <app-input asp-for="Formulario.Email"
+                                   label="E-mail de Acesso (Não editável)"
+                                   type="email"
+                                   disabled="disabled" />
+                    </div>
+
+                    <div class="acoes-formulario">
+                        <a href="@ModuloRotas.Autenticacao.Sair" class="botao botao-contorno botao-sair">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                            Sair da Conta
+                        </a>
+                        <app-save-button type="submit" class="botao-salvar-perfil">Salvar Perfil</app-save-button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (string.IsNullOrEmpty(Model.PortalOrigem) || Model.PortalOrigem == "servico" || Model.PortalOrigem == "servicos")
+        {
+            <!-- Card: Carreira e Profissões -->
+            <div id="carreira" class="cartao-perfil cartao-perfil--completo">
+                <div class="cabecalho-cartao-perfil">
+                    <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    <span class="titulo-cartao-perfil">Carreira e Profissões</span>
+                </div>
+                <div class="corpo-cartao-perfil">
+                    <p class="carreira-intro">
+                        Cadastre suas profissões e habilidades. No futuro, isso ajudará você a se candidatar às vagas disponíveis no sistema.
+                    </p>
+
+                    <form method="post" asp-page-handler="CadastrarProfissao" class="carreira-campo-grupo">
+                        <app-input asp-for="NovaProfissao"
+                                   label="Profissão ou Habilidade"
+                                   type="text"
+                                   placeholder="Ex: Desenvolvedor, Analista Financeiro..."
+                                   required="required"
+                                   CssClass="mb-0" />
+                        <app-button type="submit" variant="primary" class="botao-cadastrar-profissao">Adicionar</app-button>
+                    </form>
+
+                    @if (Model.Profissoes.Any())
+                    {
+                        <div class="profissao-tags">
+                            @foreach (var profissao in Model.Profissoes)
+                            {
+                                <div class="profissao-tag">
+                                    @profissao.Nome
+                                    <form method="post" asp-page-handler="DeletarFisicoProfissao" class="profissao-tag-form">
+                                        <app-input type="hidden" name="profissaoId" value="@profissao.Id" />
+                                        <app-button type="submit" variant="ghost" size="sm" aria-label="Remover" class="profissao-tag-remove">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        </app-button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="profissao-empty">
+                            Nenhuma profissão cadastrada.
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Card: Status da Conta -->
+        <div class="cartao-perfil">
+            <div class="cabecalho-cartao-perfil">
+                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span class="titulo-cartao-perfil">Segurança</span>
+            </div>
+            <div class="corpo-cartao-perfil">
+                <div class="lista-situacao">
+                    <div class="item-situacao item-situacao--centro">
+                        <span class="rotulo-situacao">Senha</span>
+                        <div class="acoes-situacao">
+                            <span class="distintivo-situacao-ok">Configurada</span>
+                            <button type="button" id="botao-abrir-senha" class="botao-alterar-senha">Alterar</button>
+                        </div>
+                    </div>
+                    <div class="item-situacao">
+                        <span class="rotulo-situacao">Autenticação em dois fatores</span>
+                        <span class="valor-situacao">Em breve</span>
+                    </div>
+                    <div class="item-situacao">
+                        <span class="rotulo-situacao">Sessões ativas</span>
+                        <span class="valor-situacao">1 dispositivo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card: Conta / Plano -->
+        <div class="cartao-perfil">
+            <div class="cabecalho-cartao-perfil">
+                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <span class="titulo-cartao-perfil">Sua Conta</span>
+            </div>
+            <div class="corpo-cartao-perfil">
+                <div class="lista-situacao">
+                    <div class="item-situacao">
+                        <span class="rotulo-situacao">Plano atual</span>
+                        <span class="distintivo-situacao-ok">Desenvolvimento</span>
+                    </div>
+                    <div class="item-situacao">
+                        <span class="rotulo-situacao">Empresas cadastradas</span>
+                        <span class="valor-situacao">1</span>
+                    </div>
+                    <div class="item-situacao">
+                        <span class="rotulo-situacao">Usuários na conta</span>
+                        <span class="valor-situacao">1</span>
+                    </div>
+                    <div class="item-situacao item-situacao--rodape">
+                        <span class="rotulo-situacao">Ações</span>
+                        <a href="@ModuloRotas.Perfil.MeuPerfilDesativar" class="link-situacao-suave">Configurações permanentes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Alterar Senha -->
+    <div id="modal-senha" class="modal-senha @(ViewData[ViewDataKeys.ExibirModalSenha] != null ? "modal-senha--aberto" : "")">
+        <div class="modal-senha-cartao cartao-perfil">
+            <div class="modal-senha-cabecalho cabecalho-cartao-perfil">
+                <div class="modal-senha-titulo">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span class="titulo-cartao-perfil">Alterar Sua Senha</span>
+                </div>
+                <button type="button" class="fechar-modal botao-fechar-senha" aria-label="Fechar">&times;</button>
+            </div>
+            <div class="corpo-cartao-perfil modal-senha-corpo">
+                <form method="post" asp-page-handler="AlterarSenha" id="formulario-alterar-senha" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <app-input asp-for="FormularioSenha.SenhaAtual"
+                               type="password"
+                               label="Senha Atual"
+                               placeholder="Sua senha atual"
+                               required="required" />
+
+                    <app-input asp-for="FormularioSenha.NovaSenha"
+                               type="password"
+                               label="Nova Senha"
+                               placeholder="Mínimo 8 caracteres"
+                               required="required"
+                               mostrar-senha-forte="true" />
+
+                    <app-input asp-for="FormularioSenha.ConfirmarNovaSenha"
+                               type="password"
+                               label="Confirmar Nova Senha"
+                               placeholder="Repita a nova senha"
+                               required="required" />
+
+                    <div class="acoes-modal">
+                        <app-button type="button" variant="secondary" class="botao-fechar-senha">Cancelar</app-button>
+                        <app-save-button type="submit">Salvar Nova Senha</app-save-button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>

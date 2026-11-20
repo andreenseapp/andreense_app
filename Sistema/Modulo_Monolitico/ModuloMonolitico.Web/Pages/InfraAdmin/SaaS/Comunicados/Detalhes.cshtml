@@ -1,0 +1,147 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.SaaS.Comunicados.DetalhesModel
+@{
+    ViewData[ViewDataKeys.Title] = "Estatísticas do Comunicado";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/saas-comunicados-detalhes.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina detalhes-header">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Conteúdo
+        </div>
+        <h1 class="titulo-pagina">@Model.Comunicado?.Titulo</h1>
+        <p class="subtitulo-pagina">Estatísticas de leitura e interação</p>
+        <div class="badges-group">
+            @if (Model.Comunicado?.Tipo == "enquete")
+            {
+                <span class="badge badge-indigo">Enquete</span>
+            }
+            else
+            {
+                <span class="badge badge-blue">Aviso</span>
+            }
+            <span class="badge badge-secondary">Módulo: @(Model.Comunicado?.ModuloAlvo ?? "Todos")</span>
+        </div>
+    </div>
+    <div class="cabecalho-pagina-acoes">
+        <a href="@ModuloRotas.InfraAdmin.SaaS_Comunicados" class="botao botao-fantasma botao-voltar">← Voltar aos Comunicados</a>
+    </div>
+</div>
+
+<div class="summary-strip">
+    <div class="indicador-box">
+        <p class="indicador-rotulo">Total de Leituras</p>
+        <p class="indicador-valor">@Model.TotalLidos</p>
+    </div>
+    @if (Model.Comunicado?.Tipo == "enquete")
+    {
+        <div class="indicador-box indicador-box-respostas">
+            <p class="indicador-rotulo">Total de Respostas</p>
+            <p class="indicador-valor">@Model.TotalRespostas</p>
+        </div>
+    }
+</div>
+
+<div class="page-split-layout">
+    @if (Model.Comunicado?.Tipo == "enquete")
+    {
+        <div class="split-painel-formulario">
+            <div class="panel-card">
+                <h2 class="panel-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                    Resultado da Enquete
+                </h2>
+
+                @if (!Model.ResultadosEnquete.Any())
+                {
+                    <div class="estado-vazio">
+                        <p class="estado-vazio-texto">Nenhuma resposta computada ainda.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="resultados-list">
+                        @foreach (var resultado in Model.ResultadosEnquete)
+                        {
+                            var percent = Model.TotalRespostas > 0
+                                ? (int)Math.Round((double)resultado.Votos / Model.TotalRespostas * 100)
+                                : 0;
+
+                            <div class="resultado-opcao-item">
+                                <div class="resultado-opcao-header">
+                                    <span class="opcao-texto">@resultado.Texto</span>
+                                    <span class="opcao-votos-info">@resultado.Votos voto(s) (@percent%)</span>
+                                </div>
+                                <div class="opcao-progress-bar">
+                                    <div class="opcao-progress-fill" data-percentual="@percent"></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="split-list-panel @(Model.Comunicado?.Tipo != "enquete" ? "full-width-panel" : "")">
+        <div class="panel-card">
+            <h2 class="panel-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Registro de Interações
+            </h2>
+
+            @if (!Model.Interacoes.Any())
+            {
+                <div class="estado-vazio">
+                    <p class="estado-vazio-texto">Nenhum usuário leu este comunicado ainda.</p>
+                </div>
+            }
+            else
+            {
+                <div class="tabela-responsiva interactions-table-wrapper">
+                    <table class="log-table" data-seletor-colunas="true">
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Empresa (Conta)</th>
+                                <th>Data da Leitura</th>
+                                <th>Resposta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Interacoes)
+                            {
+                                <tr>
+                                    <td class="user-name-cell">@item.NomeUsuario</td>
+                                    <td class="conta-name-cell">@item.NomeConta</td>
+                                    <td class="leitura-data-cell">@item.DataLeitura.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.OpcaoEscolhida))
+                                        {
+                                            <span class="badge badge-indigo">@item.OpcaoEscolhida</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="ciente-situacao-celula">Ciente</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/InfraAdmin/js/saas-comunicados-detalhes.js" asp-append-version="true"></script>
+}

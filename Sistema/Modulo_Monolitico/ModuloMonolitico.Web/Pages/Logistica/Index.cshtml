@@ -1,0 +1,61 @@
+@page
+@model ModuloMonolitico.Web.Pages.Logistica.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Módulo Logística";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            Logística
+        </div>
+        <h1 class="titulo-pagina">Gestão de Logística</h1>
+        <p class="subtitulo-pagina">Expedição, frota, roteirização e controle de entregas.</p>
+    </div>
+</div>
+
+<div class="construcao-banner mb-4">
+    <div class="construcao-icon" aria-hidden="true">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+    </div>
+    <div>
+        <div class="construcao-titulo">Módulo em Desenvolvimento</div>
+        <div class="construcao-desc">
+            A logística inteligente está em planejamento. O roteirizador e outras funcionalidades de entrega estarão disponíveis aqui.
+        </div>
+    </div>
+</div>
+
+<div class="modulos-grid">
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = "#",
+        nome = "Roteirizador",
+        descricao = "Cálculo de rotas inteligentes, otimização de combustível e planejamento de entregas.",
+        textoLink = "Em breve",
+        corHexadecimal = "#94a3b8", corRgb = "148, 163, 184",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z\"></path><circle cx=\"12\" cy=\"10\" r=\"3\"></circle></svg>",
+        emBreve = true
+    })
+
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = "#",
+        nome = "Expedição e Packing",
+        descricao = "Bipagem de produtos, conferência de pedidos e montagem de volumes/caixas.",
+        textoLink = "Em breve",
+        corHexadecimal = "#94a3b8", corRgb = "148, 163, 184",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"16 3 21 8 8 21 3 21 3 16 16 3\"></polygon></svg>",
+        emBreve = true
+    })
+
+    @await Component.InvokeAsync("ModuloCard", new {
+        url = "#",
+        nome = "CT-e e MDF-e",
+        descricao = "Emissão de conhecimento de transporte e manifesto eletrônico de documentos fiscais.",
+        textoLink = "Em breve",
+        corHexadecimal = "#94a3b8", corRgb = "148, 163, 184",
+        svgIcone = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"></path><polyline points=\"14 2 14 8 20 8\"></polyline></svg>",
+        emBreve = true
+    })
+</div>

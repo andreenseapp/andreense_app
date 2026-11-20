@@ -1,0 +1,105 @@
+@page
+@model ModuloMonolitico.Web.Pages.Cidadania.AchadosPerdidos.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Achados e Perdidos — Andreense";
+    Layout = "~/Pages/Shared/Layouts/_CidadeLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Cidadania/css/achados-perdidos.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <partial name="Partials/_LinkVoltar" model='new LinkVoltarModelo { Url = ModuloRotas.Cidadania.Index, TextoDestino = "Serviços da Cidade" }' />
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Cidade
+        </div>
+        <h1 class="titulo-pagina">Achados e Perdidos</h1>
+        <p class="subtitulo-pagina">Conectando pessoas para devolver o que é de direito.</p>
+    </div>
+</div>
+
+<div class="actions-bar">
+    <app-button type="button" variant="primary" class="btn-publish" data-modal-open="publishModal">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Publicar algo
+    </app-button>
+</div>
+
+<div class="items-grid" id="achados-grid">
+    @foreach (var item in Model.Itens)
+    {
+        <partial name="Components/_ItemCard" model="item" />
+    }
+</div>
+
+<div id="publishModal" class="overlay" data-modal="publishModal">
+    <div class="modal-card">
+        <app-button type="button" variant="ghost" class="close-btn" data-modal-close="true" aria-label="Fechar">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </app-button>
+
+        <h3 class="modal-title">Publicar Item</h3>
+
+        <form id="form-publicar" method="post" asp-page-handler="Publicar" enctype="multipart/form-data">
+            <app-select asp-for="NovoItem.Tipo" label="Tipo de Publicação" class="mb-3">
+                <option value="perdido">Eu PERDI algo</option>
+                <option value="achado">Eu ACHEI algo</option>
+            </app-select>
+
+            <app-input asp-for="NovoItem.Titulo"
+                       label="Título (O que é?)"
+                       type="text"
+                       placeholder="Ex: Carteira de Couro, Cachorro Golden..."
+                       required="required"
+                       autocomplete="off" />
+
+            <app-textarea asp-for="NovoItem.Descricao"
+                          label="Descrição Detalhada"
+                          rows="3"
+                          placeholder="Conte mais detalhes para ajudar na identificação..." />
+
+            <div class="form-grid-2">
+                <app-input asp-for="NovoItem.LocalVisto"
+                           label="Onde?"
+                           type="text"
+                           placeholder="Bairro, Rua, Loja..."
+                           autocomplete="off"
+                           class="mb-0" />
+                <app-input asp-for="NovoItem.DataEvento"
+                           label="Quando?"
+                           type="date"
+                           class="mb-0" />
+            </div>
+
+            <app-input asp-for="NovoItem.ContatoInfo"
+                       label="Informação de Contato"
+                       type="text"
+                       placeholder="Seu WhatsApp ou E-mail"
+                       autocomplete="off" />
+
+            <div class="privacy-box">
+                <label class="toggle-switch">
+                    <app-checkbox asp-for="NovoItem.EsconderContato" class="mb-0" checked="true" />
+                </label>
+                <div>
+                    <div class="privacy-title">Esconder dados sensíveis</div>
+                    <div class="privacy-desc">Seu contato só será revelado após você autorizar.</div>
+                </div>
+            </div>
+
+            <div class="campo-grupo mt-3">
+                <app-input type="file" asp-for="Foto" label="Foto do Item" accept="image/*" />
+            </div>
+
+            <app-button type="submit" variant="primary" class="btn-submit">Publicar Agora</app-button>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Cidadania/js/achados-perdidos.js" asp-append-version="true"></script>
+}

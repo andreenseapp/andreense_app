@@ -1,0 +1,33 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.Cursos.EditarModel
+@{
+    ViewData[ViewDataKeys.Title] = "Editar Curso";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo_Cursos" class="link-voltar-secao">← Cursos</a>
+        <h1 class="titulo-pagina">Editar Curso</h1>
+    </div>
+</div>
+<form method="post" class="form-curriculo">
+    <app-input type="hidden" asp-for="CursoId" />
+    <app-input type="hidden" asp-for="CurriculoId" />
+    <div class="form-grid-duplo">
+        <app-input asp-for="Nome" label="Nome do Curso *" />
+        <app-input asp-for="Instituicao" label="Instituição" />
+        <app-input asp-for="CargaHoraria" label="Carga Horária (h)" type="number" />
+        <app-input asp-for="AnoConclusao" label="Ano de Conclusão" type="number" />
+    </div>
+    <div class="form-acoes form-acoes-com-delete">
+        <form method="post" asp-page-handler="Deletar" class="form-delete" onsubmit="return confirm('Remover este curso?')">
+            <app-input type="hidden" name="cursoId" value="@Model.CursoId" />
+            <app-input type="hidden" name="curriculoId" value="@Model.CurriculoId" />
+            <app-button type="submit" variant="danger" class="btn btn-danger-ghost">Remover</app-button>
+        </form>
+        <div class="form-acoes-direita">
+            <a href="@ModuloRotas.Curriculos.MeuCurriculo_Cursos" class="btn btn-ghost">Cancelar</a>
+            <app-button type="submit" variant="primary">Salvar</app-button>
+        </div>
+    </div>
+</form>

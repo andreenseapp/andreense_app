@@ -1,0 +1,41 @@
+.grade-estado-vazio {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--glass-bg);
+    border: 1px dashed var(--glass-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+}
+
+.grade-icone-vazio {
+    color: var(--clr-text-muted);
+    margin-bottom: 1rem;
+}
+
+.grade-titulo-vazio {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    color: var(--clr-text);
+    margin-bottom: 0.5rem;
+}
+
+.grade-descricao-vazio {
+    color: var(--clr-text-muted);
+    max-width: 400px;
+    margin: 0 auto 1.5rem;
+    font-size: 0.95rem;
+}
+
+.grade-acao-vazio {
+    display: inline-block;
+    text-decoration: none;
+    padding: 0.6rem 1.25rem;
+    background: var(--clr-primary);
+    color: var(--clr-botao-primario-texto);
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+}
+
+.grade-atalhos-grid {
+    margin-bottom: 2.5rem;
+}

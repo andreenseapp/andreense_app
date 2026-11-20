@@ -1,0 +1,72 @@
+@page
+@model ModuloMonolitico.Web.Pages.Fidelizacao.LerQRCodeModel
+@{
+    ViewData[ViewDataKeys.Title] = Model.TituloPagina;
+    Layout = "~/Pages/Shared/Layouts/_AreaClienteLayout.cshtml";
+    var processUrl = Url.Page(null, pageHandler: "ProcessarCodigo") ?? ModuloRotas.Fidelizacao.LerQRCode;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Fidelizacao/css/ler-qrcode.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/Contextos/Fidelizacao/js/ler-qrcode.js" asp-append-version="true"></script>
+}
+
+<div class="cabecalho-pagina">
+    <div class="selo-pagina selo-pagina--scanner">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Scanner
+    </div>
+    <h1 class="titulo-pagina">@Model.TituloPagina</h1>
+    <p class="subtitulo-pagina">@Model.SubtituloPagina</p>
+</div>
+
+<div class="envoltorio-scanner"
+     data-url-processamento="@processUrl"
+     data-url-indice="@ModuloRotas.Fidelizacao.Index">
+
+    <div id="area-scanner" class="glass-card area-scanner" data-id-scanner="@Model.IdElementoScanner">
+        @await Html.PartialAsync("Components/Scanner/Default", Model.IdElementoScanner)
+    </div>
+
+    <div id="area-resultado" class="area-resultado is-hidden">
+        <div id="cartao-resultado-interno" class="cartao-resultado">
+            <div id="emoji-resultado" class="emoji-resultado" aria-hidden="true">⏳</div>
+            <h2 id="titulo-resultado" class="titulo-resultado">Processando...</h2>
+            <p id="msg-resultado" class="msg-resultado"></p>
+
+            <div id="progresso-fidelidade" class="is-hidden">
+                <div id="selo-completo" class="selo-completo is-hidden">Cartão Completo! Você ganhou um prêmio!</div>
+                <div class="progress-mini">
+                    <div class="progress-mini-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                        <span id="titulo-cartao">Cartão Fidelidade</span>
+                    </div>
+                    <div class="progress-mini-bar-bg">
+                        <div id="preenchimento-progresso" class="progress-mini-bar-fill progress-mini-bar-fill--empty"></div>
+                    </div>
+                    <div class="progress-mini-label">
+                        <span><strong id="pontos-acumulados">0</strong> selos acumulados</span>
+                        <span>de <strong id="pontos-necessarios">10</strong> para ganhar</span>
+                    </div>
+                </div>
+                <p id="recompensa-hint" class="recompensa-hint">
+                    Recompensa: <strong id="recompensa-texto"></strong>
+                </p>
+            </div>
+
+            <div id="cashback-info" class="cashback-mini is-hidden">
+                <div class="cashback-mini-label">Cashback creditado!</div>
+                <div id="cashback-valor" class="valor-mini-cashback">R$ 0,00</div>
+                <div class="cashback-mini-label">adicionado ao seu saldo</div>
+            </div>
+
+            <app-button type="button" variant="secondary" id="botao-escanear-novamente" class="botao-escanear-novamente">Escanear Outro</app-button>
+            <a href="@ModuloRotas.Fidelizacao.Index" id="btn-voltar-area" class="botao-contorno-sm botao-contorno-sm--link">Voltar à Área do Cliente</a>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="is-hidden">@Html.AntiForgeryToken()</form>

@@ -1,0 +1,43 @@
+@model ModuloMonolitico.Web.Pages.Shared.Components.PainelDesempenho.PainelDesempenhoModelo
+@using ModuloMonolitico.Dominio.Configuracoes
+
+@if (Model.Etapas.Count > 0)
+{
+    <div class="painel-desempenho" id="painel-desempenho" data-painel-desempenho>
+        <app-button type="button" variant="ghost" size="sm" class="painel-desempenho-toggle" data-alternar-painel-desempenho="true" aria-expanded="false">
+            <span class="painel-desempenho-badge">@Model.DuracaoTotalMs ms</span>
+            <span>@MensagensSistema.Diagnostico.TituloPainel</span>
+        </app-button>
+        <div class="painel-desempenho-conteudo" hidden>
+            <div class="painel-desempenho-cabecalho">
+                <strong>@MensagensSistema.Diagnostico.TituloPainel</strong>
+                <span class="painel-desempenho-meta">@Model.Metodo @Model.Caminho</span>
+            </div>
+            <p class="painel-desempenho-ajuda">@MensagensSistema.Diagnostico.AjudaPainel</p>
+            <table class="painel-desempenho-tabela">
+                <thead>
+                    <tr>
+                        <th>@MensagensSistema.Diagnostico.ColunaEtapa</th>
+                        <th>@MensagensSistema.Diagnostico.ColunaDuracao</th>
+                        <th>@MensagensSistema.Diagnostico.ColunaBarra</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var etapa in Model.Etapas)
+                    {
+                        var largura = Model.DuracaoMaiorEtapaMs > 0
+                            ? Math.Max(4, (int)Math.Round(etapa.DuracaoMs * 100.0 / Model.DuracaoMaiorEtapaMs))
+                            : 0;
+                        <tr>
+                            <td>@etapa.Nome</td>
+                            <td>@etapa.DuracaoMs ms</td>
+                            <td>
+                                <span class="painel-desempenho-barra" style="width:@(largura)%"></span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

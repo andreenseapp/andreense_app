@@ -1,0 +1,113 @@
+@page
+@model ModuloMonolitico.Web.Pages.MeuCurriculo.DadosProfissionaisModel
+@{
+    ViewData[ViewDataKeys.Title] = "Dados Profissionais";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+<link rel="stylesheet" href="~/Contextos/MeuCurriculo/dados-profissionais.css" asp-append-version="true" />
+
+<div class="cabecalho-pagina">
+    <div>
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo" class="link-voltar-secao">← Meu Currículo</a>
+        <h1 class="titulo-pagina">🎯 Dados Profissionais</h1>
+        <p class="subtitulo-pagina">Defina seu objetivo profissional, área de atuação e preferências de trabalho.</p>
+    </div>
+</div>
+
+<form method="post" class="form-curriculo">
+    <div class="form-grid-duplo">
+        <div class="form-grupo">
+            <app-input asp-for="CargoDesejado" label="Cargo Desejado *" placeholder="Ex: Analista de Marketing" />
+        </div>
+        <div class="form-grupo">
+            <app-select asp-for="AreaAtuacao" label="Área de Atuação *">
+                <option value="">Selecione a área</option>
+                @foreach (var area in new[] { "Tecnologia", "Administração", "Vendas", "Marketing", "Saúde", "Educação", "Engenharia", "Logística", "Financeiro", "RH", "Jurídico", "Construção Civil", "Gastronomia", "Arte e Design", "Outra" })
+                {
+                    <option value="@area" selected="@(Model.AreaAtuacao == area ? "selected" : null)">@area</option>
+                }
+            </app-select>
+        </div>
+        <div class="form-grupo">
+            <app-select asp-for="Nivel" label="Nível de Experiência *">
+                <option value="estagiario" selected="@(Model.Nivel == "estagiario" ? "selected" : null)">Estagiário</option>
+                <option value="junior" selected="@(Model.Nivel == "junior" ? "selected" : null)">Júnior</option>
+                <option value="pleno" selected="@(Model.Nivel == "pleno" ? "selected" : null)">Pleno</option>
+                <option value="senior" selected="@(Model.Nivel == "senior" ? "selected" : null)">Sênior</option>
+                <option value="especialista" selected="@(Model.Nivel == "especialista" ? "selected" : null)">Especialista</option>
+                <option value="gerente" selected="@(Model.Nivel == "gerente" ? "selected" : null)">Gerente / Líder</option>
+                <option value="diretor" selected="@(Model.Nivel == "diretor" ? "selected" : null)">Diretor / C-Level</option>
+            </app-select>
+        </div>
+        <div class="form-grupo">
+            <app-select asp-for="Modalidade" label="Modalidade Preferida *">
+                <option value="clt" selected="@(Model.Modalidade == "clt" ? "selected" : null)">CLT (Emprego formal)</option>
+                <option value="pj" selected="@(Model.Modalidade == "pj" ? "selected" : null)">PJ (Pessoa Jurídica)</option>
+                <option value="temporario" selected="@(Model.Modalidade == "temporario" ? "selected" : null)">Temporário</option>
+                <option value="freelancer" selected="@(Model.Modalidade == "freelancer" ? "selected" : null)">Freelancer</option>
+                <option value="estagio" selected="@(Model.Modalidade == "estagio" ? "selected" : null)">Estágio</option>
+                <option value="indiferente" selected="@(Model.Modalidade == "indiferente" ? "selected" : null)">Indiferente</option>
+            </app-select>
+        </div>
+        <div class="form-grupo">
+            <app-input asp-for="PretensaoSalarial" label="Pretensão Salarial (R$)" placeholder="Ex: 5000" />
+        </div>
+        <div class="form-grupo">
+            <app-select asp-for="Disponibilidade" label="Disponibilidade *">
+                <option value="imediata" selected="@(Model.Disponibilidade == "imediata" ? "selected" : null)">Imediata</option>
+                <option value="15dias" selected="@(Model.Disponibilidade == "15dias" ? "selected" : null)">Em até 15 dias</option>
+                <option value="30dias" selected="@(Model.Disponibilidade == "30dias" ? "selected" : null)">Em até 30 dias</option>
+                <option value="a-combinar" selected="@(Model.Disponibilidade == "a-combinar" ? "selected" : null)">A combinar</option>
+            </app-select>
+        </div>
+    </div>
+
+    <div class="form-grupo">
+        <app-textarea asp-for="ResumoProfissional" label="Resumo Profissional" rows="5"
+            placeholder="Descreva brevemente sua trajetória profissional, principais competências e objetivos..." />
+        <span class="form-hint">Use de 3 a 5 frases destacando sua experiência e diferenciais.</span>
+    </div>
+
+    <div class="form-secao-titulo">Preferências e Informações Adicionais</div>
+
+    <div class="form-grid-checks">
+        <label class="form-check-label">
+            <app-checkbox asp-for="AceitaViagem" />
+            <span>Aceito viajar a trabalho</span>
+        </label>
+        <label class="form-check-label">
+            <app-checkbox asp-for="AceitaMudanca" />
+            <span>Aceito mudar de cidade</span>
+        </label>
+        <label class="form-check-label">
+            <app-checkbox asp-for="Pcd" id="check-pcd" data-pcd-toggle />
+            <span>Sou Pessoa com Deficiência (PCD)</span>
+        </label>
+    </div>
+
+    <div class="form-pcd @(Model.Pcd ? "" : "hidden")" id="painel-pcd">
+        <app-input asp-for="TipoDeficiencia" label="Tipo de Deficiência" placeholder="Ex: Auditiva, Visual, Física, Intelectual..." />
+    </div>
+
+    <div class="form-grupo">
+        <label class="form-label">CNH — Categorias Habilitadas</label>
+        <div class="cnh-opcoes">
+            @foreach (var cat in new[] { "A", "B", "C", "D", "E" })
+            {
+                var ativa = Model.CnhCategorias?.Contains(cat) == true;
+                <label class="cnh-chip @(ativa ? "ativo" : "")" data-cnh-categoria="@cat">
+                    <app-checkbox name="cnh_@cat" value="@cat" checked="@ativa" class="cnh-check" />
+                    @cat
+                </label>
+            }
+        </div>
+        <app-input type="hidden" asp-for="CnhCategorias" id="input-cnh-categorias" />
+    </div>
+
+    <div class="form-acoes">
+        <a href="@ModuloRotas.Curriculos.MeuCurriculo" class="btn btn-ghost">Cancelar</a>
+        <app-button type="submit" variant="primary">Salvar dados profissionais</app-button>
+    </div>
+</form>
+
+<script src="~/Contextos/MeuCurriculo/dados-profissionais.js" asp-append-version="true"></script>

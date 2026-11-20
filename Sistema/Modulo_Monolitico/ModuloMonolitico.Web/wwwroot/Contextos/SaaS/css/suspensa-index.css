@@ -1,0 +1,131 @@
+/* SaaS — Conta Suspensa */
+
+.suspensa-wrapper {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+}
+
+.suspensa-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.03) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+.suspensa-card {
+    position: relative;
+    z-index: 1;
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 3rem 2.5rem;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    animation: cardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.suspensa-icon {
+    width: 72px;
+    height: 72px;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: var(--clr-status-cancelado);
+}
+
+.suspensa-badge {
+    display: inline-block;
+    background: rgba(239, 68, 68, 0.12);
+    color: var(--clr-status-cancelado);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+}
+
+.suspensa-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin: 0 0 1rem;
+    line-height: 1.2;
+    color: var(--clr-text, var(--clr-text-heading));
+}
+
+.suspensa-desc {
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 2rem;
+}
+
+.contact-box {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    border: 1px dashed var(--clr-border, var(--clr-border));
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    text-align: left;
+}
+
+.contact-box-intro {
+    margin: 0 0 1rem;
+    text-align: center;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0.35rem 0;
+    color: var(--clr-text, var(--clr-text-heading));
+    font-weight: 600;
+}
+
+.btn-sair {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 0.875rem;
+    text-decoration: none;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.btn-sair:hover {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    color: var(--clr-text, var(--clr-text-heading));
+    border-color: var(--clr-text-muted, var(--clr-text-label));
+}

@@ -1,0 +1,115 @@
+/* Estoque — Entrada */
+
+.estoque-entrada-container {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.secao-formulario {
+    background: var(--clr-surface, var(--clr-surface));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.titulo-secao {
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    margin-bottom: 1.25rem;
+}
+
+.grade-formulario {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+}
+
+.bloco-formulario {
+    margin-top: 1.25rem;
+}
+
+.campo-grupo .campo-rotulo {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    margin-bottom: 0.35rem;
+}
+
+.campo-controle {
+    width: 100%;
+    height: 38px;
+    padding: 0 0.75rem;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 8px;
+    background: var(--clr-surface, var(--clr-surface));
+    color: var(--clr-text, var(--clr-text-heading));
+    font-size: 0.875rem;
+}
+
+.envoltorio-data {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+}
+
+.envoltorio-data .campo-data {
+    flex: 1;
+    min-width: 0;
+}
+
+.botao-hoje {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+    padding: 0 0.75rem;
+    height: 38px;
+    background: var(--clr-bg, var(--clr-surface-alt));
+    border: 1px solid var(--clr-border, var(--clr-border));
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.12s, color 0.12s;
+}
+
+.botao-hoje:hover {
+    background: var(--clr-surface, var(--clr-surface));
+    color: var(--clr-text, var(--clr-text-heading));
+}
+
+.acoes-formulario {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--clr-border, var(--clr-border));
+}
+
+.botao-cancelar {
+    display: inline-flex;
+    align-items: center;
+    height: 38px;
+    padding: 0 1.25rem;
+    border-radius: 8px;
+    border: 1px solid var(--clr-border, var(--clr-border));
+    color: var(--clr-text-muted, var(--clr-text-label));
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background 0.12s, color 0.12s;
+}
+
+.botao-cancelar:hover {
+    background: var(--clr-bg, var(--clr-surface-alt));
+    color: var(--clr-text, var(--clr-text-heading));
+}

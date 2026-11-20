@@ -1,0 +1,113 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.HistoricoLogin.IndexModel
+@{
+    ViewData[ViewDataKeys.Title] = "Histórico de Logins";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/historico-login-index.css" asp-append-version="true" />
+}
+
+<div class="cabecalho-pagina">
+    <div>
+        <div class="page-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Auditoria
+        </div>
+        <h1 class="titulo-pagina">Histórico de Logins</h1>
+        <p class="subtitulo-pagina">Acompanhe todas as tentativas de acesso ao sistema — sucessos e falhas.</p>
+    </div>
+</div>
+
+<form method="get" class="filtro-card">
+    <div class="filtro-grupo">
+        <app-input type="text" id="FiltroEmail" name="FiltroEmail" label="Buscar por e-mail" value="@Model.FiltroEmail" placeholder="ex: contato@empresa.com" autocomplete="email" />
+    </div>
+    <app-button type="submit" variant="primary" class="botao botao-primario btn-filtro">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Filtrar
+    </app-button>
+    @if (!string.IsNullOrEmpty(Model.FiltroEmail))
+    {
+        <a href="@ModuloRotas.InfraAdmin.HistoricoLogin" class="botao botao-fantasma botao-limpar">Limpar</a>
+    }
+</form>
+
+<div class="log-table-wrapper">
+    <div class="tabela-responsiva">
+        <table class="log-table" data-seletor-colunas="true">
+            <thead>
+                <tr>
+                    <th>Data / Hora</th>
+                    <th>E-mail</th>
+                    <th>IP</th>
+                    <th>Situação</th>
+                    <th>Provedor</th>
+                    <th>Motivo</th>
+                    <th>Navegador / SO</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Itens.Any())
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="log-vazio">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6M9 16h6M9 8h6M5 20h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/></svg>
+                                <div>Nenhum registro encontrado.</div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @foreach (var item in Model.Itens)
+                {
+                    <tr>
+                        <td>
+                            <span class="log-data-principal">@item.DataInclusao.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                            <span class="log-data-secundaria">@item.DataInclusao.ToLocalTime().ToString("HH:mm:ss")</span>
+                        </td>
+                        <td>@item.Email</td>
+                        <td><span class="log-ip">@item.EnderecoIp</span></td>
+                        <td>
+                            @if (item.Sucesso)
+                            {
+                                <span class="badge-sucesso">
+                                    <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="12"/></svg>
+                                    Sucesso
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge-falha">
+                                    <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="12"/></svg>
+                                    Falha
+                                </span>
+                            }
+                        </td>
+                        <td><span class="badge-provedor">@item.Provedor.ToUpper()</span></td>
+                        <td class="log-data-secundaria">@(item.MotivoFalha ?? "—")</td>
+                        <td><span class="log-ua" title="@item.AgenteUsuario">@(item.AgenteUsuario ?? "—")</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.TotalPaginas > 1)
+    {
+        <div class="log-paginacao">
+            <span>Página @Model.PaginaAtual de @Model.TotalPaginas &mdash; @Model.TotalItens registros</span>
+            <div class="paginacao-nav">
+                <a href="?PaginaAtual=@(Model.PaginaAtual - 1)&FiltroEmail=@Uri.EscapeDataString(Model.FiltroEmail ?? string.Empty)"
+                   class="paginacao-btn @(Model.PaginaAtual == 1 ? "desabilitado" : "")">← Anterior</a>
+                <a href="?PaginaAtual=@(Model.PaginaAtual + 1)&FiltroEmail=@Uri.EscapeDataString(Model.FiltroEmail ?? string.Empty)"
+                   class="paginacao-btn @(Model.PaginaAtual == Model.TotalPaginas ? "desabilitado" : "")">Próxima →</a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+}

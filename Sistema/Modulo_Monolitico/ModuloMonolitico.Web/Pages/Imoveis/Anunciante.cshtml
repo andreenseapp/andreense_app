@@ -1,0 +1,203 @@
+@page
+@using ModuloMonolitico.Web.Core
+@using ModuloMonolitico.Dominio.Configuracoes
+@model ModuloMonolitico.Web.Pages.Imoveis.AnuncianteModel
+@{
+    Layout = "~/Pages/Shared/Layouts/_AppLayout.cshtml";
+    ViewData[ViewDataKeys.Title] = $"Imóveis de {Model.Perfil.NomeExibicao}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/comum.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/anunciante.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Contextos/Imobiliaria/css/favoritos.css" asp-append-version="true" />
+}
+
+<partial name="Partials/_LinkVoltar" model='new LinkVoltarModelo { Url = ModuloRotas.Imoveis.Index, TextoDestino = "Imóveis" }' />
+
+<div class="anunciante-header-container">
+    <div class="anunciante-header">
+        <div class="anunciante-perfil">
+            @if (!string.IsNullOrEmpty(Model.Perfil.UrlFotoLogo))
+            {
+                <img src="@Model.Perfil.UrlFotoLogo" alt="@Model.Perfil.NomeExibicao" class="anunciante-foto-grande" />
+            }
+            else
+            {
+                <div class="anunciante-foto-placeholder-grande">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+            }
+
+            <div class="anunciante-info-principal">
+                <h1 class="anunciante-nome-titulo">@Model.Perfil.NomeExibicao</h1>
+                <div class="anunciante-meta">
+                    <span class="anunciante-contagem">@Model.Perfil.TotalAnuncios imóvel(is) anunciado(s)</span>
+                    @if (!string.IsNullOrEmpty(Model.Perfil.Creci))
+                    {
+                        <span class="anunciante-creci">CRECI: @Model.Perfil.Creci</span>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Perfil.Descricao))
+                {
+                    <p class="anunciante-bio">@Model.Perfil.Descricao</p>
+                }
+            </div>
+        </div>
+
+        <div class="anunciante-contatos">
+            @if (!string.IsNullOrEmpty(Model.Perfil.Whatsapp))
+            {
+                <a href="https://wa.me/55@ChavesSistema.LimparNumeroWhatsapp(Model.Perfil.Whatsapp)" target="_blank" class="btn-contato btn-whatsapp">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    WhatsApp
+                </a>
+            }
+            @if (!string.IsNullOrEmpty(Model.Perfil.UrlSite))
+            {
+                <a href="@ChavesSistema.NormalizarUrlSite(Model.Perfil.UrlSite)" target="_blank" class="btn-contato btn-site">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    Visitar Site
+                </a>
+            }
+            @if (!string.IsNullOrEmpty(Model.Perfil.Instagram))
+            {
+                var insta = Model.Perfil.Instagram.Trim('@');
+                <a href="https://instagram.com/@insta" target="_blank" class="btn-contato btn-instagram">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    @@@insta
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="imob-filtros-container" id="filtros-bar" style="margin-top: -32px; position: relative; z-index: 10;">
+    <form id="form-filtros" action="@ModuloRotas.Imoveis.Anunciante" method="get" class="imob-filtros-card">
+        <app-input type="hidden" name="id" value="@Model.Perfil.ContaId" />
+        <app-input type="hidden" name="contaId" value="@Model.Perfil.ContaId" />
+
+        <div class="filtros-grid-top">
+            <div class="filtro-item">
+                <label class="filtro-label" for="filtro-tipo-negocio">Finalidade</label>
+                <app-select name="Filtro.TipoNegocio" id="filtro-tipo-negocio" class="filtro-select">
+                    @if (Model.Filtro.TipoNegocio == "venda")
+                    { <option value="venda" selected>Comprar</option> }
+                    else
+                    { <option value="venda">Comprar</option> }
+                    @if (Model.Filtro.TipoNegocio == "aluguel")
+                    { <option value="aluguel" selected>Alugar</option> }
+                    else
+                    { <option value="aluguel">Alugar</option> }
+                </app-select>
+            </div>
+
+            <div class="filtro-item">
+                <label class="filtro-label" for="filtro-tipo-imovel">Tipo de Imóvel</label>
+                <app-select name="Filtro.TipoImovel" id="filtro-tipo-imovel" class="filtro-select">
+                    <option value="">Todos os tipos</option>
+                    @foreach (var tipo in new[] { ("apartamento","Apartamento"), ("casa","Casa"), ("kitnet","Kitnet/Studio"), ("comercial","Comercial") })
+                    {
+                        if (Model.Filtro.TipoImovel == tipo.Item1)
+                        { <option value="@tipo.Item1" selected>@tipo.Item2</option> }
+                        else
+                        { <option value="@tipo.Item1">@tipo.Item2</option> }
+                    }
+                </app-select>
+            </div>
+
+            <div class="filtro-item">
+                <label class="filtro-label" for="filtro-quartos">Dormitórios</label>
+                <app-select name="Filtro.QuartosMinimo" id="filtro-quartos" class="filtro-select">
+                    <option value="">Qualquer quantidade</option>
+                    @foreach (var q in new[] { 1, 2, 3, 4 })
+                    {
+                        if (Model.Filtro.QuartosMinimo == q)
+                        { <option value="@q" selected>@q+ quartos</option> }
+                        else
+                        { <option value="@q">@q+ quartos</option> }
+                    }
+                </app-select>
+            </div>
+
+            <div class="filtro-item">
+                <label class="filtro-label" for="filtro-bairro">Bairro em Santo André</label>
+                <app-input type="text" name="Filtro.Bairro" id="filtro-bairro" class="filtro-input mb-0"
+                       placeholder="Ex: Campestre, Jardim, Centro..." value="@Model.Filtro.Bairro" autocomplete="off" />
+            </div>
+        </div>
+
+        <div class="filtros-grid-bottom">
+            <div class="filtros-bottom-left">
+                <div class="filtro-item filtro-item--inline">
+                    <label class="filtro-label" for="filtro-valor">Valor Máximo (R$)</label>
+                    <app-input type="number" name="Filtro.ValorMaximo" id="filtro-valor" class="filtro-input filtro-input--valor mb-0"
+                           placeholder="Qualquer valor" value="@Model.Filtro.ValorMaximo" min="0" />
+                </div>
+                <label class="filtro-checkbox-label">
+                    <app-checkbox name="Filtro.BuscarPorPacote" id="filtro-pacote" value="true" checked="@Model.Filtro.BuscarPorPacote" />
+                    <span class="checkbox-text">Incluir cond. + IPTU no valor</span>
+                </label>
+            </div>
+
+            <div class="filtros-bottom-right">
+                @if (Model.FiltrosAtivos)
+                {
+                    <a href="@ModuloRotas.Imoveis.Anunciante?id=@Model.Perfil.ContaId" class="btn-limpar-filtros">Limpar filtros</a>
+                }
+                <app-button type="submit" variant="primary" class="btn-filtrar" id="btn-filtrar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <span>Buscar Imóveis</span>
+                </app-button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="imob-container pt-0"
+     data-url-favoritar="@ModuloRotas.Imoveis.Favoritar"
+     data-url-login="@ModuloRotas.Autenticacao.Login">
+    <div class="imob-resultado-info">
+        <span>Mostrando imóveis de <strong>@Model.Perfil.NomeExibicao</strong></span>
+    </div>
+
+    @if (Model.Anuncios.TotalItens > 0)
+    {
+        <div class="imob-grid" id="anuncios-grid">
+            @{ ViewData[ViewDataKeys.FavoritosIds] = Model.ImoveisFavoritosIds; }
+            @foreach (var anuncio in Model.Anuncios.Itens)
+            {
+                <partial name="Components/_AnuncioCard" model="anuncio" />
+            }
+        </div>
+
+        @if (Model.Anuncios.TotalPaginas > 1)
+        {
+            <div class="imob-paginacao">
+                @for (int i = 1; i <= Model.Anuncios.TotalPaginas; i++)
+                {
+                    <a href="@ModuloRotas.Imoveis.Anunciante?id=@Model.Perfil.ContaId&Filtro.Pagina=@i@(Model.QueryStringFiltros)"
+                       class="paginacao-btn @(i == Model.Filtro.Pagina ? "paginacao-btn--ativo" : "")">
+                       @i
+                    </a>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <div class="imob-vazio">
+            <div class="imob-vazio-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </div>
+            <h2>Nenhum imóvel disponível</h2>
+            <p>Este anunciante não possui imóveis disponíveis no momento.</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/Contextos/Imobiliaria/js/favoritos.js" asp-append-version="true"></script>
+}

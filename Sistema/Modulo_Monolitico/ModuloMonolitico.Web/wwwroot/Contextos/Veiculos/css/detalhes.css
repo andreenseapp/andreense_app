@@ -1,0 +1,295 @@
+/* detalhes.css — Página de detalhe do veículo */
+
+.veic-detalhe {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.veic-detalhe-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.veic-detalhe-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.15s;
+}
+
+.veic-detalhe-voltar:hover { color: rgba(255,255,255,0.85); }
+
+.veic-detalhe-codigo {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--clr-status-andamento);
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    padding: 3px 10px;
+    border-radius: 8px;
+}
+
+.veic-detalhe-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    align-items: start;
+}
+
+/* ---- Galeria ---- */
+.veic-galeria { display: flex; flex-direction: column; gap: 10px; }
+
+.galeria-principal {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.galeria-foto-principal {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.galeria-foto-principal:hover { transform: scale(1.02); }
+
+.galeria-miniaturas {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.galeria-miniatura {
+    width: 72px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: all 0.15s;
+}
+
+.galeria-miniatura:hover, .galeria-miniatura.ativa {
+    opacity: 1;
+    border-color: var(--clr-status-andamento);
+}
+
+.veic-detalhe-sem-foto {
+    aspect-ratio: 4/3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.03);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.07);
+    font-size: 0.85rem;
+}
+
+/* ---- Painel info ---- */
+.veic-detalhe-info {
+    position: sticky;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.veic-detalhe-topo { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.veic-detalhe-titulo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.veic-detalhe-marca-modelo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.55);
+}
+
+.veic-detalhe-marca-modelo strong {
+    color: var(--clr-status-andamento);
+    font-weight: 700;
+}
+
+.veic-detalhe-preco {
+    background: rgba(139, 92, 246, 0.08);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 12px;
+    padding: 14px 18px;
+}
+
+.veic-preco-valor {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--clr-status-andamento);
+}
+
+/* ---- Specs ---- */
+.veic-detalhe-specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.spec-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(255,255,255,0.35);
+    font-weight: 600;
+}
+
+.spec-valor {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+}
+
+/* ---- Descrição ---- */
+.veic-detalhe-descricao {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.descricao-titulo {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.55);
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.descricao-texto {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ---- Vendedor ---- */
+.veic-detalhe-vendedor {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.vendedor-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vendedor-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(139, 92, 246, 0.3);
+}
+
+.vendedor-info { display: flex; flex-direction: column; gap: 2px; }
+
+.vendedor-nome {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+}
+
+.vendedor-instagram {
+    font-size: 0.75rem;
+    color: var(--clr-status-andamento);
+    text-decoration: none;
+}
+
+.veic-cta-contato { display: flex; flex-direction: column; gap: 8px; }
+
+.btn-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background: #25d366;
+    border-radius: 12px;
+    color: var(--clr-surface);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.15s;
+}
+
+.btn-whatsapp:hover {
+    background: #1da851;
+    transform: translateY(-1px);
+}
+
+.btn-editar-anuncio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: var(--clr-status-andamento);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.15s;
+}
+
+.btn-editar-anuncio:hover { background: rgba(139, 92, 246, 0.22); }
+
+.veic-detalhe-erro {
+    text-align: center;
+    padding: 60px 24px;
+    color: rgba(255,255,255,0.5);
+}
+
+@media (max-width: 900px) {
+    .veic-detalhe-layout {
+        grid-template-columns: 1fr;
+    }
+    .veic-detalhe-info { position: static; }
+}

@@ -1,0 +1,93 @@
+@page
+@model ModuloMonolitico.Web.Pages.InfraAdmin.SaaS.PlanosEditarModel
+@{
+    ViewData[ViewDataKeys.Title] = $"Editar Plano — {Model.Nome}";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/InfraAdmin/css/saas-planos-editar.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.InfraAdmin.SaaS_Planos,
+    TextoVoltar = "Planos",
+    Titulo = "Editar Plano",
+    Subtitulo = "Ajuste as configurações, valor e features incluídas no plano."
+}' />
+
+<main class="main-content formulario-container">
+    <form method="post" class="cartao-formulario">
+        <app-input type="hidden" asp-for="Id" />
+
+        <app-input asp-for="Nome"
+                   label="Nome do Plano"
+                   type="text"
+                   required="required"
+                   autofocus="autofocus" />
+
+        <app-textarea asp-for="Descricao"
+                      label="Descrição"
+                      rows="2" />
+
+        <app-input asp-for="ValorMensalStr"
+                   label="Valor Mensal (R$)"
+                   type="text"
+                   placeholder="99.90"
+                   pattern="[0-9]+([.][0-9]{1,2})?"
+                   title="Use ponto como separador decimal. Ex: 99.90"
+                   required="required" />
+        <span class="field-hint">Use ponto como separador decimal. Ex: <strong>99.90</strong></span>
+
+        <div class="toggle-row">
+            <app-toggle asp-for="Ativo"
+                        title="Plano ativo"
+                        label-on="Sim"
+                        label-off="Não" />
+        </div>
+        <span class="field-hint">Planos inativos não aparecem para atribuição.</span>
+
+        <p class="section-title">Features Incluídas</p>
+        <div class="lista-alternancia-recurso">
+            @foreach (var f in Model.RecursosDisponiveis)
+            {
+                var isSelecionada = Model.RecursosSelecionados.Contains(f.Id.ToString());
+                var valorAtual = Model.ValoresRecurso.TryGetValue(f.Id.ToString(), out var v) ? v : "1";
+
+                <div class="item-alternancia-recurso">
+                    <app-checkbox class="feature-checkbox mb-0"
+                           id="f_@f.Id"
+                           name="RecursosSelecionados"
+                           value="@f.Id"
+                           checked="@isSelecionada"
+                           label="@($"{f.Chave} - {f.Nome} ({f.Tipo})")" />
+                    @if (f.Tipo == "quantidade")
+                    {
+                        <div>
+                            <small class="feature-limite-label">Limite</small>
+                            <app-input type="number" name="ValoresRecurso[@f.Id]" class="feature-valor-input mb-0" value="@valorAtual" min="0" placeholder="0" />
+                        </div>
+                    }
+                    else
+                    {
+                        <app-input type="hidden" name="ValoresRecurso[@f.Id]" value="1" />
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="acoes-formulario">
+            <span class="plano-meta-id">
+                ID: <code>@Model.Plano.Id</code>
+            </span>
+            <div class="acoes-formulario-right">
+                <a href="@ModuloRotas.InfraAdmin.SaaS_Planos" class="btn-cancelar">Cancelar</a>
+                <app-save-button type="submit">Salvar Alterações</app-save-button>
+            </div>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/InfraAdmin/js/saas-planos-editar.js" asp-append-version="true"></script>
+}

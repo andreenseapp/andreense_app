@@ -1,0 +1,113 @@
+@model ModuloMonolitico.Web.Pages.Contatos.Cadastro.ContatoFormularioModelo
+<div class="conteudo-aba" id="enderecos-container">
+
+  <div class="enderecos-toolbar">
+    <p class="enderecos-toolbar-desc">
+      Cadastre múltiplos endereços e assinale o papel de cada um.
+    </p>
+    <app-button type="button" variant="outline" id="btn-adicionar-endereco">+ Adicionar Endereço</app-button>
+  </div>
+
+  @{
+      if (Model.Enderecos == null || !Model.Enderecos.Any())
+      {
+          Model.Enderecos = new List<ContatoFormularioModelo.EnderecoModelo> { new() };
+      }
+  }
+
+  <div id="enderecos-lista">
+    @for (int i = 0; i < Model.Enderecos.Count; i++)
+    {
+      <div class="endereco-item form-section" data-index="@i">
+        <div class="endereco-item-header">
+            <p class="form-section-title">Endereço @(i + 1)</p>
+            <app-button type="button" variant="ghost" class="botao-remover-endereco" data-acao="remover-endereco">
+                Remover
+            </app-button>
+        </div>
+
+        <div class="form-grid form-grid-3">
+          <app-input type="hidden" asp-for="Enderecos[i].Id" />
+          <app-input asp-for="Enderecos[i].Cep" label="CEP" type="text" placeholder="00000-000" maxlength="9" data-mascara="cep" />
+          <app-input asp-for="Enderecos[i].Logradouro" label="Logradouro" type="text" placeholder="Rua, Avenida..." class="field-span-3" />
+          <app-input asp-for="Enderecos[i].Numero" label="Número" type="text" placeholder="123" />
+          <app-input asp-for="Enderecos[i].Complemento" label="Complemento" type="text" placeholder="Apto, Sala..." />
+          <app-input asp-for="Enderecos[i].Bairro" label="Bairro" type="text" placeholder="Centro" />
+          <app-input asp-for="Enderecos[i].Cidade" label="Cidade" type="text" placeholder="Ex: São Paulo" class="field-span-3" />
+          <app-input asp-for="Enderecos[i].Uf" label="UF" type="text" placeholder="SP" maxlength="2" />
+        </div>
+
+        <p class="form-section-title endereco-subtitle">Papel do Endereço</p>
+        <div class="endereco-papeis">
+          <label class="endereco-papel">
+              <app-input type="radio" asp-for="EnderecoEntregaId" value="@Model.Enderecos[i].Id" />
+              <span class="endereco-papel-text">Entrega</span>
+          </label>
+          <label class="endereco-papel">
+              <app-input type="radio" asp-for="EnderecoFaturamentoId" value="@Model.Enderecos[i].Id" />
+              <span class="endereco-papel-text">Faturamento</span>
+          </label>
+          <label class="endereco-papel">
+              <app-input type="radio" asp-for="EnderecoFiscalId" value="@Model.Enderecos[i].Id" />
+              <span class="endereco-papel-text">Fiscal</span>
+          </label>
+          <label class="endereco-papel">
+              <app-input type="radio" asp-for="EnderecoCobrancaId" value="@Model.Enderecos[i].Id" />
+              <span class="endereco-papel-text">Cobrança</span>
+          </label>
+          <label class="endereco-papel">
+              <app-input type="radio" asp-for="EnderecoRetiradaId" value="@Model.Enderecos[i].Id" />
+              <span class="endereco-papel-text">Retirada</span>
+          </label>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>
+
+<template id="endereco-template">
+    <div class="endereco-item form-section" data-index="{0}">
+        <div class="endereco-item-header">
+            <p class="form-section-title">Novo Endereço</p>
+            <app-button type="button" variant="ghost" class="botao-remover-endereco" data-acao="remover-endereco">
+                Remover
+            </app-button>
+        </div>
+
+        <div class="form-grid form-grid-3">
+            <app-input type="hidden" id="Form_Enderecos_{0}__Id" name="Form.Enderecos[{0}].Id" value="{1}" />
+            <app-input label="CEP" name="Form.Enderecos[{0}].Cep" id="Form_Enderecos_{0}__Cep" placeholder="00000-000" maxlength="9" data-mascara="cep" value="" />
+            <app-input label="Logradouro" name="Form.Enderecos[{0}].Logradouro" id="Form_Enderecos_{0}__Logradouro" placeholder="Rua, Avenida..." class="field-span-3" value="" />
+            <app-input label="Número" name="Form.Enderecos[{0}].Numero" id="Form_Enderecos_{0}__Numero" placeholder="123" value="" />
+            <app-input label="Complemento" name="Form.Enderecos[{0}].Complemento" id="Form_Enderecos_{0}__Complemento" placeholder="Apto, Sala..." value="" />
+            <app-input label="Bairro" name="Form.Enderecos[{0}].Bairro" id="Form_Enderecos_{0}__Bairro" placeholder="Centro" value="" />
+            <app-input label="Cidade" name="Form.Enderecos[{0}].Cidade" id="Form_Enderecos_{0}__Cidade" placeholder="Ex: São Paulo" class="field-span-3" value="" />
+            <app-input label="UF" name="Form.Enderecos[{0}].Uf" id="Form_Enderecos_{0}__Uf" placeholder="SP" maxlength="2" value="" />
+        </div>
+
+        <p class="form-section-title endereco-subtitle">Papel do Endereço</p>
+        <div class="endereco-papeis">
+          <label class="endereco-papel">
+              <app-input type="radio" id="Form_EnderecoEntregaId_{0}" name="Form.EnderecoEntregaId" value="{1}" />
+              <span class="endereco-papel-text">Entrega</span>
+          </label>
+          <label class="endereco-papel">
+              <app-input type="radio" id="Form_EnderecoFaturamentoId_{0}" name="Form.EnderecoFaturamentoId" value="{1}" />
+              <span class="endereco-papel-text">Faturamento</span>
+          </label>
+          <label class="endereco-papel">
+              <app-input type="radio" id="Form_EnderecoFiscalId_{0}" name="Form.EnderecoFiscalId" value="{1}" />
+              <span class="endereco-papel-text">Fiscal</span>
+          </label>
+          <label class="endereco-papel">
+              <app-input type="radio" id="Form_EnderecoCobrancaId_{0}" name="Form.EnderecoCobrancaId" value="{1}" />
+              <span class="endereco-papel-text">Cobrança</span>
+          </label>
+          <label class="endereco-papel">
+              <app-input type="radio" id="Form_EnderecoRetiradaId_{0}" name="Form.EnderecoRetiradaId" value="{1}" />
+              <span class="endereco-papel-text">Retirada</span>
+          </label>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,199 @@
+@page
+@model ModuloMonolitico.Web.Pages.Produto.NovoModel
+@{
+    ViewData[ViewDataKeys.Title] = "Novo Produto";
+    Layout = "~/Pages/Shared/Layouts/_ModuleLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Contextos/Produto/css/produto-novo.css" asp-append-version="true" />
+}
+
+<partial name="Toolbars/_ToolbarForm" model='new ModuloMonolitico.Web.Pages.Shared.Toolbars.ToolbarViewModel() {
+    UrlVoltar = ModuloRotas.Produto.Index,
+    TextoVoltar = "Meus Produtos",
+    Titulo = "Novo Produto",
+    Subtitulo = "Preencha as informações do item e suas variações."
+}' />
+
+<main class="main-content produto-novo-container">
+    <form method="post" id="formulario-produto">
+
+        <div class="navegacao-abas" role="tablist">
+            <app-button type="button" class="botao-aba active" data-aba="tab-identificacao">Identificação</app-button>
+            <app-button type="button" class="botao-aba" data-aba="tab-variacoes">Variações &amp; Preços</app-button>
+            <app-button type="button" class="botao-aba" data-aba="tab-fiscal">Fiscal &amp; Outros</app-button>
+        </div>
+
+        <div id="tab-identificacao" class="conteudo-aba active" role="tabpanel">
+            <div class="secao-formulario">
+                <div class="form-row">
+                    <app-input asp-for="Comando.Descricao"
+                               label="Descrição (Nome) *"
+                               type="text"
+                               required="required"
+                               class="campo-formulario-crescer mb-0" />
+                    <app-input asp-for="Comando.Codigo"
+                               label="Código (Referência) *"
+                               type="text"
+                               required="required"
+                               class="mb-0" />
+                </div>
+
+                <div class="bloco-formulario">
+                    <app-textarea asp-for="Comando.DescricaoComplementar"
+                                  label="Descrição Complementar"
+                                  rows="2" />
+                </div>
+
+                <div class="form-grid">
+                    <app-select asp-for="Comando.TipoProduto" label="Tipo de Item" class="mb-0">
+                        <option value="produto">Produto / Mercadoria</option>
+                        <option value="servico">Serviço</option>
+                        <option value="insumo">Insumo / Matéria-prima</option>
+                    </app-select>
+
+                    <div class="envoltorio-combobox">
+                        <app-select asp-for="Comando.UnidadeMedida"
+                                    label="Unidade de Medida"
+                                    id="selecao-unidade-medida"
+                                    default-option="-- Selecione a U.M. --"
+                                    class="mb-0 campo-combobox">
+                            @foreach (var un in Model.UnidadesDisponiveis)
+                            {
+                                <option value="@un.Sigla">@un.Nome (@un.Sigla)</option>
+                            }
+                        </app-select>
+                        <app-button type="button" class="botao-combobox-adicionar" data-acao="cadastro-rapido-unidade" title="Adicionar Unidade de Medida">+</app-button>
+                    </div>
+
+                    <div class="campo-alternancia">
+                        <app-toggle asp-for="Comando.Ativo" title="Ativo" label-on="Ativo" label-off="Inativo" />
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="envoltorio-combobox">
+                        <app-select asp-for="Comando.Grupo"
+                                    label="Grupo / Categoria"
+                                    id="selecao-grupo"
+                                    default-option="-- Selecione um Grupo --"
+                                    class="mb-0 campo-combobox">
+                            @foreach (var cat in Model.CategoriasDisponiveis)
+                            {
+                                <option value="@cat">@cat</option>
+                            }
+                        </app-select>
+                        <app-button type="button"
+                                class="botao-combobox-adicionar"
+                                data-acao="cadastro-rapido"
+                                data-campo="Grupo"
+                                data-titulo="Criar Categoria"
+                                data-manipulador="?handler=CadastrarCategoria"
+                                data-selecao="selecao-grupo"
+                                title="Adicionar Categoria">+</app-button>
+                    </div>
+
+                    <div class="envoltorio-combobox">
+                        <app-select asp-for="Comando.Marca"
+                                    label="Marca"
+                                    id="selecao-marca"
+                                    default-option="-- Selecione uma Marca --"
+                                    class="mb-0 campo-combobox">
+                            @foreach (var marca in Model.MarcasDisponiveis)
+                            {
+                                <option value="@marca">@marca</option>
+                            }
+                        </app-select>
+                        <app-button type="button"
+                                class="botao-combobox-adicionar"
+                                data-acao="cadastro-rapido"
+                                data-campo="Marca"
+                                data-titulo="Criar Marca"
+                                data-manipulador="?handler=CadastrarMarca"
+                                data-selecao="selecao-marca"
+                                title="Adicionar Marca">+</app-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-variacoes" class="conteudo-aba" role="tabpanel">
+            <div class="secao-formulario">
+                <p class="dica-variacoes">
+                    Se o produto não tiver variações, basta preencher a linha "Padrão" com o preço e código.<br>
+                    <span class="dica-variacoes-detail">O SKU da variação padrão é preenchido automaticamente com o Código de Referência. Se houver mais de uma variação, cada uma precisa ter seu próprio SKU.</span>
+                </p>
+
+                <div class="container-tabela">
+                    <table class="tabela-variacao" id="tabela-variacoes" data-seletor-colunas="true">
+                        <thead>
+                            <tr>
+                                <th>Descrição (Ex: Azul M)</th>
+                                <th>SKU / Ref</th>
+                                <th>Cód. Barras</th>
+                                <th>Preço Venda (R$)</th>
+                                <th>Custo (R$)</th>
+                                <th class="tabela-variacao-coluna-acao"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-variacoes">
+                            @for (int i = 0; i < Model.Comando.Variacoes.Count; i++)
+                            {
+                                <tr class="linha-variacao">
+                                    <td class="coluna-oculta"><app-input type="hidden" name="Comando.Variacoes[@i].Id" value="@Model.Comando.Variacoes[i].Id" class="variacao-id" /></td>
+                                    <td><app-input type="text" name="Comando.Variacoes[@i].Descricao" value="@Model.Comando.Variacoes[i].Descricao" required class="campo-controle variacao-desc" /></td>
+                                    <td><app-input type="text" name="Comando.Variacoes[@i].CodigoSku" value="@Model.Comando.Variacoes[i].CodigoSku" class="campo-controle variacao-sku" /></td>
+                                    <td><app-input type="text" name="Comando.Variacoes[@i].CodigoBarras" value="@Model.Comando.Variacoes[i].CodigoBarras" class="campo-controle variacao-barras" /></td>
+                                    <td><app-input type="number" step="0.01" name="Comando.Variacoes[@i].PrecoVenda" value="@Model.Comando.Variacoes[i].PrecoVenda.ToString(System.Globalization.CultureInfo.InvariantCulture)" class="campo-controle variacao-preco" /></td>
+                                    <td><app-input type="number" step="0.01" name="Comando.Variacoes[@i].Custo" value="@Model.Comando.Variacoes[i].Custo.ToString(System.Globalization.CultureInfo.InvariantCulture)" class="campo-controle variacao-custo" /></td>
+                                    <td>
+                                        <app-button type="button" class="botao-remover" data-acao="remover-linha" title="Remover Variação">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        </app-button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <app-button type="button" class="botao-incluir-variacao" data-acao="adicionar-variacao">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Adicionar Variação
+                </app-button>
+            </div>
+        </div>
+
+        <div id="tab-fiscal" class="conteudo-aba" role="tabpanel">
+            <div class="secao-formulario">
+                <div class="form-grid">
+                    <app-input asp-for="Comando.Ncm"
+                               label="NCM (Nomenclatura Comum do Mercosul)"
+                               type="text"
+                               class="mb-0" />
+                    <app-input asp-for="Comando.Cest"
+                               label="CEST (Cód. Esp. Sit. Tributária)"
+                               type="text"
+                               class="mb-0" />
+                </div>
+
+                <div class="bloco-formulario">
+                    <app-textarea asp-for="Comando.Observacao"
+                                  label="Observações Internas"
+                                  rows="4" />
+                </div>
+            </div>
+        </div>
+
+        <div class="acoes-formulario">
+            <a href="@ModuloRotas.Produto.Index" class="botao-cancelar">Cancelar</a>
+            <app-save-button type="submit">Salvar Produto</app-save-button>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <script src="~/Contextos/Shared/js/seletor-colunas.js" asp-append-version="true"></script>
+    <script src="~/Contextos/Produto/js/produto-novo.js" asp-append-version="true"></script>
+}

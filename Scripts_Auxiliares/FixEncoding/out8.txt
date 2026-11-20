@@ -1,0 +1,88 @@
+﻿
+--- Cep.cshtml ---
+[3] @* Esta p�gina não tem view — ela retorna JSON via OnGetAsync *@
+
+--- Cadastro.cshtml ---
+[76] placeholder="M�nimo 8 caracteres"
+[93] J� tem conta? <a href="/Auth/Login">Entrar</a>
+
+--- Index.cshtml ---
+[4] ViewData["Title"] = "�Área do Cliente — Andreense";
+[53] <p class="page-subtitle">Acompanhe seus benef�cios, hist�rico e agendamentos.</p>
+[55] <p class="section-label">Benef�cios</p>
+[59] <div class="action-card-title">Cart�es Fidelidade</div>
+[60] <div class="action-card-desc">Em breve — acompanhe o progresso dos seus cart�es e pr�mios.</div>
+[69] <p class="section-label">Hist�rico</p>
+[74] <div class="action-card-desc">Em breve — visualize seus pr�ximos serviços marcados.</div>
+[79] <div class="action-card-desc">Em breve — acesse o hist�rico de serviços e compras realizadas.</div>
+
+--- Detalhes.cshtml ---
+[70] <p class="em-breve-text">Estamos refinando a visualiza��o detalhada para oferecer uma experi�ncia completa de 360�.</p>
+
+--- _FormFisica.cshtml ---
+[2] @* Partial: Formul�rio de Contato F�sica *@
+[10] placeholder="Ex: Jo�o da Silva"
+[35] <option value="O">Outro / Prefiro não dizer</option>
+[60] <p class="form-section-title">Endere�o</p>
+[88] placeholder="Ex: S�o Paulo"
+
+--- _FormJuridica.cshtml ---
+[2] @* Partial: Formul�rio de Contato Jur�dica *@
+[37] <app-select asp-for="Crt" label="Regime Tribut�rio (CRT)">
+[65] <p class="form-section-title">Endere�o</p>
+[93] placeholder="Ex: S�o Paulo"
+
+--- Selecionar.cshtml ---
+[5] Layout = "_Layout"; // O layout j� não exibe o sidebar se não houver empresa ativa, ent�o ser� limpo.
+[14] <p class="text-muted mb-4">Voc� tem acesso a mais de uma empresa. Por favor, selecione em qual ambiente deseja trabalhar agora.</p>
+
+--- Index.cshtml ---
+[173] /* --- Cards de A��o ----------------------------------- */
+[437] <div class="action-card-title">Ordens de Servi�o</div>
+
+--- Index.cshtml ---
+[5] ViewData["Description"] = "Caixa de entrada e hist�rico de conversas.";
+[19] /* --- Sidebar (lista de t�picos) ----------------------- */
+[235] /* --- Bal�es de mensagem -------------------------------- */
+[300] /* --- Formul�rio de envio ------------------------------- */
+[353] /* --- Empty State (nenhum t�pico selecionado) ----------- */
+[393] <!-- -- Sidebar: Lista de T�picos ---------------------------- -->
+[398] @Model.Topicos.Sum(t => t.NaoLidas) não lida(s)
+[444] <!-- -- Painel: Hist�rico + Composer ------------------------- -->
+[449] <!-- Empty state: nenhum t�pico selecionado -->
+[457] <p>Escolha um t�pico na lista — esquerda para ver o hist�rico de mensagens.</p>
+[462] <!-- Header do painel com info do t�pico ativo -->
+[475] <!-- Hist�rico de mensagens -->
+[476] <div class="messages-area" id="messages-area" aria-live="polite" aria-label="Hist�rico de mensagens">
+[502] <!-- Composer: formul�rio de envio -->
+[552] // Filtro client-side de t�picos pela busca
+
+--- Index.cshtml ---
+[4] ViewData["Title"] = "Notifica��es";
+[5] ViewData["Description"] = "Central de alertas e notifica��es do sistema.";
+[72] /* --- Lista de notifica��es ----------------------------- */
+[115] .notif-card.nao-lida::before { display: none; } /* borda esquerda j� existe */
+[121] /* �cone de tipo */
+[189] /* Bot�o marcar lida */
+[233] <!-- -- Header da p�gina ------------------------------------ -->
+[241] Notifica��es
+[245] <p>@Model.TotalNaoLidas notifica��o(�es) não lida(s)</p>
+[261] <nav class="notif-tabs" aria-label="Filtros de notifica��es">
+[263] <a href="/Notificacoes/Index?filtro=nao_lidas" class="notif-tab @(Model.FiltroAtivo == "nao_lidas" ? "active" : "")">Não lidas (@Model.TotalNaoLidas)</a>
+[270] <!-- -- Lista de Notifica��es -------------------------------- -->
+[278] <h3>Nenhuma notifica��o</h3>
+[281] ? "Voc� não tem nenhuma notifica��o ainda."
+[282] : $"Nenhuma notifica��o do tipo \"{Model.FiltroAtivo}\" encontrada.")
+[288] <div class="notif-list" role="list" aria-label="Lista de notifica��es">
+[296] <!-- �cone do tipo -->
+[321] <span class="notif-badge-global" title="Notifica��o enviada a todos os usu�rios da conta">Global</span>
+[334] <!-- A��o: marcar lida -->
+[340] <button type="submit" class="btn-marcar-lida" title="Marcar como lida" aria-label="Marcar notifica��o como lida">?</button>
+
+--- Index.cshtml ---
+[4] ViewData["Title"] = "�Área de Serviços — Andreense";
+[53] <p class="page-subtitle">Ponto de Venda, Agendamentos e Relacionamento Di�rio.</p>
+[65] <div class="action-card-desc">Em breve — bipe o cart�o do cliente para computar pontos/visitas.</div>
+[74] <div class="action-card-desc">Em breve — visualize a agenda e gerencie os hor�rios.</div>
+
+Total arquivos: 11, Total linhas: 64
